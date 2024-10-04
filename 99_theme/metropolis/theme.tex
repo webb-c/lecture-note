@@ -1,0 +1,117 @@
+\documentclass{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+
+\setbeamertemplate{theorems}[numbered]  
+
+% \useinnertheme[shadow=true]{rounded}
+% \addtobeamertemplate{proof begin}{%
+%     \setbeamercolor{block title}{fg=gray!5!white,bg=black!40!white}
+%     \setbeamercolor{block body}{fg=black, bg=gray!25!white}
+% }{}
+% \BeforeBeginEnvironment{theorem}{
+%     \setbeamercolor{block title}{fg=teal!0!white, bg=teal!50!white}
+%     \setbeamercolor{block body}{fg=black, bg=teal!25!white}
+% }
+% \BeforeBeginEnvironment{lemma}{
+%     \setbeamercolor{block title}{fg=RoyalBlue!5!white, bg=RoyalBlue!50!white}
+%     \setbeamercolor{block body}{fg=black, bg=RoyalBlue!25!white}
+% }
+% \BeforeBeginEnvironment{corollary}{
+%     \setbeamercolor{block title}{fg=white, bg=ForestGreen!50!white}
+%     \setbeamercolor{block body}{fg=black, bg=ForestGreen!25!white}
+% }
+% % \BeforeBeginEnvironment{exampleblock}{
+% %     \setbeamercolor{block title}{fg=black, bg=white}
+% %     \setbeamercolor{block body}{fg=black, bg=white}
+% % }
+% \BeforeBeginEnvironment{definition}{%
+%     \setbeamercolor{block title}{fg=Maroon!5!white, bg=Maroon!50!white}
+%     \setbeamercolor{block body}{fg=black, bg=Maroon!25!white}
+% }
+
+
+\usetheme{metropolis}           % Use metropolis theme
+\title{Title}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    \maketitle
+
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    \section{First Section}
+
+    \begin{frame}{Hello World}
+        Hello, world!
+    \end{frame}
+
+
+    \section{Second Section}
+
+
+    \begin{frame}
+        \frametitle{Bullet이 있는 Slide}
+        \begin{itemize}
+            \item item1
+            \item item2
+            \item item3
+        \end{itemize}
+    \end{frame}
+    
+
+    % Frame 1
+    \begin{frame}{Basic Blocks}
+        \begin{block}{Standard Block}
+            This is a standard block.
+        \end{block}
+        \begin{alertblock}{Alert Message}
+            This block presents alert message.
+        \end{alertblock}
+        \begin{exampleblock}{An example of typesetting tool}
+            Example: MS Word, \LaTeX{}
+        \end{exampleblock}
+    \end{frame}
+    
+    % Frame 2
+    \begin{frame}{Mathematical Environment Blocks}
+        \begin{definition} 
+            This is a definition.
+        \end{definition}
+        
+        \begin{theorem} 
+            This is a theorem. 
+        \end{theorem}
+        
+        \begin{lemma} 
+            This is a proof idea.
+        \end{lemma}
+    \end{frame}
+    
+    % Frame 3
+    \begin{frame}{Mathematical Environment Blocks-Continued}
+        \begin{proof} 
+            This is a proof. 
+        \end{proof}
+        
+        \begin{corollary}
+            This is a corollary
+        \end{corollary}
+        
+        \begin{example}
+            This is an example 
+        \end{example}
+    \end{frame}
+
+    
+\end{document}

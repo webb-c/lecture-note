@@ -1,0 +1,401 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+%## font
+\usefonttheme[onlymath]{serif}
+                
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+
+%## Custom block
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+\title{1. Review of Linear Algebra}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    %#################################### 
+    \section{Vector space and Basis}
+
+    \begin{frame}{Vector space}
+        \begin{definition}
+            $u, v \in V$, $a \in \mathbb C$에 대해서 addition과 scalar multiplication이 정의될 수 있다면, set $V$를 vector space이라고 한다. 
+            \begin{itemize}
+                \item (addition) $u+v \in V$
+                \item (scalar multiplication) $ a u \in V$
+            \end{itemize}
+        \end{definition}
+        % \vspace{4cm}
+    \end{frame}
+
+    \begin{frame}{Linear combination}
+        \begin{definition}
+            A linear combination of a list $\{\ket{v_1}, ... , \ket{v_m}\}$ of vectors in $V$ is a vector of the form $$\ket v = \sum_{i} a_i \ket{v_i} = a_1\ket{v_1} + ⋯ + a_m\ket{v_m} \Rightarrow \begin{pmatrix} a_1 \\ a_2 \\ \vdots \\ a_m\end{pmatrix}$$
+            where $a_1, ... , a_m \in \mathbb C$.
+            And, $V$ is called the \textbf{span} of $\{\ket{v_1}, ... , \ket{v_m}\}$, denoted by $span(\ket{v_1}, ... , \ket{v_m})$. 
+            In other words:
+            $$ \operatorname{span}(\ket{v_1}, ... , \ket{v_m})=\left\{a_1\ket{v_1} + ⋯ + a_m\ket{v_m}: a_1, \ldots, a_m \in \mathbb{C}\right\} $$
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Linearly independent}
+        \begin{definition}
+            A list $\{\ket{v_1}, ... , \ket{v_m}\}$ of vectors in $V$ is called \textbf{linearly independent} if the \textit{only} choice of $a_1, ... , a_m \in \mathbb C$ that makes  
+            $$a_1\ket{v_1} + \cdots + a_m \ket{v_m} = 0$$ is $a_1 = \cdots = a_m = 0$.
+        \end{definition}
+        \begin{definition}
+            A list $\{\ket{v_1}, ... , \ket{v_m}\}$ of vectors in $V$ is called \textbf{linearly dependent} if the \textit{exists} a set of numbers $a_1, ... , a_m \in \mathbb C$ with $a_i \ne 0$ for at least one value of $i$, such that 
+            $$a_1\ket{v_1} + \cdots + a_m \ket{v_m} = 0.$$
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Basis}
+        \begin{definition}
+            A \textbf {basis} of $V$ is a list of vectors in $V$ that is linearly \textit{independent} and \textit{spans} $V$. \\
+            The number of elements in the basis is defined to be the \textit{dimension} of $V$.
+        \end{definition}
+    \end{frame}
+
+
+    %#################################### 
+    \section{Linear Operator}
+    \begin{frame}{Linear operator}
+        \begin{definition}
+            벡터를 입력으로 받아서 다른 벡터로 반환하는 함수 $A: V \rightarrow W$를 \textbf{operator}라고 한다. 입력 벡터와 출력 벡터의 벡터 공간은 동일할 수도 있고, 다를 수도 있다. 특히 Linear operator는 다음과 같이 동작한다.
+            $$A \left( \sum_i a_i \ket{v_i} \right) = \sum_i a_i A(\ket{v_i})$$
+            만약 linear operator $A$가 출력 벡터를 입력 벡터와 동일한 벡터공간 $V$에 매핑한다면, "Linear operator on $V$"라고 표현한다. 
+        \end{definition}
+
+        \begin{theorem}
+            Set of all linear operator $V \rightarrow W$는 다음과 같이 나타내며, 이 집합에서 addition과 scalar multiplication이 정의될 수 있기 때문에 vector space이다. 
+            $$\mathcal L(V, W)$$
+        \end{theorem}
+    \end{frame}
+    
+    
+    \begin{frame}{Matrix representation}
+        \begin{definition}
+            $A:V \rightarrow W$이고 각 벡터공간의 basis가 $\{\ket{v_i}\}$, $\{\ket{w_i}\}$라고 하자. 
+            그렇다면 $V$의 어떤 basis vector에 대해서 operator를 적용한 결과는 $W$ 벡터공간안에 있는 벡터이다. $$A\ket{v_i} \in W$$
+            따라서 이 벡터는 $\{\ket{w_i}\}$의 linear combination으로 나타낼 수 있다. 
+            $$A\ket{v_i} = \sum_{j}A_{ij} \ket{w_j}$$
+            이때 coefficient $A_{ij}$를 operator $A$를 표현하는 matrix의 원소로 사용한다. 
+        \end{definition}
+    \end{frame}
+
+    %#################################### 
+    \section{Inner product and Outer product}
+    \begin{frame}{Inner product}
+        \begin{definition}[Inner product]
+            Inner product는 같은 벡터공간에 있는 두 벡터를 입력으로 받아 전달받아서 상수값을 반환한다.
+            $$(,) : V \times V \rightarrow \mathbb C$$
+            Any operation can be defined as \textit{inner product} if it satisfies
+            \itemize
+                \item linearlity
+                $$(\ket v, \sum_i \lambda_i \ket{w_i}) = \sum_i \lambda_i (\ket v, \ket{w_i})$$
+                \item complex conjugation 
+                $$(\ket v, \ket w) = (\ket w , \ket v)^*$$
+                \item non-negative integer
+                $$(\ket v, \ket w) \ge 0$$
+                with equality if and only if $\ket v = 0$.
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Inner product}
+        \begin{definition}[Norm]
+            We define the \textit{norm} of a vector $\ket v$ by
+            $$\sqrt{\braket{v|v}} = \|\ket v\|.$$
+            If norm of a vector $\ket v$ is $\|\ket v\| = 1$, we call it as \textit{unit vector}.
+        \end{definition}
+        \begin{definition}[Orthogonality]
+            Vecotrs $\ket w$ and $\ket v$ are \textit{orthogonal} if their inner product is zero.
+            $${\braket{v|w}} = 0$$
+        \end{definition}
+        \begin{definition}[Orthonormal]
+            A set of vectors is \textit {orthonormal} if each vector is a unit vector, and each vector pairs is orthogonal.
+            $$\braket{v|w} = 0, \quad \text{ and } \quad  \braket{v|v} = 1, \braket{w|w} = 1$$
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Outer product}
+        \begin{definition}
+            Outer product의 결과는 matrix이고, 따라서 $V \rightarrow V$를 수행하는 linear operator이다.
+            $$(\ket w \bra v) \ket{v'} = \ket w \braket{v|v'} = \underbrace{\braket{v|v'}}_{\text{scalar}} \underbrace{\ket w}_{\text{vector } \in V}$$
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Completeness}
+        \begin{theorem}
+            특정 basis set $\{\ket i \}$에 대해서 벡터를 linear combination으로 나타낼 때,
+            $$\ket v = \sum_{i} v_i \ket{i} $$
+            각 basis에 대응되는 coefficient의 값은 벡터와 basis를 내적한 결과이다.
+            $$v_i  = \braket{i | v}$$
+        \end{theorem}
+    \end{frame}
+
+    %#################################### 
+    \section{Eigenvalue and Eigenvector}
+    \begin{frame}{Eigenvalue and Eigenvector}
+        \begin{definition}
+            Operator $A$에 대해서 다음 등식을 만족시키는 벡터 $\ket v$를 eigenvector, 실수 $v$를 eigenvalue라고 한다. 
+            $$A \ket v = v \ket v$$
+            eigenvalue, vector를 구하는 방법은 $C(\lambda) = 0$을 만족시키는 $\lambda$가 eigenvalue가 된다. 
+            where $C(\lambda)$ is:
+            $$C(\lambda) = \text{det}(A - \lambda I)$$
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Spectral decomposition}
+        \begin{definition}
+            다음과 같이 Spectral decomposition을 할 수 있는 operator를 \textit{diagonalizable}하다고 한다.
+            $$A = \sum_i \lambda_i \ket i \bra i$$
+        \end{definition}
+    \end{frame}
+
+    %#################################### 
+    \section{Matrix properties: Hermitian and Unitary}
+    \begin{frame}{Linear functional}
+        \begin{definition}
+            Set of linear operator from $V \rightarrow \mathbb C$.
+        \end{definition}
+        \checkmark \underline{meaning}: 벡터를 상수로 mapping시키는 operator를 Linear functional이라고 한다. 
+    \end{frame}
+
+    \begin{frame}{Riesz representation theorem}
+        \begin{theorem}
+            Suppose:
+            \begin{itemize}
+                \item $V$: finite-dimensional vector space 
+                \item $\varphi$: linear functional on $V$
+            \end{itemize}
+            Then there is a unique vector $u \in V$ s.t.
+            $$\varphi\ket{v} = \braket{u|v}$$
+        \end{theorem}
+        \begin{theorem}
+            Suppose:
+            \begin{itemize}
+                \item $V$ is finite-dimensional vector space 
+                \item $A$ is $V \rightarrow V$ linear operator 
+            \end{itemize}
+            Then there is a unique operator $B \equiv A^\dagger$ s.t.
+            $$(\ket v, A \ket w) = (B \ket v, \ket w)$$
+            $$\braket{v|A|w} = \braket{v|B^\dagger |w} = \braket{v|(A^\dagger)^\dagger|w}$$
+        \end{theorem}
+    \end{frame}
+
+    \begin{frame}{Hermitian, normal and unitary}
+        \begin{definition}[Hermitian]
+            Operator $A$ is the \textit{Hermitian} operator such that
+            $$A^\dagger = A.$$
+        \end{definition}
+        \begin{corollary}[Projector]
+            Operator $P$ is the \textit{projector} onto the subspace $W$.Where $W$ has  orthonormal basis $\{\ket 1, \cdots \ket k\}$ construct from orthonormal basis $\{ \ket 1, \cdots, \ket d \}$for $V$.
+            $$P \equiv \sum^k_{i=1} \ket i \bra i $$
+        \end{corollary}
+    \end{frame}
+    
+    \begin{frame}{Hermitian, normal and unitary}
+        \begin{definition}[Normal]
+            Operator $A$ is the \textit{normal} operator such that
+            $$AA^\dagger = A^\dagger A.$$
+        \end{definition}
+        \begin{itemize}
+            \item Hermitian operator is normal.
+            \item Normal matrix is Hermitian if and only if it has real eigenvalues.
+            \item Any normal operator $A$ on a vector space $V$ is \textit{diagonal} with respect to some orthonormal basis for $V$.
+        \end{itemize}
+        %! TODO: 맞음?
+        \begin{corollary}[Positive operator]
+            Operator $B$ is positive operator such that
+            $$B = \sqrt{A^\dagger A}$$
+        \end{corollary}
+    \end{frame}
+
+    \begin{frame}{Hermitian, normal and unitary}
+        \begin{definition}[Unitary]
+            Operator $U$ is \textit{unitary} operator such that
+            $$UU^\dagger = U^\dagger U = I.$$
+            In other word,
+            $$U^\dagger = U^{-1}.$$
+        \end{definition}
+        \begin{itemize}
+            \item Unitary operator is normal $\rightarrow$ has spectral decomposition
+            \item Unitary operator preserve inner products. $$(U\ket v, U \ket w) = \braket{v|w}$$
+            \item $U$ on orthonormal basis $\{\ket{v_i}\}$ write as
+            $$U = \sum_i \ket{w_i} \ket{v_i},$$
+            where $\ket{w_i} = U \ket{v_i}.$ 
+        \end{itemize}
+    \end{frame}
+
+    %#################################### 
+    \section{Tensor product}
+    \begin{frame}{Tensor product}
+        \begin{definition}
+            $V$와 $W$가 vector space이고 각각의 basis가 $\{i\}, \{j\}$일 때, 두 vector space의 tensor product는 다음과 같이 정의된다.
+            $$V \otimes W,\quad \{\ket i \otimes \ket j\}\in V\otimes W$$
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Property of tensor product}
+        By definition of tensor product, satisfies the following properties: \\ 
+        For an arbitrary scalar $z$ and vectors $\ket v \in V$ and $\ket w \in W$
+        \begin{itemize}
+            \item[1)] $z(\ket v \otimes \ket w) = (z \ket v) \otimes \ket w = \ket v \otimes (z \ket w),$
+            \item[2)] $(\ket{v_1} + \ket{v_2}) \otimes \ket w = \ket{v_1} \otimes \ket w + \ket{v_2} \otimes w,$
+            \item[3)] $\ket v \otimes (\ket{w_1} + \ket{w_2}) = \ket v \otimes \ket{w_1} + \ket v \otimes \ket{w_2}$
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Tensor product for Operators}
+        \begin{definition}
+            $V$에 작용하는 operator $A$, $W$에 작용하는 operator $B$를 이용하면 tensor product vector space에대한 operator를 다음과 같이 나타낼 수 있다.
+            $$(A\otimes B) (\ket v \otimes \ket w) = A\ket v \otimes B \ket w$$
+            more general,
+            $$C = \sum_i c_i A_i \otimes B_i $$
+        \end{definition}
+
+    \end{frame}
+
+    %#################################### 
+    \section{Useful concepts: projector, trace and commutator}
+    \begin{frame}{Operator functions}
+        \begin{definition}
+            Normal operator $A$에 대해, operator function은 다음과 같이 적용된다.
+            $$f(A) = \sum_a f(a) \ket a \bra a$$ 
+        \end{definition}
+        \checkmark \underline{meaning}: operator의 spectral decomposition에 대해 eigenvalue에 적용된다.
+    \end{frame}
+
+    \begin{frame}{Trace}
+        \begin{definition}
+        $$\text{tr}(A) = \sum_i A_{ii}= \sum_i \braket{i|A|i}$$
+        \end{definition}
+        By definition of trace, satisfies the following properties:
+        \begin{itemize}
+            \item $\text{tr}(AB) = \text{tr}(BA)$
+            \item $\text{tr}(A+B) = \text{tr}(A) + \text{tr}(B)$
+            \item $\text{tr}(zA) = z \cdot \text{tr}(A)$
+            \item (unitary invariant)
+            $$\text{tr}(UAU^\dagger) = \text{tr}(A)$$
+            \item $\braket{\psi | A |\psi} = \text{tr}[A \ket \psi \bra \psi]$
+        \end{itemize}
+        $\ast$ \underline{Proof}:
+    \end{frame}
+
+    \begin{frame}{Commutator}
+        \begin{definition}
+            $A, B$ is linear operator,
+            commutator:
+            $$[A, B] = AB-BA$$
+            anti-commutator:
+            $$\{A, B\} = AB + BA$$
+        \end{definition}
+        \begin{theorem}
+            If commutator is zero; $[A, B]=0$ then if and only if there exists an orthogonal basis that diagonalizable $A$ and $B$ \textbf{simultaneously}.
+        \end{theorem}
+    \end{frame}
+
+
+    %#################################### 
+    \section{Decompositions}
+    \begin{frame}{Polar decomposition}
+        Let $A$ be a linear operator on a vector space $V$. Then there exists unitary $U$ and positive operators $J$ and $K$ such that
+        $$A = UJ = KU$$
+    \end{frame}
+
+    \begin{frame}{Singular value decomposition}
+        Let $A$ be a linear operator on a vector space $V$. Then there exists unitary $U$ and $V$ and a diagonal matrix $D$ with nonnegative entries such that
+        $$A = UDV.$$
+        $\ast$ \underline{Proof}:
+    \end{frame}
+
+    \begin{frame}{Shmidt decomposition}
+        Suppose we have a vector in a composite system $V \otimes W$. Then there exist orthonormal basis in $V$ and $W$ such that
+        $$ \ket a = \sum_i \lambda_i \ket{v_i} \otimes \ket{w_i}$$
+    \end{frame}
+    
+    \begin{frame}{References}
+        
+        \begin{itemize}
+            \item Sheldon Axler, Linear Algebra Done Right, 3th
+            \item Lecture notes for QU511: Quantum Computing (Fall 2024)
+        \end{itemize}
+
+        \begin{alertblock}{test block}
+        \end{alertblock}
+    \end{frame}
+    
+\end{document}

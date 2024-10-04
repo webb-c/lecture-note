@@ -1,0 +1,160 @@
+\documentclass{beamer}
+
+% select theme
+\usetheme{Boadilla}
+\usecolortheme{beaver}
+
+\usepackage{kotex}
+\usepackage{fancyvrb}
+\usepackage{color}
+
+% you need to generate pyg.tex by
+% pygmentize -O full -f latex hello.c
+\input{pyg.tex}
+
+
+
+% syntax highlighted source code 넣는법:
+% http://ubuntuforums.org/showthread.php?t=790610
+% pygmentize 명령어가 실행될 수 있도록 하자.
+% bash에 그냥 pygmentize라고 치면 어느 패키지를 설치해야 하는지 알려줌.
+% then...
+% 색깔 명령어가 define될 수 있도록... hello.c를 만든 다음,
+% pygmentize -O full -f latex hello.c
+% 를 돌리면 무엇을 include해야 하는지, define이 뭐가 필요한지 쭉
+% stdout으로 출력해줌.
+% pygmentize -f latex hello.c 로 나오는 verbatim문을 긁어붙이면 완성.
+\begin{document}
+
+% title slide
+\begin{frame}
+	\title{슬라이드 제목}
+	\author{Force Core}
+	\date{2010-05-06(목)}
+	\titlepage
+\end{frame}
+
+
+
+% outline slide
+\section*{Outline}
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+
+
+\section{간단한 슬라이드}
+
+\subsection{hello world!}
+
+% 그냥 글자만 있는 슬라이드
+\begin{frame}
+	Hello World!
+\end{frame}
+
+% 제목도 들어갔다.
+\begin{frame}
+	\frametitle{제목도 넣기}
+	이제 제목이 들어갔다.
+	내용도 있음
+\end{frame}
+
+% 부제목이 있는 슬라이드
+\begin{frame}
+	\frametitle{제목도 넣기}
+	\framesubtitle{부제목 넣었다}
+	부제목을 넣은 슬라이드
+\end{frame}
+
+% with bullets
+\begin{frame}
+	\frametitle{Bullet이 있는 Slide}
+	\begin{itemize}
+		\item item1
+		\item item2
+		\item item3
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{정의를 하는 슬라이드}
+	\begin{definition}[영어 단어 Stream]
+		\begin{itemize}
+			\item Bach - 흐름, 내, 시내, 개울
+			\item 유출, 분류
+			\item 흐르다, 흘러가다, 흘러 나오다
+			\item 잇달아 나오다, 끊임없이 게속되다
+		\end{itemize}
+	\end{definition}
+\end{frame}
+
+\begin{frame}
+	% \begin{figure}
+	% \includegraphics[width=0.3\columnwidth]{jpg/bach_shades.jpg}
+	% \end{figure}
+	% 그림 넣은 슬라이드 \\
+	``It's easy to play any musical instrument: all you have to do is touch the right key at the right time and the instrument will play itself.''
+	\footnote{\url{http://thinkexist.com/quotation/it-s_easy_to_play_any_musical_instrument-all_you/13822.html}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{칼럼 넣은 슬라이드}
+	\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+		\includegraphics[width=0.9\columnwidth]{svg/Stdstreams-notitle}
+		\end{figure}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{itemize}
+			\item stdout
+			\item stderr
+			\item stdin
+		\end{itemize}
+	\end{column}
+	\end{columns}
+\end{frame}
+
+
+\subsection{서브섹션을 가르면 진도표에 반영됨}
+
+\begin{frame}
+	\frametitle{Caeser Cypher II}
+	{\em \Large Practice1 - Caeser Cypher II}
+
+	\vspace{5mm}
+	중간 타이틀로서 나름 깔끔한듯.
+	part기능에는 좀 어울리지 않아서 손으로 직접... 읔;;
+\end{frame}
+
+\section{다른 섹션}
+
+\begin{frame}[containsverbatim]
+	\frametitle{그냥 verbatim}
+	터미널의 출력 따위
+	\begin{verbatim}
+	$ chmod -x a.out
+	$ chmod +x a.out
+	$ chmod -r test.c
+	$ chmod +r test.c
+	$ chmod -w test.c
+	$ chmod +w test.c
+	\end{verbatim}
+\end{frame}
+
+\subsection{Practice2 - chmod}
+
+\begin{frame}
+	\frametitle{Practice2 - chmod}
+	{\em \Large Practice2 - chmod}
+
+	\vspace{5mm}
+	set, unset, get 함수를 완성하여 chmod를 따라해보자.
+	set, unset, get함수에는 if문이 필요 없다.
+\end{frame}
+
+
+
+\end{document}
+
