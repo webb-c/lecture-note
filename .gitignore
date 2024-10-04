@@ -7,3 +7,4 @@
 *.toc
 *.vrb
 *.fdb_latexmk
+.DS_Store/
