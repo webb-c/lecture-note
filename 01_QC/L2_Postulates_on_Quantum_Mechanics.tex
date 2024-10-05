@@ -356,21 +356,158 @@
     %#################################### 
     \begin{section}{Density matrix}
         \begin{frame}{Density matrix}
+            \begin{definition}[density matrix]
+                The density operator for the system is defined by the equation
+                $$\rho \triangleq \sum_{i} p_i \ket{\psi_i} \bra{\psi_i}.$$
+            \end{definition}
+            \begin{theorem}
+                An operator is the density matrix of $\{p_i, \ket{\psi_i}\}$iff,
+                %확률을 의미하니까 합은 1이되야한다.
+                $\text{tr}[\rho]=1$ and   $\rho \ge 0$.
+            \end{theorem}
+            \begin{itemize}
+                \item Density matrix는 system이 deterministic하게 알려지지 않았을 때, system을 표현하기에 좋은 방법을 제공한다.
+                \item Density matrix를 이루는 각 $\ket{\psi_i}$는 system이 가질 수 있는 state vector들을 의미하며 system이 실제로 그 state vector일 확률이 계수 $p_i$로 주어진다.
+                \item If $\text{tr}[\rho^2]=1$, \textit{pure state}.
+                \item If $\text{tr}[\rho^2]<1$, \textit{mixed state}, and $\{p_i, \ket{\psi_i}\}$ called as ensemble of pure states.
+            \end{itemize}
+
         \end{frame}
 
         \begin{frame}{Rewrite postulates via density matrix}
+            \begin{block}{Postulate 1}
+                Associated to any closed physical system is a \textit{Hilbert space} known as the state space of the system. The system is completely described by \textbf{density matrix.}
+                $$ \rho = \sum_i p_i \ket{p_i} \bra{p_i}, \quad \ket \psi \in \mathcal H$$
+            \end{block}
+
+            \begin{block}{Postulate 2}
+                The evolution of a closed quantum system is described by a \textbf{unitary transformation}
+                $$ \rho' = U \rho U^\dagger$$
+            \end{block}
+            \begin{itemize}
+                \item Density matrix의 evolution은 density matrix를 이루고 있는 각각의 state vector를 unitary operator로 evolution한 결과로 정의할 수 있다.
+            \end{itemize}
+            $$ \rho  \quad \longrightarrow\quad \sum_i p_i U \ket{\psi_i} \bra{\psi_i} U^\dagger = U(\Sigma_i \rho_i\ket{\psi_i} \bra{\psi_i}) U^\dagger= \boxed{U\rho 
+            U^\dagger}  $$
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{itemize}
+                \item mixed state를 이루는 여러 pure state중에서 만약 그 system이 $\ket{\psi_i}$ 상태라면, measurement outcome이 $m$일 \alert{조건부} 확률은 다음과 같다.
+                $$p(m|i) = \braket{\psi_i | M_m^\dagger M_m | \psi_i} = \text{tr}[M_m^\dagger M_m \ket{\psi_i} \bra{\psi_i}]$$
+                \item 따라서 marginalization을 이용하면, outcome이 $m$일 확률은 다음과 같다.
+                \begin{align*} p(m) &= \sum_i p(m|i) \cdot  p_i\\ &=\sum_i\text{tr}[M_m^\dagger M_m \ket{\psi_i} \bra{\psi_i}] \cdot p_i \\ &= \boxed{\text{tr}[M_m^\dagger M_m \cdot  \rho]}\end{align*} 
+            \end{itemize}
+            $\Rightarrow$
+            \vspace{1.8cm}
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{itemize}
+                \item outcome이 $m$일 때, 계의 측정 전 상태가 mixed state를 이루는 state 중에서 $\ket{\psi_i}$였을 확률은 Bayes theorem에 의해 다음과 같다. 
+                $$p(i|m) = \frac{p(m|i) \cdot p_i}{p(m)} $$
+                \item 따라서 측정 후, 변화한 pure state들에 대한 density matrix는 다음과 같다. 
+                \begin{align*}
+                    % $$\frac{M_m\ket\psi}{ \sqrt{\braket{\psi | M_m^\dagger M_m | \psi}}} = .$$
+                    \rho' &=  \sum_i p(i|m) \ket{\psi_i'} \bra{\psi_i'} \\ &= \sum_i \frac{p(m|i) \cdot p_i}{p(m|i)} \left(\frac{M_m\ket{\psi_i}}{ \sqrt{p(m|i)}} \right) \left( \frac{M_m\ket{\psi_i}}{ \sqrt{p(m)}}\right)^\dagger
+                    \\ &= \sum_i \frac{p(m|i) \cdot p_i}{p(m)} \frac{M_m\ket{\psi_i} \bra{\psi_i} M_m^\dagger}{{p(m|i)}} 
+                    \\ &= \sum_i \frac{ p_i (M_m\ket{\psi_i} \bra{\psi_i} M_m^\dagger)}{\text{tr}[M_m^\dagger M_m \cdot  \rho]} 
+                    \\ &= \boxed{\frac{M_m\rho M_m^\dagger}{ {\text{tr}[M^\dagger_m M_m \cdot \rho] }}}
+                \end{align*}
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{block}{Postulate 3}
+                Quantum measurement is described by set of measurement operators $\{M_m\}$ where $\sum_m M_m^\dagger M_m = I$ (completeness relation). 
+                \\ The \textit{probability} of getting outcome $m$ is given by
+                $$p(m) = \text{tr}[M^\dagger_m M_m \cdot \rho] $$
+                and the \textit{post-measurement state} is given by
+                $$\frac{M_m\rho M_m^\dagger}{ {\text{tr}[M^\dagger_m M_m \cdot \rho] }}.$$
+            \end{block}
+            \begin{block}{Postulate 4}
+                The state space of a composite physical system is the tensor product of the state spaces of the component physical systems. The \textbf{joint density matrix} is $${\rho_1} \otimes {\rho_2} \otimes \cdots \otimes {\rho_n}.$$
+            \end{block}
+        \end{frame}
+
+        \begin{frame}{Property of density matrix}
+            \begin{theorem}[Unitary freedom in the ensemble for density matrices]
+                The sets $\ket{\tilde{\psi_i}}, \ket{\tilde{\varphi_j}}$ generate the \textbf{same} density matrix if and only if
+                $$\ket{\tilde{\psi_i}} = \sum_j u_{ij} \ket{\tilde{\varphi_j}}$$
+                where $u_{ij}$ is a unitary matrix of complex numbers, with indices $i$ and $j$, 
+            \end{theorem}
+            \checkmark \underline{meaning}:
+            \begin{itemize}
+                \item 다음과 같은 density matrix가 있을 때, 
+                $$\rho = \frac{3}{4} \ket 0 \bra 0 + \frac{1}{4} \ket 1 \bra 1$$
+                \item ensemble of pure states $\{\ket a, \ket b\}$로도 동일한 density matrix를 만들 수 있다.
+                $$ \rho = \frac{1}{2}\ket{a} \bra a + \frac{1}{2} \ket b \bra b $$
+                whrere
+                \begin{itemize}
+                    \item $\ket a = \sqrt{3/4} \ket 0 + \sqrt{1/4} \ket 1$
+                    \item $\ket b = \sqrt{3/4} \ket 0 + \sqrt{1/4} \ket 1$
+                \end{itemize}
+            \end{itemize}
         \end{frame}
 
         \begin{frame}{Reduced density matrix}
+            \begin{definition}[reduced density matrix]
+                Suppose, we have physical systems $A$ and $B$, whose state is described by a density operator $\rho^{AB}$. The reduced density operator for system $A$ is defined by 
+                $$\rho^A \triangleq \text{tr}_B[\rho^{AB}]$$
+            \end{definition}
+            \begin{itemize}
+                \item $\text{tr}_B$는 partial trace를 의미한다. 아랫첨자 system에 대해서만 trace를 계산한다.
+                \begin{align*}
+                    & \text{tr}_B\left(\left|a_1\right\rangle\left\langle a_2|\otimes| b_1\right\rangle \langle b_2 |\right) \\
+                    &= \left|a_1\right\rangle\left\langle a_2| \operatorname{tr}_B[| b_1\right\rangle \langle b_2 |] = \left|a_1\right\rangle \langle a_2|\braket{b_2|b_1}
+                \end{align*}
+                \item Example: Bell state에 대해 partial density operator $\rho^A$를 계산하라.
+                $$\ket{\psi^{AB}} = {\frac{1}{\sqrt 2}} \ket{00} + \frac{1}{\sqrt 2} \ket{11}$$
+                $\Rightarrow$
+                \vspace{2.5cm}
+            \end{itemize}
         \end{frame}
     \end{section}
 
     %#################################### 
     \begin{section}{Schmidt decomposition}
         \begin{frame}{Schmidt decomposition}
+            \begin{theorem}[Schmidt decomposition]
+                Suppose $\ket{\psi}$ is a pure state of a composite system, $AB$. Then there exist orthonormal states $\ket{i_A}$ for system $A$, and orthonormal states $\ket{i_B}$ of system $B$ such that 
+                $$\ket{\psi} = \sum_i \lambda_i \ket{i_A} \ket{i_B},$$
+                where $\lambda_i$ are non-negative real numbers satisfying $\sum_i \lambda_i^2 = 1$.
+            \end{theorem}
+            \begin{itemize}
+                \item Schmidt decomposition을 이용하면 reduced density matrix를 다르게 쓸 수 있다.($\ast$)
+                $$ \rho^A = \sum_i \lambda_i^2 \ket{i_A} \bra{i_A},\qquad \rho^B = \sum_i \lambda_i^2 \ket{i_B} \bra{i_B} $$
+                \vspace{-0.3cm}
+                \item 이를 이용하면 $\ket{\psi^{AB}}$가 product state인지, entangled state인지에 따라서 reduced density matrix가 mixed state인지 pure state인지를 결정할 수 있다.
+                \begin{itemize}
+                    \item If composite system is product state, then each component system is \alert{pure state}.
+                    \item If composite system is entangled state, then each component system is \alert{mixed state}.
+                \end{itemize}
+                \item Example:
+                \vspace{1.1cm}
+
+            \end{itemize}
         \end{frame}
 
         \begin{frame}{Purification}
+            \begin{theorem}[purification]
+                Suppose we are given a state $\rho^A$ of a quantum system $A$. It is possible to introduce another system, which we denote $R$, and define a pure state $|AR〉$ for the joint system $A \otimes R$ such that 
+                $$\rho^A = \text{tr}_R(|AR〉〈AR|).$$
+                That is, the pure state $|AR〉$ reduces to $\rho^A$ when we look at system $A$ alone
+            \end{theorem}
+            \checkmark \underline{meaning}: Mixed state $\rho^{A}$를 pure state인 $\ket{AR}$으로 나타내는 방법을 소개한다. 
+            \\
+            $\ast$ \underline{Proof}:
+            \begin{itemize}
+                \item Pure state $\ket{AR}$을 다음과 같이 정의하자.
+                $$ \ket{AR} = \sum_i \sqrt{p_i} \ket{i_A} \ket{i_R}$$
+                \item 이를 대입하여 전개한 결과가 $\rho^A$와 동일함을 보이면 된다.
+                $$  \text{tr}_R(|AR〉〈AR|) = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad $$
+                \vspace{2cm}
+            \end{itemize}
         \end{frame}
     \end{section}
 
