@@ -1,0 +1,373 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{2. Information Measure}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    %#################################### 
+    \begin{section}{Entropy}
+        \begin{frame}{Entropy}
+            \begin{block}{Represent INFORMATION}
+            
+            \end{block}
+            \begin{definition}[entropy on event]
+            \end{definition}
+        \end{frame}
+
+        \begin{frame}{Entropy}
+            \begin{definition}[entropy on random variable]
+            \end{definition}
+            By definition, entropy has following properties:
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Multivariable entropy}
+            \begin{definition}[joint entropy]
+            \end{definition}
+
+            \begin{definition}[conditional entropy on observable]
+            
+            \end{definition}
+        \end{frame}
+
+        \begin{frame}{Multivariable Entropy}
+            \begin{definition}[conditional entropy on r.v.]
+            \end{definition}
+            \checkmark \underline {meaning:} \\
+            $\ast$ \underline{Proof}:
+
+        \end{frame}
+
+        \begin{frame}{Examples}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Mutual Information}
+        % 패널 그림 하나 넣기
+        \begin{frame}{Mutual Information}
+
+            \begin{definition}[mutual information]
+                
+            \end{definition}
+            
+            By definition, mutual information has following properties:
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Conditional mutual information}
+            \begin{definition}[conditional mutual information]
+                
+            \end{definition}
+        \end{frame}
+        
+        \begin{frame}{Chain rule}
+            \begin{theorem}[chain rule]
+                
+            \end{theorem}
+            $\ast$ \underline{Proof}: 
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{KL-Divergence}
+        \begin{frame}{KL-Divergence}
+
+            \begin{definition}[KL-divergence]
+                
+            \end{definition}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{KL-Divergence}
+            By definition, KL-Divergence has following properties:
+            \begin{itemize}
+                \item 
+            \end{itemize}
+
+            $\ast$ \underline{Proof}:
+        
+        \end{frame}
+
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Remarks about Informations measures}
+        \begin{frame}{Useful facts for Information Measures}
+            \begin{theorem}
+                
+            \end{theorem}
+            
+            $\ast$ \underline{Proof}:
+        
+        \end{frame}
+
+        \begin{frame}{Useful facts for Information Measures}
+            \begin{theorem}
+                
+            \end{theorem}
+            
+            \begin{theorem}
+                
+            \end{theorem}
+            
+            $\ast$ \underline{Proof}:
+        
+        \end{frame}
+
+        \begin{frame}{Application of Information Measures}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+            
+            \begin{block}{Hypothesis testing}
+                
+            \end{block}
+        
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Convexity and Concavity of Information Measures}
+        \begin{frame}
+            \frametitle{Convexity and Concavity}
+        
+            \begin{definition}[convexity]
+                
+            \end{definition}
+            \begin{definition}[concavity]
+                
+            \end{definition}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Prerequisites: Log-sum inequality}
+            \begin{lemma}[log-sum inequality]
+                
+            \end{lemma}
+            
+            $\ast$ \underline{Proof}:
+        \end{frame}
+    
+        \begin{frame}
+            \frametitle{Convexity of KL-divergence}
+            \begin{theorem}
+                
+            \end{theorem}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+            \checkmark \underline{meaning}:
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Convexity of KL-divergence}
+            $\ast$ \underline{Proof}:
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Concavity of Entropy}
+            \begin{corollary}
+                
+            \end{corollary}
+            \checkmark \underline{meaning}:
+            \\ $\ast$ \underline{Proof}: 
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Concavity and Concavity of Mutual Information}
+            \begin{corollary}
+                
+            \end{corollary}
+            \checkmark \underline{meaning}:
+            \\ $\ast$ \underline{Proof}: 
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Concavity and Concavity of Mutual Information}
+            \begin{corollary}
+                
+            \end{corollary}
+            \checkmark \underline{meaning}:
+            \\ $\ast$ \underline{Proof}: 
+        \end{frame}
+
+    \end{section}
+
+    \begin{section}{Data Processing Inequality and Fano's Inequality}
+        \begin{frame}
+            %그림그려서 설명
+            \frametitle{Prerequisites: Markov chain}
+            \begin{definition}[Markov chain]
+            \end{definition}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Data Processing Inequality}
+            \begin{theorem}[data processing inequality]
+                
+            \end{theorem}
+            \checkmark \underline{meaning}:
+            \\ $\ast$ \underline{Proof}: 
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Data Processing Inequality}
+            \begin{corollary}[Data Processing Inequality on entropy]
+                
+            \end{corollary}
+            \begin{corollary}[Data Processing Inequality on KL-divergence]
+                
+            \end{corollary}
+        \end{frame}
+    
+        \begin{frame}
+            \frametitle{Fano's Inequality}
+            \textbf{System}: 
+            \begin{theorem}[Fano's inequality]
+                
+            \end{theorem}
+            \checkmark \underline{meaning}:
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Fano's Inequality}
+            $\ast$ \underline{Proof}: 
+        \end{frame}
+    \end{section}
+
+    \begin{frame}{Appendix}
+        \begin{block}{Notations}
+            \begin{itemize}
+                \item entropy of r.v. $X \sim P_X$: $H(X), H(P_X)$
+                \item conditional entropy of $Y$ conditioned on $X=x$: $H(Y|X=x) , H(P_{Y|X}(\cdot|x))$
+                \item conditional entropy of $Y$ conditioned on $X$: $H(Y|X) , H(P_{Y|X})$
+                \item mutual information of $X, Y$: $I(X;Y), I(P_X \cdot P_{Y|X}), I(P_X , P_{Y|X})$ \\
+                주로 $W= P_{Y|X}$로 두고 $I(P_X \cdot W)$와 같이 표기하여 사용한다.
+                \item KL divergence between two distribution $P$ and $Q$: $D(P||Q),  D(P_P||P_Q)$
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{References}
+        \begin{itemize}
+            \item T. M. Cover and J. A. Thomas. Elements of Information Theory, Wiley, 2nd ed., 2006.
+            \item Lecture notes for EE623: Information Theory (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+    \end{frame}
+
+\end{document}
