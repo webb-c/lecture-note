@@ -1,0 +1,195 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{2. Postulates on quantum computing}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+
+    %#################################### 
+    \begin{section}{Turing machine}
+        \begin{frame}{Definition of Turing machine}
+            \textbf{Components of a Turing machine}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Definition of Turing machine}
+            \textbf{Operation of a Turing Machine}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Universial Turing machine}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Church-Turing thesis}
+            \begin{definition}
+                A partial function $f: A^* \rightarrow A$ is computable if there exists a Turing machine $M$ such that $\delta_M = f$. In this case, we say that $f$ is computed by $M$.
+            \end{definition}
+            \begin{block}{Church-Turing thesis}
+                The class of functions computable by a Turing machine corresponds exactly to the class of functions which we would naturally regard as being computable by an algorithm.
+            \end{block}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+        
+        \begin{frame}{Halting problem}
+            \begin{alertblock}{Halting problem}
+                Dose turing machine $M$ halt for given input $x$?
+                \\ $\rightarrow$ \textit{We can't compute halting problem by any turing machine!}
+            \end{alertblock}
+            \vspace{0.2cm}
+            $\ast$ \underline{Proof}:
+            (귀류법) Halting 문제를 풀 수 있는 TM $\text{HALT}$가 존재한다고 가정하자.
+            \vspace{5cm}
+
+        \end{frame}
+
+    \end{section}
+
+
+    \begin{section}{Circuit model}
+        \begin{frame}{Definition of Circuit model}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Universiality of Circuit model}
+            \begin{theorem}
+                Circuit model can solve every type of boolean function.
+                $$f : \{0, 1\}^n \rightarrow \{0, 1\}^m$$
+            \end{theorem}
+        \end{frame}
+    \end{section}
+
+    \begin{section}{Two computation model}
+        \begin{frame}{Association between two computation models}
+            %! TODO
+            \begin{definition}[uniform circuit family]
+                
+            \end{definition}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+            \begin{alertblock}{Can circuit model solve halting problem?}
+                
+            \end{alertblock}
+        \end{frame}
+    \end{section}
+
+
+    %#################################### 
+    \begin{frame}{References}
+        
+        \begin{itemize}
+            \item M. A. Nielson and I. L. Chuang, Quantum Computation and Quantum Information
+            \item Lecture notes for QU511: Quantum Computing (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+    \end{frame}
+
+\end{document}
