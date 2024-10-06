@@ -298,32 +298,22 @@
             \vspace{2cm}
         \end{frame}
 
+        \begin{frame}{Chain rule}
+            \begin{theorem}[chain rule]
+                \vspace{-0.4cm}
+                %joint r.v.에 대한 설명 (그림추가)
+                \begin{align*} D(P_{X,Y}||Q_{X,Y}) = D(P_X||Q_X) + D(P_{Y|X} || Q_{Y|X})\end{align*}
+            \end{theorem}
+            \vspace{0.3cm}
+            $\ast$ \underline{Proof}: 
+            \\ $\Rightarrow$
+            \vspace{3cm}
+        \end{frame}
+
     \end{section}
 
     %#################################### 
     \begin{section}{Remarks about Informations measures}
-        \begin{frame}{Useful facts for Information Measures}
-            \begin{theorem}
-                $H(X) \le H(U)$, where $U$ is the uniform distribution over $\mathcal X$ (equality iff $U$ is uniformly distributed)
-            \end{theorem}
-            
-            $\ast$ \underline{Proof}:
-        
-        \end{frame}
-
-        \begin{frame}{Useful facts for Information Measures}
-            \begin{theorem}
-                $H(Y) \ge H(Y|X)$, with equality iff $X \bot Y$.
-            \end{theorem}
-            
-            \begin{theorem}
-                $I(X; Y) \ge 0$, with equality iff $X \bot Y$.
-            \end{theorem}
-            
-            $\ast$ \underline{Proof}:
-        
-        \end{frame}
-        
         \begin{frame}{Another definition of mutual information}
             KL-divergence를 사용하면 mutual information을 다른 관점으로 해석할 수 있다.
             \begin{definition}[mutual informtion]
@@ -334,6 +324,38 @@
             
             $\ast$ \underline{Proof}: 첫 번째 정의와 두 번째 정의가 동일함을 보이자.
             \\ $\Rightarrow$
+            \vspace{3cm}
+        
+        \end{frame}
+        
+        \begin{frame}{Useful facts for Information Measures}
+            \begin{alertblock}{Fact}
+                Here are some easy facts:
+                \begin{align*} 
+                    H(P_X) &= H(P_U) - D(P_X || P_U) \quad (\ast) \\
+                    I(P_X \cdot W) &= D(P_{XY} || (P_X \cdot P_Y))
+                \end{align*}
+            \end{alertblock}
+
+            $\ast$ \underline{Proof}:
+            \\$\Rightarrow$ $D(P_X || P_U)$를 전개하자.
+            \vspace{3.5cm}
+        \end{frame}
+
+        \begin{frame}{Useful facts for Information Measures}
+            \begin{corollary}
+                $H(X) \le H(U)$, where $U$ is the uniform distribution over $\mathcal X$ (equality iff $U$ is uniformly distributed)
+            \end{corollary}
+
+            \begin{corollary}[onditioning reduces entropy]
+                $H(Y) \ge H(Y|X)$, with equality iff $X \bot Y$.
+            \end{corollary}
+            
+            \begin{corollary}
+                $I(X; Y) \ge 0$, with equality iff $X \bot Y$.
+            \end{corollary}
+            
+            $\ast$ \underline{Proof}: By the facts, we can easily prove that
             \vspace{3cm}
         
         \end{frame}
@@ -364,66 +386,111 @@
             \frametitle{Convexity and Concavity}
         
             \begin{definition}[convexity]
-                
+                A function $f(x)$ is said to be \textbf{convex} over an interval $(a, b)$ if for every $x_1, x_2 \in (a,b)$ and $0 \le \theta \le 1$,
+                $$f((1-\theta) x_1 + \theta x_2) \le (1-\theta)  f(x_1) + \theta f(x_2)$$
+                A function $f$ is said to be \textbf{strictly convex} if equality holds only if $\theta = 0$ or $\theta = 1$.
             \end{definition}
+
             \begin{definition}[concavity]
-                
+                A function $f(x)$ is said to be \textbf{concave} over an interval $(a, b)$ if for every $x_1, x_2 \in (a,b)$ and $0 \le \theta \le 1$,
+                $$f((1-\theta) x_1 + \theta x_2) \ge (1-\theta)  f(x_1) + \theta f(x_2)$$
+                A function $f$ is said to be \textbf{strictly convex} if equality holds only if $\theta = 0$ or $\theta = 1$.
+
             \end{definition}
             \begin{itemize}
-                \item 
+                \item A function $f$ is concave if $-f$ is convex.
+                \item convex, concave는 함수가 function value의 linear combination과 비교하여 어떻게 동작하는지를 판단한다.
+                \item 어떤 함수가 convex라면, local minimum이 global minimum과 동일하기 때문에 최적화를 쉽게 할 수 있다. 
             \end{itemize}
         \end{frame}
 
         \begin{frame}{Prerequisites: Log-sum inequality}
             \begin{lemma}[log-sum inequality]
-                
+                Given $a_i, b_i \ge 0, i=1,2, \cdots,n,$ let $a=\sum^n_{i=1} a_i$ and $b=\sum^n_{i=1}b_i$. Then we have
+                $$ \sum_i a_i \log \frac{a_i}{b_i} \geq a \log \frac{a}{b} , $$
+                with equality iff $\dfrac{a_i}{a} = \dfrac{b_i}{b},\ \forall i.$
             \end{lemma}
             
             $\ast$ \underline{Proof}:
+            Consider $k_a, k_b > 0$, s.t. $k_a \cdot a = 1,\ k_b \cdot b = 1$ \\ 
+            $\Rightarrow$ 
+            \vspace{3cm}
         \end{frame}
     
         \begin{frame}
             \frametitle{Convexity of KL-divergence}
+            % P_1 P_2가 같은 분포라는 의미는 아님. convexity 따질 떄 f에 들어가는 모든 x에 대해 convex임을 보이기 위해 특별한 임의의 두 점 x_1, x_2를 썼던것처럼 여기서도 모든 PMF PAIR에 대해 convex임을 보여주려고 하는것. 그냥 아랫첨자일뿐 헷갈리지 말자.
             \begin{theorem}
-                
+                $D(P||Q)$ is \textbf{convex} in the pair $(P, Q)$;
+                That is if $(P_1, Q_1)$ and $(P_2, Q_2)$ are any \alert{two pairs of PMF}, for all $0 \le \theta \le 1$ then 
+                $$ D(P_\theta||Q_\theta) \le (1-\theta) D(P_1 || Q_1) + \theta D(P_2 || Q_2)$$
+                where $P_\theta = (1-\theta) P_1 + \theta P_2$ and $Q_\theta = (1-\theta) Q_1 + \theta Q_2$.
             \end{theorem}
-            \begin{itemize}
-                \item 
-            \end{itemize}
-            \checkmark \underline{meaning}:
-        \end{frame}
-
-        \begin{frame}
-            \frametitle{Convexity of KL-divergence}
-            $\ast$ \underline{Proof}:
-            
+            \checkmark \underline{meaning}:기존의 PMF를 $\theta$라는 동일한 파라미터에 의해 mixing된 PMF는 각 PMF $P, Q$가 가지고 있던 특징이 줄어들어서 두 분포가 유사하게 변화한다. ($D \Downarrow$)
+            \vspace{0.2cm}
+            \\$\ast$ \underline{Proof}: By log-sum inequality,
+            \\$\Rightarrow$
+            \vspace{3cm}
         \end{frame}
 
         \begin{frame}
             \frametitle{Concavity of Entropy}
             \begin{corollary}
-                
+                $H(P)$ is a concave function of $P$
+                $$H(P_{\theta}) \ge (1-\theta)  H(P_1) + \theta H(P_2)$$
             \end{corollary}
-            \checkmark \underline{meaning}:
+            \checkmark \underline{meaning}: PMF를 mixing 할수록 점점 uniform distribution에 가깝게 변한다. ($H \Uparrow$)
+            \vspace{0.2cm}
             \\ $\ast$ \underline{Proof}: 
+            \begin{itemize}
+                %다음 함술들은 $P$에 의해서만 결정되는 값들임. (P가 정의역)
+                \item (pf.1) $D$가 convex이므로 다음의 관계를 이용하여 쉽게 증명할 수 있다.
+                $$H(P) = H(U) - D(P||U)$$
+                \item (pf.2) 또는 transmission system에서 source data $X$의 distribution $P_1, P_2$을 결정하는 랜덤 스위치 $Z \sim B(\theta)$를 생각해볼 수 있다.
+                \item 따라서 source $X$는 $B(p)$에 따라 mixed distribution $P_\theta$을 따른다.
+                \item 이때, $X$의 entropy $H(P_\theta)$는 랜덤 스위치 $Z$의 값을 관측했을 때의 entropy $H(P_\theta|Z)$보다 당연히 크다는 것을 직관적으로 이해할 수 있다.
+                \\$\Rightarrow$
+                \vspace{1.3cm}
+            \end{itemize}
         \end{frame}
 
         \begin{frame}
             \frametitle{Concavity and Concavity of Mutual Information}
             \begin{corollary}
-                
+                The mutual information $I(P_X \cdot W)$ is a \textbf{concave} function of $P_X(x)$ for fixed $W$
+                $$ I(P_\theta \cdot W) \ge (1-\theta) I (P_1 \cdot W) + \theta I(P_2 \cdot W)$$
             \end{corollary}
-            \checkmark \underline{meaning}:
-            \\ $\ast$ \underline{Proof}: 
+            \checkmark \underline{meaning}: Source data의 distribution을 mixing 할 수록 channel을 통과한 뒤 얻을 수 있는 정보의 양이 더 많아진다.
+            \vspace{0.2cm}
+            \\ $\ast$ \underline{Proof}: 다음의 system을 가정하자.
+            \begin{itemize}
+                \item one channel $W$, two source distribution $P_1, P_2$ depended on $Z \sim B(\theta)$.
+                $$ X \sim P_{\theta} = (1-\theta)P_1 + \theta P_2$$
+                \item (hint: chain rule)
+                \\ $\Rightarrow$
+            \end{itemize}
+            \vspace{4cm}
         \end{frame}
 
         \begin{frame}
             \frametitle{Concavity and Concavity of Mutual Information}
             \begin{corollary}
-                
+                The mutual information $I(P_X \cdot W)$ is a \textbf{convex} function of $W$ for fixed $P_X(x)$
+                $$ I(P_X \cdot W_\theta) \le (1-\theta) I (P_X \cdot W_1) + \theta I(P_X\cdot W_2)$$
             \end{corollary}
-            \checkmark \underline{meaning}:
-            \\ $\ast$ \underline{Proof}: 
+            \checkmark \underline{meaning}: Channal의 distribution을 mixing 할 수록 channel을 통과한 뒤 얻을 수 있는 정보의 양이 더 줄어든다.
+            \vspace{0.2cm}
+            \\ $\ast$ \underline{Proof}: 다음의 system을 가정하자.
+            \begin{itemize}
+                \item one source distribution $P_X$, two channel  $W_1, W_2$ depended on $Z \sim B(\theta)$.
+                $$ W_{\theta} = (1-\theta)W_1 + \theta W_2 $$
+                \item (hint: chain rule)
+                \\ $\Rightarrow$
+            \end{itemize}
+            \vspace{1.2cm}
+            \begin{alertblock}{Conditioning effect on $I$}
+                Entropy는 conditioning을 취하면 항상 그 값이 작아지지만 mutual information은 여기서 보인 것처럼 $Z$를 어떻게 설정하는지에 따라 더 커질수도 있고 더 작아질수도 있다.
+            \end{alertblock}
         \end{frame}
 
     \end{section}
@@ -433,9 +500,17 @@
             %그림그려서 설명
             \frametitle{Prerequisites: Markov chain}
             \begin{definition}[Markov chain]
+                Random variables$ X, Y, Z$ are said to form a \textbf{Markov chain} in that order (denoted by $X \rightarrow Y \rightarrow Z$) if the conditional distribution of $Z$ depends \textit{only} on $Y$ and is conditionally independent of $X$. ($\ast$)
+                $$P_{XYZ}(x, y, z) = P_X(x) P_{Y|X}(y|x) P_{Z|Y}(z|y)$$
+                %P_X(x) P_{Y|X}(y|x) P_{Z|YX}(z|yx) = 
             \end{definition}
             \begin{itemize}
-                \item 
+                \item Markov chain은 서로 직접적으로 영향받는 변수가 정해져있기 때문에, 아무런 영향을 주지 않는 r.v.에 대한 conditioning은 무시할 수 있다.
+                $$P_{Z|YX} = P_{Z|Y}$$
+                \item $X \rightarrow Y \rightarrow$ is equivalent to $X \rightarrow Y \rightarrow X$
+                \vspace{0.2cm}
+                \\ $\ast$ \underline{Proof}: 
+                \vspace{1.5cm}
             \end{itemize}
         
         \end{frame}
@@ -443,34 +518,68 @@
         \begin{frame}
             \frametitle{Data Processing Inequality}
             \begin{theorem}[data processing inequality]
-                
+                If $X \rightarrow Y \rightarrow Z$, then 
+                $$ I(X;Y) \ge I(X;Z)$$
+                with equality iff $I(X;Y|Z) = 0$, or equivalently 
+                \begin{itemize}
+                    \item $X \rightarrow Z \rightarrow Y$.
+                    \item given $z$, $X \perp Y$
+                    \item $I(X;Y) = I(X;Z)$
+                \end{itemize}
             \end{theorem}
-            \checkmark \underline{meaning}:
+            \checkmark \underline{meaning}: (data processing) 원본 데이터 $X$에 대해 processing을 수행하면 할 수록 점차 원본과의 관계; mutual information은 줄어든다. ($\leftrightarrow$ 증가할 수 없다.)
+            \vspace{0.2cm}
             \\ $\ast$ \underline{Proof}: 
+            (By chain rule,)
+            \\$\Rightarrow$
+            \vspace{2.5cm}
         \end{frame}
 
         \begin{frame}
             \frametitle{Data Processing Inequality}
             \begin{corollary}[Data Processing Inequality on entropy]
-                
+                If $X \rightarrow Y \rightarrow Z$, then 
+                $$ H(X|Y) \le H(X|Z)$$
+                with equality iff $I(X;Y|Z) = 0$
             \end{corollary}
             \begin{corollary}[Data Processing Inequality on KL-divergence]
-                
+                $P_X$ and $Q_X$ is two input distributions and $P_Y$ and $Q_Y$ is two corresponding output distributions, then
+                $$D(P_Y || Q_Y) \le D(P_X || Q_X)$$
+                where 
+                $P_Y(y) = \sum_x P_X(x) W(y|x)$, $Q_Y(y) = \sum_x Q_X(x) W(y|x)$
             \end{corollary}
+            \checkmark \underline{meaning}: 서로 다른 분포를 따르는 source였어도, 동일한 channel을 통과하면 data간의 차이가 줄어든다.
+            \vspace{0.2cm}
+            \\ $\ast$ \underline{Proof}: 
+            \vspace{3cm}
         \end{frame}
     
         \begin{frame}
             \frametitle{Fano's Inequality}
-            \textbf{System}: 
+            \textbf{System}: 우리가 구하고 싶은 원본 데이터 $X$ 대신, 실제로 관측가능한 데이터 $Y$를 이용하여 $X$의 값을 추정하는 상황을 가정해보자. ($X \rightarrow Y \rightarrow \hat X(Y)$)
+            \begin{itemize}
+                \item $X$: (hide) data, $Y$: observable data
+                \item $\hat X(Y)$: estimate function 
+                \item indicator:
+                $$\mathbf 1_E := \begin{cases} 0, & \hat X(Y) \ne X \\ 1, & \hat X(Y) = X\end{cases}$$
+                \item error probabilistic:
+                $$P_e := P( \mathbf{1}_E =0)$$
+
+            \end{itemize}
             \begin{theorem}[Fano's inequality]
-                
+                For any estimator $\hat X$, we have error probabilistic's lower bound
+                $$H(X|Y) \le \log 2 + P_e \cdot \log(|\mathcal X| - 1)  \ \Leftrightarrow \  \frac{H(X|Y)-\log 2}{\log (|\mathcal X| - 1)} \le P_e$$
             \end{theorem}
-            \checkmark \underline{meaning}:
+            \checkmark \underline{meaning}: $H(X|Y)$의 값이 충분히 작아져야 error probabilistic도 작아질 수 있다. 따라서 $H(X|Y)$의 값을 측정하여 원하는 error rate를 얻기 위해서 얼마나 많은 양의 sample data $Y^n$가 필요할 지 유추할 수 있다.
         \end{frame}
 
         \begin{frame}
             \frametitle{Fano's Inequality}
-            $\ast$ \underline{Proof}: 
+            $\ast$ \underline{Proof}: (using chain rule, uniform bound and \textit{data processing inequality})
+            $$H(X, \textbf{1}_E|\hat X(Y)) = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad$$
+            \vspace{1cm}
+            $$H(X, | \hat X(Y)) = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad$$
+            \vspace{3cm}
         \end{frame}
     \end{section}
 
