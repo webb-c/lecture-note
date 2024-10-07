@@ -1,0 +1,413 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+\setbeamercolor{enumerate item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{4. Basics of Quantum Computer}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+
+    %#################################### 
+    \begin{section}{Quantum Circuit model}
+        \begin{frame}
+            \frametitle{Component of quantum circuit model}
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Qubit}
+        
+        \end{frame}
+        
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Quantum Gates}
+        \begin{frame}
+            \frametitle{Single-qubit gate}
+        
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Single-qubit gate decomposition}
+                \begin{theorem}[ZY decomposition]\label{thr:ZY-de}
+                    Suppose $U$ is a unitary operation on a single qubit. Then there exist real numbers $\alpha, \beta, \gamma$ and $\delta$ such that,
+                    $$U=e^{i \alpha} R_z(\beta) R_y(\gamma) R_z(\delta)$$
+                \end{theorem}
+                
+                \begin{theorem}\label{thr:Pauli-de}
+                    Suppose $U$ is a unitary gate on a single qubit. Then there exist unitary operators $A, B, C$ on a single qubit such that $ABC = I$ and
+                    $$ U = e^{i\alpha} AXBXC $$
+                    where $\alpha$ is some overall phase factor and $X$ is a Pauli-X operator.
+                \end{theorem}
+
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Single-qubit gate decomposition}
+                $\ast$ \underline{Proof}:
+                
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Controlled gate}
+        
+            
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Controlled gate decomposition}
+        
+            
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Controlled gate on multiple-qubit}
+        
+            
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Controlled gate on multiple-qubit decomposition}
+        
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Summary}
+            \begin{block}{Summary}
+                
+            \end{block}
+            \vspace{0.2cm}
+            \textit{Some remarks}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+            
+        
+        \end{frame}
+
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Universial Quantum gate set: \{CNOT, single qubit gates\}}
+        \begin{frame}
+            \frametitle{Decomposition from n-qubit unitary gate to two-level unitary gates}
+        
+            
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Two-level unitary gate is controlled-U gate}
+                \begin{theorem}\label{thr:two-level de}
+                    Unitary operator $U$ which acts on a $d$-dimensional Hilbert space may be decomposed into a product of two-level unitary matrices;
+                \end{theorem}
+                \vspace{0.2cm}
+                $\ast$ \underline{Proof}: from $3\times 3$ example,
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Two-level unitary gate is controlled-U gate}
+                $\ast$ \underline{Proof}: (contd.)
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Decomposition from n-qubit controlled-U gate to \{CNOT gates, single-qubit\}}
+            \framesubtitle{$\Rightarrow$ Single qubit and CNOT gates are universal!}
+            \begin{theorem}\label{thr:CNOT-single de}
+                $n$-qubit controlled-$U$ gate can be decomposed into a single qubit gate and CNOT gates;
+            \end{theorem}
+            \vspace{0.2cm}
+            $\ast$ \underline{Proof}:
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Decomposition from n-qubit controlled-U gate to \{CNOT gates, single-qubit\}}
+            \framesubtitle{$\Rightarrow$ Single qubit and CNOT gates are universal!}
+                $\ast$ \underline{Proof}: (contd.)
+        
+        \end{frame}
+
+
+        \begin{frame}
+            \frametitle{Decomposition from n-qubit controlled-U gate to \{CNOT gates, single-qubit\}}
+            \framesubtitle{$\Rightarrow$ Single qubit and CNOT gates are universal!}
+            \begin{corollary}\label{col:universial-ver1}
+                single qubit and CNOT gates together can be used to implement an \alert{arbitrary $n$-qubit unitary operation}.
+            \end{corollary}
+            $\ast$ \underline{Proof}: Combine theorem \ref{thr:two-level de} and \ref{thr:CNOT-single de}, we can easily proof this corollary.$\Box$
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Circuit complexity}
+        
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Summary}
+            \begin{block}{Summary}
+                
+            \end{block}
+            \vspace{0.2cm}
+            \textit{Some remarks}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        
+        \end{frame}
+    \end{section}
+    
+    %#################################### 
+    % rotation이랑 다르게 discrete gate들임
+    \begin{section}{Universial Quantum Discrete gate set: \{CNOT, H, S, T\}}
+
+        \begin{frame}
+            \frametitle{Approximating quantum circuits via discrete gate set}
+                \begin{definition}[approximation error]\label{def:error}
+                    We define the \textbf{error} when $V$ is implemented instead of $U$ by
+                    $$E(U,V) \triangleq \max_{\ket{\psi}} \|(U-V) \ket{\psi}\|$$
+                    where the maximum is over all normalized quantum states $\ket{\psi}$ in the state space.
+                \end{definition}
+                \vspace{0.2cm}
+                \checkmark \underline{meaning}:
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Approximating quantum circuits via discrete gate set}
+                \begin{definition}[variational distance]\label{def:vari-dist}
+                    variational distance as 
+                    $$VD(P_U(m), P_V(m)) = \frac{1}{2} |P_U(m) - P_V(m)|$$
+                    and total variational distance 
+                    $$TVD(P_U, P_V) = \frac{1}{2} \sum_m |P_U(m) - P_V(m) |$$
+                \end{definition}
+                \vspace{0.2cm}
+                \checkmark \underline{meaning}:
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Approximating quantum circuits via discrete gate set}
+                \begin{theorem}[quantum gate error bound]\label{thr:gate-error}
+                    $$ \left|P_U(m)-P_V(m)\right| \leq 2 E(U, V) $$
+                \end{theorem}
+                \vspace{0.2cm}
+                $\ast$ \underline{Proof}:
+
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Approximating quantum circuits via discrete gate set}
+                \begin{theorem}[quantum circuit error bound]\label{thr:circuit-error}
+                    $$ E\left(U_m U_{m-1} \ldots U_1, V_m V_{m-1} \ldots V_1\right) \leq \sum_{j=1}^m E\left(U_j, V_j\right)$$
+                \end{theorem}
+                \vspace{0.2cm}
+                $\ast$ \underline{Proof}:
+
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Generate two type of rotational gate $R_{{\hat n}}(\hat \theta), R_{\hat m}(\hat \theta)$}
+        
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Approximation error in arbitrary rotation gate is bounded by $\epsilon$}
+            \begin{theorem}
+                We can implement $V$ via $\{H, T, S\}$ that satisfy following bound
+                $$ E(U, V) \leq \epsilon, $$
+                where $\epsilon$ is target error rate.
+                \vspace{0.2cm}
+                $\ast$ \underline{Proof}: (hint) using kronecker theorem
+            \end{theorem}
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Approximating n-qubit unitary gate via ${R_{\hat n}}(\hat \theta), R_{\hat m}(\hat \theta)$}
+            \framesubtitle{$\Rightarrow$ H, S, T and CNOT gates are universal!}
+            
+        
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Circuit complexity: for \# of single qubit gates}
+            \begin{theorem}[Solovay Kitaev theorem]
+                $$n_1 = O\left(\log^c \left( \frac{1}{\epsilon_1} \right)\right) = O\left(\log^c \left( \frac{m}{\epsilon} \right)\right) $$
+                전체에 대해서는 
+                $$ m \times O\left(\log^c \left( \frac{m}{\epsilon} \right)\right) = O(m \log^c m)$$
+            \end{theorem}
+        \end{frame}
+
+
+        \begin{frame}
+            \frametitle{Circuit complexity: for \# of qubits}
+            \begin{theorem}
+                For implement arbitrary $n$-qubit unitary gate $U$ needs $\Omega(2^n)$ number of gates.
+            \end{theorem}
+            \vspace{0.2cm}
+            $\ast$ \underline{Proof}: $U$가 만들어낼 수 있는 $\ket \psi$의 경우의 수를 이용한다.
+            \\ \textbf{method 1}
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Circuit complexity: for \# of qubits}
+            \textbf{method 2}
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Summary}
+            \begin{block}{Summary}
+                
+            \end{block}
+            \vspace{0.2cm}
+            \textit{Some remarks}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        
+        \end{frame}
+    \end{section}
+    
+    %#################################### 
+    \begin{section}{Measurement}
+        \begin{frame}
+            \frametitle{Principle of deferred measurement}
+            Computational basis: $\{\ket 0 \bra 0 , \ket 1 \bra 1\}$
+            \begin{block}{Principle of deferred measurement}
+                Measurements can always be moved from an intermediate stage of a quantum circuit to the end of the circuit; if the measurement results are used at any stage of the circuit then the classically controlled operations can be replaced by conditional quantum operations.
+            \end{block}
+            \vspace{0.2cm}
+            \checkmark \underline{meaning}:
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Principle of implicit measurement}
+            \begin{block}{Principle of implicit measurement}
+                Without loss of generality, any  unterminated quantum wires (qubits which are not measured) at the end of a quantum circuit may be assumed to be measured.
+            \end{block}
+            \vspace{0.2cm}
+            \checkmark \underline{meaning}:
+        
+        \end{frame}
+    \end{section}
+    
+
+    
+    \begin{frame}{References}
+        
+        \begin{itemize}
+            \item M. A. Nielson and I. L. Chuang, Quantum Computation and Quantum Information
+            \item Lecture notes for QU511: Quantum Computing (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+    \end{frame}
+
+\end{document}
