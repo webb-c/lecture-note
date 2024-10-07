@@ -5,6 +5,8 @@
 \usepackage{xcolor}
 \usepackage{etoolbox}
 \usepackage{braket}
+\usepackage{qcircuit}
+
 %## color
 \definecolor{customBlack}{HTML}{3B4252}
 \definecolor{customBlackGrey}{HTML}{434C5e}
@@ -147,10 +149,22 @@
 
         \begin{frame}
             \frametitle{Controlled gate}
-        
-            
-        
+
+            \begin{table}[h]
+            \[
+            \begin{array}{c}
+            \Qcircuit @C=1.5em @R=.8em {
+                & \ctrl{2} & \targ & \gate{U} & \qw \\
+                & \qw & \ctrl{-1} & \qw & \qw \\
+                & \targ & \ctrl{-1} & \ctrl{-2} & \qw \\
+                & \qw & \ctrl{-1} & \qw & \qw
+            }
+            \end{array}
+            \]
+            \caption{Quantum Circuit} \label{fig:my_label} 
+            \end{table}
         \end{frame}
+
         \begin{frame}
             \frametitle{Controlled gate decomposition}
         
