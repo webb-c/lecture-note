@@ -191,6 +191,167 @@
         \end{frame}
     \end{section}
 
+
+    %!TEMP
+    \begin{frame}{Circuits}
+        %? Deutsh
+        \begin{table}[h]
+            \[
+            \begin{array}{c}
+            \Qcircuit @C=1.1em @R=.8em {
+                \lstick{\ket{0}} & \qw    \barrier[-1.3em]{1}   &   \gate{H}   \barrier[-1.6em]{1}   & \multigate{1}{U_f}   \barrier[-1.3em]{1}   &  \gate{H}   \barrier[-1.4em]{1}   & \meter\\
+                \lstick{\ket{0}} & \gate{X} &   \gate{H} & \ghost{U_f}          & \qw       & \meter
+            }
+            \end{array}
+            \]
+        \end{table}
+
+        %? State discriminate
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.8em {
+                        \lstick{\underbrace{\ket \psi}_{\{\ket 0, \ket 1\}}} & \qw   & \meter\\
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.8em {
+                        \lstick{\underbrace{\ket \psi}_{\{\ket +, \ket -\}}} & \qw   & \meter\\
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+        \end{columns}
+
+        %? Unitary discriminate
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.8em {
+                        \lstick{{\ket \psi}} &   \gate{\underbrace{U}_{\{I, X\}}} & \meter\\
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.8em {
+                        \lstick{{\ket \psi}} &   \gate{\underbrace{U}_{\{I, Z\}}}  & \meter\\
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}{Circuits}
+        
+        %? Symbols
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.8em {
+                        & \ctrl{1}  &\qw \\
+                        & \targ     &\qw
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+
+            \begin{column}{0.5\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.8em {
+                        & \ctrlo{1}  &\qw \\
+                        & \targ     &\qw
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+        \end{columns}
+        
+        %? General Deutsh (first step)
+        \begin{figure}
+            \centering
+            \Qcircuit @C=1.2em @R=1.1em {
+                & &\lstick{\ket 0} &\gate{H} &\qw \barrier[-1.8em]{7}&\qw                      &\qw                    &\qw & \dots &       &\ctrl{7}                   &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i \varphi 2^{t-1}}\ket 1)}\qw\\
+                & &                &\vdots   &                       &                       &                       &    & \dots &       &                           &           \\
+                & &\lstick{\ket 0} &\gate{H} &\qw                    &\qw                    &\ctrl{5}               &\qw & \dots &       &\qw                        &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i \varphi 2^{3}}\ket 1)}\qw        \\
+                & &\lstick{\ket 0} &\gate{H} &\qw                    &\ctrl{4}               &\qw                    &\qw & \dots &       &\qw                        &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i \varphi 2^{2}}\ket 1)}\qw        \\
+                & &\lstick{\ket 0} &\gate{H} &\ctrl{3}               &\qw                    &\qw                    &\qw & \dots &       &\qw                        &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i \varphi 2^{0}}\ket 1)}\qw        \\
+                & &                &         &                       &                       &                       &    &       &       &                           &                                                                              \\
+                & &                &         &                       &                       &                       &    &       &       &                           &                                                                              \\
+                & &\lstick{\ket u} &{/}\qw   &\gate{U^{2^0}}         &\gate{U^{2^1}}         &\gate{U^{2^2}}         &\qw & \dots &       &\gate{U^{2^{t-1}}}         &\rstick{\ket u}\qw
+            }
+        \end{figure}
+
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Circuits}
+        %? General Deutsh 
+        \begin{table}[h]
+            \[
+            \begin{array}{c}
+            \Qcircuit @C=1.3em @R=.8em {
+                \lstick{\ket {0^{\otimes t}}}  &{/}\qw &\gate{H^{\otimes t}}&\ctrl{1}   &\gate{QFT^\dagger} &\meter & \varphi\\
+                \lstick{\ket u}                &{/}\qw &\qw                 &\gate{U^j} &\qw                &\rstick{\ket u}\qw
+            }
+            \end{array}
+            \]
+        \end{table}
+
+        %?universial
+        \begin{columns}
+            \begin{column}{0.35\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.9em {
+                        & \ctrl{1} &\qw \\
+                        & \gate{R_y(\theta)} &\qw
+                    }
+                    \end{array}
+                    \]
+                \end{table}
+            \end{column}
+            $=$
+            \begin{column}{0.65\textwidth}
+                \begin{table}[h]
+                    \[
+                    \begin{array}{c}
+                    \Qcircuit @C=1.3em @R=.9em {
+                        & \qw                  &\ctrl{1}   &\qw                     &\ctrl{1} &\qw\\
+                        & \gate{R_y(\theta/2)} &\targ      &\gate{R_y(-\theta/2)}   &\targ    &\qw
+                    }
+                    \end{array}
+                    \]
+                \end{table}                
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+
     %#################################### 
     \begin{frame}{References}
         
