@@ -1,0 +1,186 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+\usepackage{qcircuit}
+
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+\setbeamercolor{enumerate item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{Complex number}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    \begin{section}{Euler's equation}
+        \begin{frame}
+            \frametitle{Euler's equation}
+            \textit{Complex number:}
+            $$ z = x + iy = re^{i \theta}$$
+            where $x = r\cos \theta, y= r\sin \theta$ and $r = \sqrt{x^2 + y^2}, \theta = \tan^{-1}(y/x)$
+            \vspace{0.2cm}
+            \begin{theorem}[Euler's formular]
+                $$
+                \begin{aligned}
+                r e^{i \theta} & =r \cos \theta+i r \sin \theta \\
+                e^{i \theta} & =\cos \theta+i \sin \theta \quad(\text { if } \mathrm{r}=1)
+                \end{aligned}
+                $$
+            \end{theorem}
+            \begin{theorem}[Inverse Euler's formular]
+                $$
+                \begin{aligned}
+                & \cos \theta =\frac{1}{2}\left(e^{i \theta }+e^{-i \theta }\right) \\
+                & \sin \theta =\frac{1}{2 i}\left(e^{i \theta }-e^{-i \theta }\right)
+                \end{aligned}
+                $$
+            \end{theorem}
+        \end{frame}
+
+    \end{section}
+
+    \begin{section}{Some special value}
+        \begin{frame}
+            \frametitle{Some Special value}
+            \begin{itemize}
+                \item $e^{i0} = e^{i2\pi} = 1$
+                \item $e^{i\pi/2} = e^{-i 3\pi/2} = i$
+                \item $e^{i \pi} = e^{i -\pi} = -1$
+                \item $e^{i 3\pi/2} = e^{i -\pi/2} = -i$
+            \end{itemize}
+            
+        \end{frame}
+
+    \end{section}
+
+
+    \begin{section}{Trigonometric function}
+        \begin{frame}
+            \frametitle{Basic property}
+            $$ \sin^2 \theta + \cos ^2  \theta= 1$$
+            $$\tan \theta = \frac{\sin \theta}{ \cos \theta}$$
+            $$ \sin (-\theta) = - \sin (\theta)$$
+            $$ \cos (-\theta) =  \cos (\theta)$$
+            $$ \sin \theta = \cos (\theta - \pi/2)$$
+            $$ \cos \theta = \sin (\theta + \pi/2)$$
+        
+            
+        
+        \end{frame}
+        \begin{frame}
+            \frametitle{Trigonometric function property}
+            \small
+            \begin{align*}  \sin 2\alpha &= 2\sin\alpha\cos \alpha \\ \cos 2\alpha &= 2 \cos^2 \alpha -1 \\ &= 1-2\sin^2 \alpha  \\ \tan 2\alpha &= \frac{2\tan \alpha}{1- \tan^2 \alpha} \end{align*}
+            
+            \begin{align*}  \sin 3\alpha &= 3\sin\alpha - 4\sin^3 \alpha \\ \cos 3\alpha &=  4\cos^3 \alpha -3\cos \alpha  \\ \tan3 \alpha &= \frac{3\tan \alpha - \tan^3 \alpha}{1- 3\tan^2 \alpha} \end{align*}
+            
+            \begin{align*}  \sin^2 \frac{\alpha}{2} &= \frac{1-\cos \alpha}{2} \\ \cos^2 \frac{\alpha}{2} &= \frac{1+\cos \alpha}{2} \\ \tan^2 \frac{\alpha}{2} &= \frac{1-\cos \alpha}{1+ \cos \alpha} \end{align*}
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Trigonometric function property}
+            \small
+            \begin{align*} \sin(\alpha \pm \beta) &= \sin \alpha \cos \beta \pm  \cos \alpha \sin \beta\\\cos(\alpha \pm \beta) &= \cos \alpha \cos \beta \mp \sin \alpha \sin \beta \\ \tan(\alpha \pm \beta) &= \frac{\tan\alpha \pm \tan \beta}{1 \mp \tan \alpha \tan \beta}\end{align*}
+                
+            \begin{align*}  \sin \alpha \cos \beta &= \frac{1}{2} \{ \sin(\alpha + \beta) + \sin(\alpha - \beta)\} \\ \cos \alpha \sin \beta &= \frac{1}{2} \{ \sin(\alpha + \beta) - \sin(\alpha - \beta)\}\\ \cos \alpha \cos \beta &= \frac{1}{2} \{ \cos(\alpha + \beta) + \cos(\alpha - \beta)\}\\ \sin \alpha \sin \beta &= \frac{1}{2} \{ \cos(\alpha + \beta) - \cos(\alpha - \beta)\}\end{align*}
+
+            \begin{align*}  \sin A + \sin B &= 2\sin\frac{A+B}{2}  \cos \frac{A-B}{2}\\  \sin A - \sin B &= 2\cos\frac{A+B}{2}  \sin \frac{A-B}{2}\\  \cos A + \cos B &= 2\cos\frac{A+B}{2}  \cos \frac{A-B}{2}\\ \cos A - \cos B &= - 2\sin\frac{A+B}{2}  \sin \frac{A-B}{2}\end{align*}
+                
+            
+        
+        \end{frame}
+    \end{section}
+
+\end{document}
