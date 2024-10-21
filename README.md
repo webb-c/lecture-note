@@ -14,5 +14,5 @@
   - [L1. Review of Probability](https://github.com/webb-c/lecture-note/blob/main/03_INFO/L1_Review_of_probability.pdf)
   - [L2. Information Measure](https://github.com/webb-c/lecture-note/blob/main/03_INFO/L2_Information_Measure.pdf)
   - [L3. Data Compression, AEP and Lossless Source Coding](https://github.com/webb-c/lecture-note/blob/main/03_INFO/L3_Data_Compression_and_AEP_and_Lossless_Source_Coding.pdf)
-  - L4. Method of Types, Strong AEP and Universal Source Coding 
+  - [L4. Method of Types, Strong AEP and Universal Source Coding](https://github.com/webb-c/lecture-note/blob/main/03_INFO/L4_Method_of_Types_and_Strong_AEP_and_Universal_Source_Coding.pdf)
 - LA/   Friedberg, S.H. and Insel, A.J. and Spence, L.E., Linear Algebra
