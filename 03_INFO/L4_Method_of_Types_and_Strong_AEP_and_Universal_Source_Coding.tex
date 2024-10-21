@@ -1,0 +1,227 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+\usepackage{qcircuit}
+
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+\setbeamercolor{enumerate item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{4. Method of Types, Strong AEP and Universal Source Coding}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+    
+
+
+    %#################################### 
+    \begin{section}{Types}
+        \begin{frame}
+            \frametitle{Limitation of weak typical set}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Empirical discrete probability distribution}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Types}
+            
+        \end{frame}
+
+
+        \begin{frame}
+            \frametitle{Types : size}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Types : probability}
+            
+        \end{frame}
+
+
+        \begin{frame}
+            \frametitle{Summary}
+            
+        \end{frame}
+    \end{section}
+
+
+
+
+    %#################################### 
+    \begin{section}{Method of Types}
+        \begin{frame}
+            \frametitle{Method of types : size}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Method of types : probability}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Summary}
+            
+        \end{frame}
+    \end{section}
+
+
+
+
+    %#################################### 
+    \begin{section}{Strong Typicality}
+        \begin{frame}
+            \frametitle{Strong typical set}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Strong AEP}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Strong typical set size}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Comparison between weak typical set}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Summary}
+            
+        \end{frame}
+    \end{section}
+
+
+
+
+    %#################################### 
+    \begin{section}{Universal Source Coding}
+        \begin{frame}
+            \frametitle{Universal Source Coding system}
+            
+            \begin{block}{Idea of universal source coding}
+                
+            \end{block}
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Universal Source Coding theorem}
+            
+        \end{frame}
+
+
+    \end{section}
+
+    \begin{frame}{References}
+        \begin{itemize}
+            \item T. M. Cover and J. A. Thomas. Elements of Information Theory, Wiley, 2nd ed., 2006.
+            \item Gallager (2008), Principles of Digital Communication, Cambridge University Press.
+            \item Lecture notes for EE623: Information Theory (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+    \end{frame}
+
+
+\end{document}
