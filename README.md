@@ -6,7 +6,7 @@
   - [L3. Basics of Classical Computer](https://github.com/webb-c/lecture-note/blob/main/01_QC/L3_Basics_of_Classical_Computer.pdf)
   - [L4. Basics of Quantum Compter](https://github.com/webb-c/lecture-note/blob/main/01_QC/L4_Basics_of_Quantum_Computer.pdf)
   - L5. Quantum Algorithms 
-- QIP/  EE547: Quantum Information Theory (Fall 2024)
+- QIP/  EE547: Introduction to Quantum Information Processing (Fall 2024)
   - [L1. Quantum Theory](https://github.com/webb-c/lecture-note/blob/main/02_QIP/L1_Quantum_Theory.pdf)
   - [L2. Basic Quantum computing with Deutsh Algorithm](https://github.com/webb-c/lecture-note/blob/main/02_QIP/L2_Basic_Quantum_computing_with_Deutsh_Algorithm.pdf)
   - L3. General Quantum Dynamics for Error correction 
