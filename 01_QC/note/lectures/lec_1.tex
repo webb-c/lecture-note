@@ -416,7 +416,7 @@ Binary representation을 이용하면 QFT의 연산을 다음과 같이 분석�
   0 & e^{2 \pi i / 2^k}
   \end{array}\right)
 \end{equation*}
-Fig.~\ref{fig:QFT-circuit}의 circuit의 연산을 단계별로 따라가보자.
+Fig.~\ref{fig:QFT-circuit}의 연산을 단계별로 따라가보자.
 \begin{enumerate}
   \item input state : 다음과 같은 input state로 시작한다. 이는 computational basis state중 하나이다.
   \begin{equation*}
@@ -472,12 +472,186 @@ Fig.~\ref{fig:QFT-circuit}의 circuit의 연산을 단계별로 따라가보자.
 
 \section{Phase estimation}
 \subsection{Phase estimation}
-QFT를 활용하는 중요한 알고리즘 중 하나가 바로 \textit{Phase estimation}이다. 
+QFT를 활용하는 중요한 알고리즘 중 하나가 바로 \textit{phase estimation}이다. phase estimation이 해결하고자하는 문제에 대해서 먼저 소개한다.
+다음의 관계를 만족하는 unitary operator $U$에 대해, 우리가 알고 있는 것은 오직 eigenvector인 $\ket u$이고 eigenvalue는 알지 못한다고 하자.
+\begin{equation*}
+  U \ket u = e^{2\pi i \varphi} \ket u
+\end{equation*}
+Phase estimation의 목적은 eigenvalue에 대한 phase $\varphi \in [0, 1)$를 구하는 것이다.
+
+Eigenvector를 알고있을 때, eigenvalue를 구하는 문제에는 다양한 활용이 존재한다. 예를 들어, 주어진 Hamiltonian에 대해 ground state의 energy를 추정하는 상황을 가정하자. k-local Hamiltonian $\hat H$와 ground state $\ket{\psi_0}$에 대해 다음이 성립한다.
+\begin{equation*}
+  \hat H \ket{\psi_0} = E_0 \ket{\psi_0}
+\end{equation*}
+따라서, 우리가 $E_0$를 estimate하기를 원한다는 것은 $\hat H$에 대한 eigenvector $\ket{\psi_0}$이 알려져있을 때 eigenvalue를 구하는 것을 의미하며, 이는 phase estimation으로 해결할 수 있는 문제이다.\footnote{$\hat H$를 unitary operator $\hat U = e^{-i\hat H t}$로 구성하면, $\hat U$에서 eigenvalue는 $e^{-i E_0 t}$가 된다. (with matrix exponential)}
+
+\newpage
+
+\begin{figure}[h]
+  \centering
+  \begin{minipage}{\textwidth}
+    \Qcircuit @C=1.4em @R=0.9em {
+        &&\lstick{\ket 0} &\gate{H} &\qw \barrier[-1.8em]{6}&\qw                      &\qw                    &\qw & \dots &       &\ctrl{6}                   &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i (2^{t-1} \varphi)}\ket 1)}\qw &&&&&\\
+        &&                &\vdots   &                       &                       &                       &    & \dots &       &                           &           &&&\\
+        &&\lstick{\ket 0} &\gate{H} &\qw                    &\qw                    &\ctrl{4}               &\qw & \dots &       &\qw                        &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i (2^{2} \varphi)}\ket 1)}\qw     &&&&&   \\
+        &&\lstick{\ket 0} &\gate{H} &\qw                    &\ctrl{3}               &\qw                    &\qw & \dots &       &\qw                        &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i (2^{1} \varphi)}\ket 1)}\qw     &&&&&   \\
+        &&\lstick{\ket 0} &\gate{H} &\ctrl{2}               &\qw                    &\qw                    &\qw & \dots &       &\qw                        &\rstick{\frac{1}{\sqrt 2}(\ket 0 + e^{2\pi i (2^{0}\varphi)}\ket 1)}\qw    \inputgroupv{1}{5}{0.8em}{3.6em}{t \text{ qubits} \qquad \quad} &&&&&\\
+        &&                &         &                       &                       &                       &    &       &       &                           &                                                                             &&&&& \\
+        &&\lstick{\ket u} &{/}\qw   &\gate{U^{2^0}}         &\gate{U^{2^1}}         &\gate{U^{2^2}}         &\qw & \dots &       &\gate{U^{2^{t-1}}}         &\rstick{\ket u}\qw &&&&&
+    }
+  \end{minipage}
+  \caption{QPE circuit (first step)}\label{fig:QPE-circuit}
+\end{figure}
+
+
+Phase estimation을 설계하기 위해, 우리는 먼저 다음과 같은 oracle들을 가지고 있다고 가정한다.
+\begin{itemize}
+  \item eigenvector $\ket u$를 준비시킬 수 있는 oracle
+  \item controlled-$U^{2^j}$ operation을 수행할 수 있는 oracle
+\end{itemize}
+
+Phase estimation algorithm은 크게 2가지 step으로 구성되는데, 첫 번째 step은 Fig.~\ref{fig:QPE-circuit}와 같이 구성되어 controlled-U operation을 차례대로 수행하는 과정이다.
+두 번째 step은 첫 번째 register에 대해 \textit{inverse QFT}를 수행하는 것이다. 각 step별로 어떻게 연산이 이루어지는지 따라가보자.
+\vspace{1em}
+
+먼저 Fig.~\ref{fig:QPE-circuit}의 연산은 다음 단계를 따른다.
+\begin{enumerate}
+  \item input state : phase estimation이 사용하는 2개의 register들을 각각 다음과 같이 초기화한다.\footnote{첫 번째 register의 qubit 개수 $t$는 QPE의 accuracy, success probability를 결정한다.}
+  \begin{equation*}
+    \ket \psi = \ket {0^{\otimes t}} \ket u
+  \end{equation*}
+  \item apply $H$-gate : 첫 번째 register에 대해 $H$-gate를 적용하면 다음과 같은 state를 얻게된다.
+  \begin{equation*}
+    \ket \psi =  \frac{1}{\sqrt 2^t}(\ket 0 + \ket 1)^{\otimes t} \ket u
+  \end{equation*}
+  \item apply controlled-U operation : 두 번째 register를 \textit{target}으로 하고, 첫 번째 register의 각 qubit을 \textit{control}로 하여 controlled-U operation을 가하는 과정을 control qubit을 바꿔가면서 수행한다.
+  
+  예를 들어, $t$번째 qubit을 control qubit으로 하여 controlled-$U^{2^0}$를 가하면, 다음의 상태를 얻는다.\footnote{target qubit은 $\ket u$이지만, $U^{2^0}$s는 phase만 변화시키기 때문에, control qubit에 대해 phase term을 옮겨서 표현할 수 있다.}
+  \begin{align*}
+    \ket \psi &= \frac{1}{\sqrt 2^t} (\ket 0 + \ket 1)^{\otimes {t-1}} (\ket 0 \ket u + \ket 1 e^{2\pi i (2^0 \varphi)} \ket u)\\
+              &=  \frac{1}{\sqrt 2^t} (\ket 0 + \ket 1)^{\otimes {t-1}} (\ket 0 + e^{2\pi i (2^0 \varphi)} \ket 1) \ket u
+  \end{align*}
+\end{enumerate}
+
+일반화하여, $j$번째 qubit을 target qubit으로 하여 두 번째 레지스터에 controlled-$U^{t-j}$ gate를 가하는 과정을 $t$개의 qubit에 대해서 모두 수행하면 얻게되는 최종 state는 다음과 같다.
+\begin{equation}
+  \frac{1}{2^{t / 2}}\left(|0\rangle+e^{2 \pi i 2^{t-1} \varphi}|1\rangle\right)\left(|0\rangle+e^{2 \pi i 2^{t-2} \varphi}|1\rangle\right) \ldots\left(|0\rangle+e^{2 \pi i 2^0 \varphi}|1\rangle\right)=\frac{1}{2^{t / 2}} \sum_{k=0}^{2^t-1} e^{2 \pi i \varphi k}|k\rangle . \label{eq:QPE-1}
+\end{equation}
+
+이렇게 얻은 state는 \hyperref[def:QFT]{QFT}를 $ \ket{N \psi}$에 대해서 적용한 result state와 동일하다. (put $j = N\varphi$, $N=2^t$) 
+따라서, $\varphi$의 값을 얻기 위하여 Eq.~\eqref{eq:QPE-1}에 inverse QFT를 수행하여 $N\varphi$를 구할 수 있다.
+
+앞에서 우리는 $\varphi \in [0, 1)$이라고 가정하였으므로, $\varphi = 0.\varphi_1 \varphi_2 \cdots \varphi_t = \sum^t_{k=1} \varphi_k / 2^k$이라는 binary representation으로 표현할 수 있다. 
+따라서 inverse QFT 결과로 얻는 $N\varphi$는 다음과 같다.
+\begin{equation*}
+  N\varphi = 2^t \sum^t_{k=1} \varphi_k / 2^k = \sum^t_{k=1} \varphi_k 2^{t-k} = \varphi_1\varphi_2 \cdots \varphi_t 
+\end{equation*}
+\newpage
+즉, 최종적으로 QPE를 진행하면 $\varphi$의 binary representation에서 소수점 아래 자릿수를 값으로 갖는 $t$개의 qubit을 얻게되며, 각 qubit의 값은 0 또는 1이므로 computational basis에서 측정하게되면 $\varphi$의 근사값을 얻을 수 있다. $\Box$
+
 \lecture{12}{28 Oct. 10:30}{}
 \subsection{Performance}
+앞에서 우리는 phase $\varphi$가 $t$개의 소수점 아랫수로 표현될 수 있는 값이라는 가정을 했었다.
+그러나, $\varphi = 0.\varphi_1\varphi_2 \cdots \varphi_t \varphi_{t+1} \cdots$처럼 $t+1$개 이상의 소수점 아랫자리수를 가지게 되면, QPE를 사용하여 얻은 결과 $\tilde \varphi$는 실제값의 근사치가 된다. 즉, error가 발생하게 된다.
+
+error를 분석하기 위해서, $t$개의 qubit로 나타낼 수 있는 이진수 표현중에서 가장 $\varphi$와 가까운 $\varphi$보다 크지 않은 수를 만드는 정수를 $b$라고 하자. ($b/2^t = 0.b_1 \cdots b_2$)
+\begin{equation}
+  b = \argmin_{0 \leq b \leq 2^t-1} \varphi - b / 2^t, \qquad (b/2^t \le \varphi) \label{eq:b}
+\end{equation}
+우리는 이제 QPE의 측정 결과가 $b$와 가까우며, 따라서 $\varphi$를 높은 확률로 추정할 수 있음을 보이고자한다.
+Eq.~\eqref{eq:QPE-1}에 \hyperref[def:IQFT]{IQFT}를 적용한 결과는 다음과 같다.
+\begin{equation*}
+  \frac{1}{2^{t / 2}} \sum_{k=0}^{2^t-1} e^{2 \pi i \varphi k}|k\rangle \xrightarrow{\mathrm{IQFT}} \frac{1}{2^t} \sum_{k, l=0}^{2^t-1} e^{2 \pi i \varphi k} \underbrace{e^{-2 \pi i lk / 2^t} |l\rangle}_{\ket k} = \frac{1}{2^t} \sum_{k, l=0}^{2^t-1}\left(e^{2 \pi i\left(\varphi-l / 2^t\right)}\right)^k|l\rangle .
+\end{equation*}
+만약 $\varphi = l/2^t$라면, $e^{2\pi i(\varphi - l/2^t)} = 1$이 $2^t$개의 항에 대해서 더해지기 때문에, $\ket{l}$의 amplitude가 1이되어서 100\% 확률로 $\ket l = \ket{N\varphi}$를 관측한다. 그러나 $\varphi$가 $l/2^t$와 \textit{유사}하다면, 다른 항들도 관측될 확률을 가질 수 있고 이것이 바로 error를 발생시키는 원인이 된다.
+
+\begin{definition}[Inverse Quantum Fourier transform]\label{def:IQFT}
+  Inverse QFT는 fourier basis $\ket k$에 대하여, 다음 변환을 수행한다.\footnote{phase를 소거하기 위해 phase가 음수이다.}
+  $$ \ket{k} \rightarrow \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} e^{-2\pi i jk/N} \ket{j}  $$
+\end{definition}
+
+\vspace{1em}
+다른 항이 관측될 확률을 분석하기 위해서, $\alpha_l$을 $\ket{(b+l) \mod 2^t}$ state에 대한 amplitude라고 하자. 등비급수 공식을 사용하여 나타내면 다음과 같다. ($\delta = \varphi - b/2^t$) (See Eq.~\eqref{eq:b})
+\begin{equation*}
+  \alpha_l \equiv \frac{1}{2^t} \sum_{k=0}^{2^t-1}\left(e^{2 \pi i\left(\varphi-(b+l) / 2^t\right)}\right)^k=\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \varphi-(b+l)\right)}}{1-e^{2 \pi i\left(\varphi-(b+l) / 2^t\right)}}\right)=\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \delta-l\right)}}{1-e^{2 \pi i\left(\delta-l / 2^t\right)}}\right)
+\end{equation*}
+이때, $a_l$은 $b+l \mod 2$ 연산에 의해 결정되기 때문에, 서로 다른 $l$에 대해서 동일한 $\alpha_l$을 정의할 수 없도록 $l$은 $-2^{t-1} < l \le 2^{t-1}$ 범위로 제한된다.
+
+\vspace{1em}
+
+이제 QPE의 측정 결과가 $m$이라고 가정하자. 우리는 $m$과 $b$의 차이 $|m-b|$가 $\beta$보다 클 확률을 계산하고자한다. 이는 우리가 허용할 수 있는 error $\beta$보다 더 큰 error가 발생할 \textit{failure probability}를 의미한다.
+\begin{equation}
+  \Pr(|m-b| > \beta) = \sum_{\beta \le |l|} |\alpha_l|^2 = \sum_{-2^{t-1}<l \le -(\beta + 1)} |\alpha_l|^2 + \sum_{\beta+1 \le l \le 2^{t-1}}  |\alpha_1|^2 \label{eq:QPE-error-prob}
+\end{equation}
+이때, $|1-e^{i\theta}|$에 대한 다음의 2가지 bound를 적용하여 확률을 계산할 수 있다.
+\begin{itemize}
+  \item $|1-e^{i\theta}| \ge \frac{2 |\theta|}{\pi}$, for $(-\pi \le \theta \le \pi)$
+  \item $|1-e^{i\theta}| \le 2$, for any $\theta \in \mathbb R$.
+\end{itemize}
+
+$l$의 범위에 대한 제한 덕분에, $-\pi \le 2\pi(\delta - l/2^t) \le \pi$ 조건 만족하여 $|\alpha_l|$의 upper bound를 구할 수 있다.
+\begin{equation}
+  \left|\alpha_l\right|=\left|\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \delta-l\right)}}{1-e^{2 \pi i\left(\delta-l / 2^t\right)}}\right)\right| \leq \frac{2}{2^t | 1-e^{2 \pi i\left(\delta-l / 2^t\right)}|} \leq \frac{1}{2^{t+1}\left(\delta-l / 2^t\right)}  = \frac{1}{2} \left( \frac{1}{2^t \delta - l} \right) \label{eq:alpha-l}
+\end{equation}
+따라서 Eq.~\eqref{eq:QPE-error-prob}에 Eq.~\eqref{eq:alpha-l}을 대입하면, 다음의 upper bound를 얻는다.
+\begin{equation}
+\Pr(|m-b|>\beta) \leq \frac{1}{4}\left[\sum_{-2^{t-1}<l \leq-(\beta+1)} \frac{1}{\left(l-2^t \delta\right)^2}+\sum_{\beta+1 \leq l \leq 2^{t-1}} \frac{1}{\left(l-2^t \delta\right)^2}\right] 
+\end{equation}
+$0\le 2^t \delta \le 1$을 이용하여 간략히 표현하면, 다음을 얻는다.
+\begin{itemize}
+  \item Eq.~\eqref{eq:QPE-prob-1} : upper bound를 구하기 위해서 각 항의 값이 최대가 되도록 하는 $2^t \delta$를 대입한다.\footnote{첫 번째 항은 $l$이 음수이기 때문에 $2^t \delta$가 0이 되도록하고, 두 번째 항은 $l$이 양수이기 때문에 $2^t \delta$가 1이 되도록한다.}
+  \item Eq.~\eqref{eq:QPE-prob-2} : 첫 번째 항을 보면 $l^2$에 대해서 연산하고 있기 때문에 $l$의 범위를 음수에서 양수로 바꾸어도 된다.
+  \item Eq.~\eqref{eq:QPE-prob-3} : 두 항의 하나로 나타낸 뒤\footnote{using $ \frac{1}{l^2} + \frac{1}{(l-1)^2} \leq \frac{2}{l^2}. $}, 합을 적분으로 근사한다.
+\end{itemize}
+따라서 정리하자면, QPE의 failure probability는 $\beta$에 대해 $\frac{1}{2(\beta-1)}$로 bound 된다.
+\begin{align}
+  \Pr(|m-b|>\beta) & \leq \frac{1}{4}\left[\sum_{-2^{t-1}<l \leq-(\beta+1)} \frac{1}{l^2}+\sum_{\beta+1 \leq l \leq 2^{t-1}} \frac{1}{(l-1)^2}\right] \label{eq:QPE-prob-1}\\ 
+  & =\frac{1}{4}\left[\sum_{\beta+1 \leq l<2^{t-1}} \frac{1}{l^2}+\sum_{\beta+1 \leq l \leq 2^{t-1}} \frac{1}{(l-1)^2}\right] \label{eq:QPE-prob-2}\\
+  & \leq \frac{1}{2} \sum_{l=\beta}^{2^{t-1}-1} \frac{1}{l^2} \leq \frac{1}{2} \int_{\beta-1}^{2^{t-1}-1} \frac{1}{l^2}  dl \leq \frac{1}{2(\beta-1)} .\label{eq:QPE-prob-3}
+\end{align}
+
+만약 우리가 $\varphi$를 정확도 $2^{-n}$으로 추정하기를 원한다면,\footnote{n-bit 이진수에서 $n$번째 자릿수 이하에서 발생하는 차이값} $\beta = 2^{t-n}-1$으로 선택한다. 이때, $t$는 QPE에 사용하는 qubit의 개수이다. ($p=t-n$) 
+그럼 이 $\beta$에 대해, failure probability는 $1/2(2^{t-n}-2) = 1/2(2^{p}-2)$로 bound되기 때문에, QPE의 정확도는 적어도 $1 - 1/(2(2^{p}-1))$ 이상이다. 
+
+\vspace{1em}
+
+따라서, $n$ bits로 표현된 $\varphi$를 success probability가 $1-\delta$ 이상이 되도록 QPE를 수행하기 위해서는, 첫 번째 레지스터의 개수 $t$를 다음과 같이 결정해야한다.
+\begin{equation*}
+  t = n + \left\lceil \log(2+\frac{1}{2\delta}) \right\rceil
+\end{equation*}
+
+또한, 앞에서 우리는 eigenvector의 state $\ket u$로 준비할 수 있는 oracle을 가정했다. 그러나, 실제 상황에서는 이것이 불가능할 수도 있다.
+만약 우리가 다른 state $\ket \psi$를 $\ket u$ 대신에 사용했다고 하자. $\ket \psi$는 eigenbasis에 대해 다음과 같은 linear combination으로 표현된다.
+\begin{equation*}
+  |\psi\rangle=\sum_u c_u|u\rangle
+\end{equation*}
+각 eigenstate의 eigenvalue가 $e^{2\pi i \varphi_u}$라면, $\ket \psi$에 대해 phase estimation을 수행한 결과는 다음과 같이 각각의 eiganstate에 대해 phase estimation을 수행한 결과들의 superposition state가 될 것이다.
+\begin{equation*}
+  \ket{0^{\otimes n}} \ket \psi \xrightarrow{\text{QPE}} \sum_u c_u\left|\varphi_u\right\rangle|u\rangle,
+\end{equation*}
+따라서 이러한 output state를 측정하게 되면, probability $|c_u|^2$에 따라서 랜덤하게 어떤 eigenstate $\ket u$에 대한 phase $\ket {\varphi_u}$를 얻게된다. 즉, 우리가 실제로 얻고자하는 eigenstate $\ket u$에 대한 amplitude $c_u$가 충분히 크다면, QPE를 여러번 반복하여 우리가 원하는 eigenvalue를 얻을 수 있다.
+
+\vspace{1em}
+마지막으로, QPE의 resource requirement를 분석해보자. 
+\begin{itemize}
+  \item (space complexity) accuracy $\epsilon$을 달성할 probability가 $1-\delta$가 되도록 필요한 qubit의 개수 :
+  \begin{equation*}
+    t=\log (1 / \epsilon)+\left\lceil\log \left(2+\frac{1}{2 \delta}\right)\right\rceil=O\left(\log \frac{1}{\delta \epsilon}\right) .
+    \end{equation*}
+  \item (time complexity) 
+  \begin{itemize}
+    \item (step 1) QPE를 실행하기 위해서는 controlled unitary를 $2^t$번 가해야하므로, gate complexity를 qubit의 개수 $t$에 대해서 표현하면 $O(1/(\delta \epsilon))$이 된다.
+    \item (step 2) 이후, $t$개의 qubit에 대해 IQFT를 가하기 때문에 IQFT의 complexity는 $\Theta(t^2) = \Theta((\log \frac{1}{\delta \epsilon})^2)$이 된다.
+  \end{itemize}
+  따라서 QPE의 total time complexity는 다음과 같다.
+  \begin{equation*}
+    O\left(\frac{1}{\delta \epsilon} \right) + \Theta\left(\left(\log \frac{1}{\delta \epsilon}\right)^2\right)
+  \end{equation*}
+\end{itemize}
 
 \lecture{13}{30 Oct. 10:30}{}
 \section{Applications of phase estimation}
+\subsection{Ground state energy estimation}
 \subsection{Order-finding algorithm}
 \subsubsection{Order-finding}
 \subsubsection{Uncomputation}
