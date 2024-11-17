@@ -15,19 +15,464 @@ Quantum computer라는 개념이 등장하고 나서부터 지금까지 많은 �
 \end{itemize}
 
 \section{Elementary quantum algorithms using quantum parallelism}
+
+Quantum mechanics만의 특징을 이용할 수 있는 quantum computer는 \textit{Quantum parallelism}이라는 특성을 가진다. 이는 quantum computer가 특정 oracle; function $f(x)$에 대하여 동시에 여러개의 입력에 대한 결과를 병렬적으로 얻을 수 있다는 의미이다.
+고전적인 개념인 $f(x)$를 quantum computer에서 실행하기 위해서는, quantum computer의 연산단위인 \textit{unitary operator}로 함수를 표현해야하는 필요가 있다.
+
+먼저, 간단한 one-bit boolean function $f : \{0, 1\} \rightarrow \{0, 1\}$를 생각해보자.
+직관적으로, 이 함수에 대응되는 operator는 다음과 같이 설계할 수 있다. 이 operator는 $f(0) = 1$이라면, $U_f\ket{0} = \ket{1}$처럼 동작하도록 quantum gate들을 이용하여 구현된다.
+\begin{equation*}
+  \ket{x} \xrightarrow{U_f} \ket{f(x)}
+\end{equation*}
+그러나 이러한 방식으로 operator를 설계하게 되면, \textit{non-invertible} 함수 $f(x)$에 대한 operator는 더이상 unitary 조건을 만족하지 못한다.
+따라서 이 문제를 해결하기 위하여 control을 수행하는 추가적인 input qubit을 추가하여 unitary operator가 되도록 설계한다.
+\begin{definition}[Unitary oracle]\label{def:oracle-gate}
+    함수 $f$에 대한 unitary operator $U_f$는 다음과 같이 정의된다.
+    \begin{equation*}
+      \ket{x}\ket{y} \xrightarrow{U_f} \ket{x}\ket{y \oplus f(x)}
+    \end{equation*}
+\end{definition}
+
+\newpage 
+
+$\ket x$는 $f$의 입력으로 사용되는 \textbf{oracle qubit}이며, $\ket y$는 1일때는 $f(x)$의 결과를 flip 시키고 0일 때는 $f(x)$의 결과를 반환하는 역할을 수행한다.
+그럼 이렇게 설계한 unitary operator에 \textit{superposition state}를 $\ket x$로 제공하면 결과적으로 우리는 다음과 같은 two-qubit state를 얻게 된다.
+\begin{equation*}
+  \ket{+}\ket{y} \xrightarrow{U_f} \frac{1}{\sqrt 2} (\ket{0}\ket{f(0)} + \ket{1} \ket{f(1)})
+\end{equation*}
+
+즉, one-bit boolean function에서 가능한 모든 입력 0, 1에 대한 출력을 $U_f$를 한 번 호출함으로써 얻게 된 것이다!
+Classical computer에서 병렬연산은 서로 다른 컴퓨팅 자원을 사용할 뿐, $f$를 여러번 호출해야하는 사실은 변하지 않지만, quantum computer에서의 병렬연산은 실제로 $f$를 한 번 호출하여 모든 연산을 수행할 수 있다.
+
+이렇게 어떤 함수 $f$에 대응되는 unitary operator를 설계하는 것은 n-bit boolean function에 대해서 쉽게 일반화할 수 있다.
+$n$-bit boolean function $f: \{0, 1\}^n \rightarrow \{0, 1\}$에 대응되는 unitary operator는 Definition~\ref{def:oracle-gate}을 이용하여 쉽게 설계할 수 있으며, 더 나아가 $n$-qubit에 대한 superposition state를 입력으로 제공하면 다음 결과를 얻게된다.
+\begin{equation*}
+  \frac{1}{\sqrt{2^n}} \sum_{x \in\{0,1\}^n}|x\rangle|0\rangle \rightarrow \frac{1}{\sqrt{2^n}} \sum_{x \in\{0,1\}^n}|x\rangle|f(x)\rangle
+\end{equation*}
+이 회로를 이용하면 한 번의 연산만으로 $2^n$개의 입력에 대한 출력을 동시에 얻을 수 있다.
+그러나 한 가지 주의해야할 점은, 우리가 결과를 측정하는 순간 여러개의 superposition output은 사라지고 확률에 따라서 단 하나의 결과만을 얻을 수 있다는 사실이다. 
+따라서 이러한 quantum parallelism만의 독특한 특징을 잘 활용하여 효과적인 연산을 수행할 수 있도록 알고리즘을 설계하는 것이 중요하다.
+
+이 강의에서는 parallelism의 장점을 활용하는 대표적인 알고리즘들(e.g., Deutsch’s algorithm, Deutsch-Josza algorithm, Simon’s algorithm, and Bernstein-Vazirani algorithm)에 대해 소개한다.
+
 \subsection{Deutsch’s algorithm}
+Deutsch’s algorithm은 주어진 one-bit boolean function $f$이 \textbf{balance}인지 \textbf{constant}인지를 판단하는 문제를 해결한다.\footnote{constant: $f(0)=f(1)$, balance: $f(0)\ne f(1)$}
+Classical computer가 이 문제를 해결하기 위해서는 두 함숫값 $f(0), f(1)$을 비교하기 위해서 반드시 2번의 함수 호출이 필요하다.
+그러나, 지금부터 우리는 quantum computer는 \textbf{단 한번}의 gate call만으로 이 문제를 해결할 수 있음을 보이고자한다.
+
+\begin{enumerate}
+  \item input state
+  : 우리는 다음과 같은 state를 input으로 제공한다.
+  \begin{equation*}
+    \ket{\psi} = \ket 0 \ket 1
+  \end{equation*}
+  \item apply Hadamard gates on both qubits
+  : $H$ gate를 가하면, 다음과 같은 상태로 변화한다.
+  \begin{equation*}
+    \ket{\psi} = \ket + \ket -
+  \end{equation*}
+  \item apply $U_f$
+  : operator를 통과한 state는 다음과 같다.\footnote{$\ket{f(x)} - \ket{1 \oplus f(x)}$는 $f(x)$의 값에 따라서, $\ket{0} - \ket{1}$ ($f(x) = 0$) 또는 $\ket{1} - \ket{0}$ ($f(x) = 1$)이 된다.}
+  \begin{align*}
+    \ket{\psi} &= U_f\left(\frac{1}{2}\left(\ket{00} + \ket{10} - \ket{01} - \ket{11} \right)\right)\\
+                &= \frac{1}{2}\left(\ket{0, f(0)} \ket{1, f(1)} - \ket{0, 1 \oplus f(0)} - \ket{1, 1 \oplus f(1)}\right)\\
+                &= \frac{1}{2}\Big(\ket{0}(-1)^{f(0)}(\ket 0 - \ket 1) + \ket{1}(-1)^{f(1)}(\ket 0 - \ket 1) \Big) \\
+                &= \frac{1}{2} \sum_{x \in \{0, 1\}}(-1)^{f(x)} \ket x (\ket 0 - \ket 1)
+  \end{align*}
+  따라서 각 case에 대해 state는 다음의 2가지 모습을 띄게 된다.
+  \begin{equation*}
+  \ket{\psi} = \begin{cases}
+    \pm \ket + \ket - & \text{ if } f(0) = f(1)\\ 
+    \pm \ket - \ket - & \text{ if } f(0) \ne f(1)
+  \end{cases}
+  \end{equation*}
+  \item apply again Hadamard gates on oracle qubit
+  : 마지막으로 oracle qubit에 $H$ gate를 가하면, $f$의 종류에 따라서 다음과 같은 상태가 된다.
+  \begin{equation*}
+    \ket{\psi} = \begin{cases}
+      \pm \ket 0 \ket - & \text{ if } f(0) = f(1)\\ 
+      \pm \ket 1 \ket - & \text{ if } f(0) \ne f(1)
+    \end{cases}
+  \end{equation*}
+\end{enumerate}
+
+따라서, oracle qubit을 측정하면, 100\%의 확률로 0 또는 1의 값을 얻게될 것이며, 그 값에 따라서 우리는 $f$가 balance인지 constant인지를 다음 규칙에 따라서 쉽게 판단할 수 있다. $\Box$
+\begin{equation*}
+  \ket{\psi} = \begin{cases}
+    constant & \text{ if } q_o = 0\\ 
+    balance & \text{ if } q_o = 1
+  \end{cases}
+\end{equation*}
+
+Deutsch’s algorithm은 classical algorithm보다 quantum algorithm 알고리즘이 더 효과적임을 보인 첫 번째 알고리즘이다. 하지만, 그 효과는 단지 2번의 호출을 1번으로 줄일 뿐이다.
+따라서 지금부터 더 효과적인 알고리즘들에 대해서 소개하고자한다.
 
 \lecture{10}{14 Oct. 10:30}{}
 \subsection{Deutsch-Jozsa algorithm}
+Deutsch-Jozsa algorithm은 간단히 말하자면, one-bit boolean function에 대한 문제인 Deutsch-Jozsa algorithm을 $n$-bit boolean function에 대한 문제로 일반화한 것이다.
+즉, $n$-bit boolean function $f: \{0, 1\}^n \rightarrow \{0, 1\}$이 \textbf{constant}인지 \textbf{balanced}인지를 판단하는 문제를 해결하는 알고리즘이다.\footnote{여기서 말하는 balanced는 $2^n$개의 input중에서 $2^{n-1}$개의 input에 대한 결과가 0이고, 나머지 $2^{n-1}$개의 input에 대한 결과가 1인 경우를 의미한다.}
+마찬가지로 classical computer가 이 문제를 해결하기 위해서는 최대 $2^{n-1}+1$개의 function value를 비교해야하기 때문에 $2^{n-1}+1$번의 함수 호출을 필요로한다. 그러나, 지금부터 이런문제를 해결하려고 할 때도, quantum computer는 \textbf{단 한번}의 gate call만으로 이 문제를 해결할 수 있음을 보일 것이다.
+
+\begin{enumerate}
+  \item input state
+  : 우리는 다음과 같은 state를 input으로 제공한다. $\{0, 1\}^n$의 가능한 모든 input을 나타내기 위하여, oracle qubit은 $n$개의 qubit으로 구성된다.
+  \begin{equation*}
+    \ket{\psi} = \ket{0}^{\otimes n} \ket 1
+  \end{equation*}
+  \item apply Hadamard gates on both qubits: 이때, $\ket{+}^{\otimes n}$은 가능한 모든 $2^n$개의 $n$-bit string들의 superposition이기 때문에, 다음과 같이 표현할 수 있다.
+  \begin{align*}
+    \ket{\psi} &= \ket{+}^{\otimes n} \ket - \\
+              &= \sum_{x \in \{0, 1\}^n} \frac{1}{\sqrt{2^{n}}} \ket x  \frac{1}{\sqrt 2}(\ket 0 - \ket 1)
+  \end{align*}
+  \item apply $U_f$
+  : operator를 통과한 state는 다음과 같다. (Deutsch’s algorithm의 표현을 이용하자)
+  \begin{align*}
+    \ket{\psi} &= U_f  \frac{1}{\sqrt{2^{n+1}}} \Big(\sum_{x \in \{0, 1\}^n} \ket x  (\ket 0 - \ket 1)\Big)\\
+              &= \frac{1}{\sqrt{2^{n+1}}} \sum_{x \in \{0, 1\}^n} (-1)^{f(x)} \ket x  (\ket 0 - \ket 1)
+  \end{align*}
+  \item apply again Hadamard gates on oracle qubit
+  : $H$ gate를 임의의 $n$-qubit computational basis에 가한 결과는 다음과 같다. 이는 single qubit에 대한 동작을 $n$-qubit에 대해 \textit{독립적으로} 적용한 결과이다.
+  \begin{equation}
+    H^{\otimes n} \ket x = \frac{1}{\sqrt{2^n}} \sum_{z \in \{0, 1\}^n} (-1)^{x \cdot z} \ket z 
+  \end{equation}\label{eq:tensor-H}
+  이를 이용하여 $H$ gate를 적용한 state를 표현하면, 다음과 같다.
+  \begin{equation*}
+    \ket \psi  = \frac{1}{{2^n}} \sum_{x, z \in \{0, 1\}^n} (-1)^{f(x) + x \cdot z} \ket z \ket{-}
+  \end{equation*}
+  
+  만약 $f(x)$가 constant function이라면, $\forall x$에 대해서 $f(x)$의 값은 항상 동일하기 떄문에, $(-1)^{f(x)}$의 값이 $+1$, 또는 $-1$이라는 constant가 되어 다음과 같이 나타낼 수 있다.
+  \begin{align*}
+  \left|\psi\right\rangle= \pm \frac{1}{{2^{n}}} \sum_{x, z \in\{0,1\}^n} {(-1)^{x\cdot z}|z\rangle} \ket -
+  \end{align*}
+  $z = 0^n$인 경우를 가정해보자. 이는 $x$가 어떤 값이 되던지간에 $x\cdot z$ \footnote{ $x \cdot z = x_1 z_1 + x_2 z_2 + \cdots + x_n z_n \mod 2$ }의 값이 0이 되기 떄문에, 다음과 같이 표현할 수 있게 된다.
+  $\ket{0}^{\otimes n}$의 amplitude의 square norm이 1이기 때문에, 100\% 확률로 $0^n$을 측정할 수 있다.
+  \begin{align*}
+    \pm \frac{1}{{2^n}} \sum_{x \in\{0,1\}^n} (-1)^{x\cdot 0^n} |0\rangle^{\otimes n} \ket - = \pm \frac{1}{{2^n}}{2^n} \ket{0}^{\otimes n} \ket - = \boxed{\pm \ket{0}^{\otimes n} \ket -} 
+  \end{align*}
+  반면, $f(x)$가 balance function이라면, $f(x)$의 값이 $0$인 경우와 $1$인 경우가 정확히 1/2씩 나타나기 때문에, 각 항들이 소거되면서 $z=0^n$에 대한 amplitude가 0이 된다.
+  \begin{align*}
+    \Big(\frac{1}{{2^n}} 2^{n-1} |0\rangle^{\otimes n} \ket - \Big) + \Big( - \frac{1}{{2^n}} 2^{n-1} |0\rangle^{\otimes n} \ket - \Big) = \boxed{0 \ket{0}^{\otimes n} \ket -} 
+  \end{align*}
+\end{enumerate}
+따라서, oracle qubit을 측정한 결과가 $0^n$인지 확인하여, $f$가 constant인지 balanced인지를 알 수 있다. $\Box$
+  \begin{equation*}
+    \ket{\psi} = \begin{cases}
+      constant & \text{ if } q_o = 0^n\\ 
+      balance & \text{ if } q_o \ne 0^n
+    \end{cases}
+  \end{equation*}
 
 \section{Hamiltonian simulations}
+Hamiltonian simulation은 quantum computer가 고안된 핵심적인 이유 중 하나이다. 리처드 파인만의 말을 인용하자면 자연, 그중에서도 특히 미시세계는 고전역학을 따르지 않기때문에, quantum mechanical을 따르는 simulation이 필요하다.
+\begin{note}
+  \textit{Nature isn’t classical, dammit, and if you want to make a simulation of nature, you’d better make it quantum mechanical, and by golly it’s a wonderful problem, because it doesn’t look so easy.}
+\end{note}
+
+Hamiltonian simulation은 간단히 말해 quantum state의 time evolution을 구하는 것이다. Schrödinger equation에 의하면, initial state $\ket{\psi(0)}$의 시간 $t$에 대한 time evolution은 다음과 같이 주어진다.
+\begin{equation*}
+  |\psi(t)\rangle=e^{-i H t}|\psi(0)\rangle
+\end{equation*}
+
+이 방정식을 곧바로 해결하여 문제를 풀 수도 있지만, Hamiltonian matrix의 크기가 exponential하게 증가하기 때문에 이를 classical algorithm으로 효과적으로 해결하기는 어렵다.
+
+\subsection{Solution of Hamiltonian simulations}
+우리는 \hyperref[def:k-local-Hamiltonian]{k-local Hamiltonian}을 이용하여 Hamiltonian simulation 문제를 해결하고자 한다.
+\begin{definition}\label{def:k-local-Hamiltonian}
+  $k$-local\footnote{여기서 local은 geometrically local이 아니라 단순히 system의 '개수'를 나타내기 위해 사용된다.} Hamiltonian은 주어진 $H$가 $n$-qubit system에서 \textbf{최대 $k$개의 system}에 대해서만 동작하는 $H_i$들의 합으로 표현되는 Hamiltonian이다. (이때 $L$은 $n$에 대해 polynomial이다.)
+  $$ H=\sum_{i=1}^L H_i $$
+\end{definition}
+
+\begin{eg}
+  예를 들어, 다음과 같이 정의되는 Hamiltonian은 2개의 system (2, 4)에 대해서만 동작한다.
+  $$ H_i = I_1 \otimes Z_2 \otimes I_3 \otimes X_4 \otimes I_{\perp} $$
+\end{eg}
+
+\newpage 
+Hamiltonian이 k-local Hamiltonian이라고 가정할 때, 이를 이용하여 어떻게 문제를 해결할 수 있을까?
+그 아이디어는 단순하다. $e^{-i H t}$를 계산하는 것은 어렵지만, $e^{-i H_i t}$는 최대 $k << n$ subsystem에만 작용하기에 더 단순하며, 그 단순성 덕분에 quantum circuit을 사용하여 시뮬레이션 하기 쉽다.
+
+만약, $[H_j, H_k] = 0$\footnote{$[H_j, H_k] = H_jH_k - H_kH_j$}이 성립한다면 $e^{-iHt} =e^{-i \sum H_j t} = \prod e^{-i H_j t}$\footnote{지수함수의 성질이 성립하기 위해서 필요한 조건. 실수들은 항상 commutative하기 때문에 이 성질이 자명하게 정립되었던 것}가 성립하기 때문에, 각각의 $H_i$에 대한 time evolution을 독립적으로 계산한 결과를 곱하여 전체 time evolution을 쉽게 구할 수 있다.
+그러나 일반적으로 $[H_j, H_k] = 0$은 성립하지 않기 떄문에, 우리는 \hyperref[thm:trotter-formula]{Trotter formula}를 이용한다.
+
+\begin{theorem}[Trotter formula]\label{thm:trotter-formula}
+  Hermitian operator $H_j, H_k$에 대하여, 어떤 $t$에 대해서도 다음이 성립한다.\footnote{직관적으로, 주어진 time $t$ 대신에, 매우 짧은 시간간격인 $t/m$에 대한 time evolution을 $m$번 반복하여 $t$에 대한 time evolution을 근사할 수 있다는 것을 의미한다.}
+  $$ e^{i (H_j + H_k) t} = \lim_{m \to \infty} \left( e^{i H_j t/m} e^{i H_k t/m} \right)^m $$ 
+  이는 $H_j, H_k$가 not-commute라 하더라도 항상 성립한다.
+\end{theorem}
+
+\vspace{1em} 
+
+따라서 $L=2$인 k-local Hamiltonian $H = H_1 + H_2$에 대해, Hamiltonian simulation을 수행하는 propagator $\tilde U (t) = e^{-i H_1t} e^{-i H_2 t}$를 시간에 대해서 미분하면, 다음과 같이 전개할 수 있다.
+(with initial condition $\tilde U(0) = I$)
+\begin{itemize}
+  \item Eq.~\eqref{eq:expand-2}: $H_1, H_2$는 matrix라서 순서를 바꿀 수 없기에, 다른 항을 더하여 항을 정리하고 다시 뺀다.
+  \item Eq.~\eqref{eq:expand-3}: commutator를 사용하여 항을 정리한다.
+\end{itemize}
+\begin{align}
+  i \frac{d \tilde{U}(t)}{d t} & =H_1 e^{-i H_1 t} e^{-i H_2 t}+e^{-i H_1 t} H_2 e^{-i H_2 t} \label{eq:expand-1} \\ 
+  & =\left(H_1+H_2\right) e^{-i H_1 t} e^{-i H_2 t}+e^{-i H_1 t} H_2 e^{-i H_2 t}-H_2 e^{-i H_1 t} e^{-i H_2 t} \label{eq:expand-2} \\ 
+  & = H e^{-i H_1 t} e^{-i H_2 t}+\left[e^{-i H_1 t}, H_2\right] e^{-i H_2 t} \label{eq:expand-3} \\ 
+  & = H \tilde U(t)+\left[e^{-i H_1 t}, H_2\right] e^{-i H_2 t} \label{eq:expand-4}
+\end{align}
+
+미분 방정식에 대한 Duhamel's formula \footnote{See \url{https://en.wikipedia.org/wiki/Duhamel\%27s_principle}}를 이용하면, $\tilde U(t)$를 다음과 같이 구할 수 있다. 
+\begin{equation}
+  \tilde{U}(t)=U(t)-i \int_0^t e^{-i H(t-s)}\left[e^{-i H_1 s}, H_2\right] e^{-i H_2 s} ds \label{eq:tilde-U}
+\end{equation}
+
+\subsection{Performance}
+그렇다면, 이제 실제 Hamiltonian에 대한 time evolution $U(t) = e^{-iHt}$와 Trotter formula를 이용하여 근사한 $\tilde U(t)$의 error가 어떻게 bound 되는지 분석해보자. Eq.~\eqref{eq:tilde-U}의 항을 이항시키면, 두 operator의 차이에 대한 norm의 upper bound를 구할 수 있다.
+\footnote{$e^{-iH_it}$는 unitary operator이기 때문에 norm을 변화시키지 않기 때문에 무시해도 된다.}
+\begin{equation}
+  \|\tilde{U}(t)-U(t)\|  = \left\|-i \int_0^t e^{-i H(t-s)}\left[e^{-i H_1 s}, H_2\right] e^{-i H_2 s} d s \right\| \leq \int_0^t\left\|\left[e^{-i H_1 s}, H_2\right]\right\| ds \label{eq:distance}
+\end{equation}
+이때, norm은 다음과 같이 정의된다.
+
+\begin{definition}
+  $$  \|A\| \equiv \max _{|\psi\rangle} \| A|\psi\rangle \|_2=\max _{|v\rangle \ne 0} \frac{\| A|v \rangle \|_2}{\||v\rangle \|_2} $$
+\end{definition}
+
+이제 이 norm이 적절한 error rate $\epsilon$에 의하여 bound됨을 보임으로써, 이 Hamiltonian simulation을 실제로 활용할 수 있을지 분석할 수 있다. 
+
+\newpage 
+이를 위하여 다음과 같은 새로운 연산자를 가정하자.
+\begin{equation}
+  G(t) \triangleq [e^{-iH_1t}, H_2] e^{iH_1t} = e^{-i H_1t} H_2 e^{iH_1t} - H_2, \text{ with } G(0) = 0 \label{eq:def-G}
+\end{equation}
+이 연산자에 대하여 $\tilde U(t)$처럼 시간에 대한 도함수를 구하면 다음과 같고,
+\begin{equation*}
+  i \frac{d}{d t} G(t)=e^{-i H_1 t}\left[H_1, H_2\right] e^{i H_1 t}
+\end{equation*}
+양변을 $t$에 대해서 적분하면 다음과 같다. 
+\begin{equation*}
+  G(t)=G(0) - i \int_{0}^{t} e^{-i H_1 s}\left[H_1, H_2\right] e^{i H_1 s} ds 
+\end{equation*}
+norm을 취하고 \textit{triangle inequality}를 이용하면, $\|G(t)\|$에 대한 upper bound를 얻는다.
+\begin{equation}
+  \|G(t) \|=  \left\| -i \int^t_0 e^{-i H_1 s}\left[H_1, H_2\right] e^{i H_1 s} ds \right\| \le \int^t_0 \|\left[H_1, H_2\right]\| ds = t \|\left[H_1, H_2\right]\| \label{eq:G-bound}
+\end{equation}
+이때, $G(t)$의 norm은 자기자신의 정의 \eqref{eq:def-G}에 의하여 다음 관계가 성립하게 된다.
+\begin{equation*}
+  \left\|\left[e^{-i H_1 t}, H_2\right]\right\|=\|G(t)\| \leq t\left\|\left[H_1, H_2\right]\right\| 
+\end{equation*}
+따라서 이를 Eq.~\eqref{eq:distance}에 대입하면, 다음을 얻는다.
+\begin{equation*}
+  \|\tilde{U}(t)-U(t)\|  \leq \int_0^t \underbrace{\left\|\left[e^{-i H_1 s}, H_2\right]\right\|}_{s\|[H_1, H_2]\|} d s  \leq \int^t_0 s\left\|\left[H_1, H_2\right]\right\|  ds  
+\end{equation*}
+$\|[H_1, H_2]\|$는 $s$에 관계없는 상수이기 때문에, 다음과 같이 정리할 수 있으며, 
+\begin{equation*}
+  \|\tilde{U}(t)-U(t)\| \leq \frac{t^2}{2} \left\|\left[H_1, H_2\right]\right\|
+\end{equation*}
+commutator를 전개한 뒤, triangle inequality와 norm의 성질\footnote{$\|AB\| \le \|A\| \|B\|$}을 이용하면 다음과 같이 전개할 수 있다.
+\begin{align*}
+  \|\tilde{U}(t)-U(t)\| &\leq \frac{t^2}{2} \left\|\left[H_1, H_2\right]\right\|  = \frac{t^2}{2} \left\|H_1H_2 + (-H_2H_1)\right\| \leq  \frac{t^2}{2} (\|H_1H_2\| + \| H_2H_1\|) \\
+                        &\leq \frac{t^2}{2} 2\|H_1\| \|H_2\| \le t^2 \max\{\|H_1\|, \|H_2\|\}^2
+\end{align*}
+정리하면, 다음과 같다.
+\begin{equation}
+  \|\tilde{U}(t)-U(t)\| = \|{U}(t)- \tilde U(t)\|  \le t^2 \max\{\|H_1\|,\|H_2\|\}^2  \label{eq:bound}
+\end{equation}
+
+\vspace{1em}
+
+따라서 시간간격 $\Delta t$에 대한 error는 다음과 같이 bound된다.
+\begin{equation}
+ \left\|e^{-i H \Delta t}-\left(e^{-i H_1  \Delta  t} e^{-i H_2 \Delta  t}\right)\right\| \le (\Delta t)^2 \max\{\|H_1\|,\|H_2\|\}^2  \label{eq:bound}
+\end{equation}
+\hyperref[thm:trotter-formula]{Trotter formula}에 의하여 시간간격 $\Delta t = t/m$에 대하여 $m$단계 근사의 오차는 $\Delta t$에 대한 단일 단계 오차의 누적으로 생각할 수 있기 때문에, 다음을 얻는다.
+\begin{equation*}
+  \left\|e^{-i H t}-\left(e^{-i H_1  \Delta t} e^{-i H_2 \Delta t}\right)^m\right\| \leq m \frac{t^2}{m^2} \max \left\{\left\|H_1\right\|,\left\|H_2\right\|\right\}^2=\frac{t^2}{m} \max \left\{\left\|H_1\right\|,\left\|H_2\right\|\right\}^2
+\end{equation*}
+이 bound를 사용하면, 우리가 원하는 target error rate $\epsilon$을 달성하기 위해서 필요한 $m$의 값을 $m = O(t^2 \epsilon^{-1})$으로 결정할 수 있다.\footnote{$\max \{\|H_1 \|, \|H_2 \|\}^2$ (i.e., $\|H_i\|$)의 값은 상수라서 무시하였다.}
+
+이 과정을 더 많은 term을 가지는 k-local Hamiltonian에 대해서 일반화할 수 있다.
+\begin{equation*}
+  \left\|e^{-i \sum_{i=1}^L H_i \Delta t}-\prod_{j=1}^L e^{-i H_i \Delta t}\right\|=O\left(\frac{t^2}{L} \sum_{i<j}\left\|\left[H_i, H_j\right]\right\|\right) .
+\end{equation*}
+\newpage
+$\Delta t = t/m$로 가정하면 다음을 얻는다.
+\begin{equation*}
+\left\|e^{-i \sum_{i=1}^L H_i t}-\left(\prod_{j=1}^L e^{-i H_i \Delta t}\right)^m\right\|=O\left(\frac{m \Delta t^2}{L} \sum_{i<j}\left\|\left[H_i, H_j\right]\right\|\right)=O\left(\frac{t^2}{m L} \sum_{i<j}\left\|\left[H_i, H_j\right]\right\|\right)
+\end{equation*}
+이떄, $\|H_i\| = O(1)$이므로 $\sum \|[H_i, H_j]\| = L^2$이 되어 다음과 같이 bound된다.
+\begin{equation*}
+\left\|e^{-i \sum_{i=1}^L H_i t}-\left(\prod_{j=1}^L e^{-i H_i \Delta t}\right)^m\right\|=O\left(\frac{L t^2}{m}\right) .
+\end{equation*}
+$m=O(Lt^2 \epsilon^{-1})$로 설정하게되면 우리는 항상 target error rate $\epsilon$을 upper bound로 가지는 근사 operator $\tilde U(t)$를 구성할 수 있고 이를 이용하여 simulation 할 수 있다.
+따라서, 이 solution은 주어진 $k$-local Hamiltonian에 대하여, time $t$에 대한 quadratic overhead (i.e., error)를 가지고 simulation을 할 수 있음을 보여준다. 즉, simulation time이 증가하더라도 error rate은 polynomial하게 증가하게 된다. $\Box$
+
+\vspace{1em}
+
+반면, 2nd-Trotter formula를 이용하여 표현할 수도 있다. 
+\begin{equation*}
+  e^{i(A+B) \Delta t}=e^{i A \Delta t / 2} e^{i B \Delta t} e^{i A \Delta t / 2}+O\left((\Delta t)^3\right) 
+  \end{equation*}
+이를 이용하면, time $t$에 대하여 error는 다음과 같이 표현된다.
+\begin{equation*}
+  \left\|e^{-i(A+B) t}-\prod_{i=1}^m e^{-i A \Delta t / 2} e^{-i B \Delta t} e^{-i A \Delta t / 2}\right\|=O\left(m(\Delta t)^3\right)=O\left(t^3 / m^2\right)
+  \end{equation*}
+즉, $m = O(t^{3/2}\epsilon^{1/2})$으로 설정하면, target error rate $\epsilon$을 달성할 수 있으며 이는 1st-Trotter formula를 사용한 simulation보다 더 효율적이다.\footnote{time $t$에 대한 3/2 overhead}
+2nd-Trotter 방법을 $L$개의 term을 갖는 Hamiltonian에 대하여 일반화하면 $m$은 다음과 같다.
+\begin{equation*}
+  m=O\left(\frac{\left(\sum_{j=1}^L\left\|H_j\right\| t\right)^{3 / 2}}{\epsilon^{1 / 2}}\right)
+  \end{equation*}
+더 나아가 pth order Trotter formula를 사용하면, $m$은 다음과 같다.
+\begin{equation*}
+  m=O\left(\frac{\left(\sum_{j=1}^L\left\|H_j\right\| t\right)^{1+1 / p}}{\epsilon^{1 / p}}\right)
+  \end{equation*}
+
+Hamiltonian simulation을 위하여 다양한 연구들이 현재까지도 진행되고 있으며, 대표적인 알고리즘들은 다음을 참고하라.
+\begin{itemize}
+  \item Higher-order product formula \cite{childs2021theory}
+  \item Linear combination of unitary (LCU) \cite{berry2015hamiltonian}
+  \item Quantum signal processing (\textit{optimal}) \cite{haah2019product}
+\end{itemize}
 
 \lecture{11}{16 Oct. 10:30}{}
 \section{Quantum Fourier transform}
+\subsection{Quantum Fourier transform}
+Quantum Fourier transform은 Shor algorithm이나 HHL algorithm과 같은 다양한 quantum algorithm에서 사용되는 중요한 알고리즘이다.
+QFT에 대해서 소개하기에 앞서, 먼저 classical Fourier transform에 대해서 간단히 알아보자.
+
+\begin{definition}[Discrete Fourier transform]
+  Discrete Fourier transform은 vector $\mathbf x \in \mathbb C^N$을 입력으로 받아서, 다음과 같이 정의되는 연산을 수행하여 output vector $\mathbf y \in \mathbb C^N$으로 변환하는 과정이다.\footnote{$\mathbf x = x_0\cdots x_{N-1}$, $\mathbf y = y_0\cdots y_{N-1}$ }
+  $$ y_k \equiv \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_j e^{2 \pi i j k / N} $$
+\end{definition}
+
+\begin{definition}[Quantum Fourier transform]\label{def:QFT}
+  Quantum Fourier transform은 DFT와 유사하게, quantum state vector $\ket x = \ket{x_0\cdots x_{N-1}}$을 입력으로 받아서, output quantum state vector $\ket y  =\ket{ y_0\cdots y_{N-1}}$으로 변환하는 과정이다. 
+  단, DFT와는 다르게 \textbf{computational basis} $\{\ket 0, \cdots, \ket{N-1}\}$에 대한 변환만이 정의되어 있다.
+  $$
+    |j\rangle \rightarrow \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2 \pi i j k / N}|k\rangle .
+  $$
+  따라서 임의의 state vector $\ket x$의 transform은 변환된 basis vector $\ket{k}$들의 linear combination으로 표현하게 된다.
+  $$
+    \sum_{j=0}^{N-1} x_j|j\rangle \rightarrow \sum_{j=0}^{N-1} x_j \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2 \pi i j k / N}|k\rangle=\sum_{k=0}^{N-1} y_k|k\rangle,
+  $$
+  이때, $y_k$는 다음과 같다.\footnote{DFT와 똑같다.}
+  $$
+    y_k=\frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_j e^{2 \pi i j k / N}.
+  $$
+\end{definition}
+
+\vspace{1em}
+즉, QFT가 하는일은 basis $\{\ket k\}$에 대한 linear combination으로 표현된 벡터 $\ket x$를 다른 basis $\{\ket j\}$에 대한 linear combination으로 나타내는 \textit{basis transform}이다.\footnote{$\{\ket k\}$ basis에서의 amplitude는 $x_i$이며, $\{\ket j\}$ basis에서의 amplitude는 $y_i$이다.}
+
+\vspace{1.5em}
+이제 QFT가 어떻게 구현되는지 알아보자. $\ket j$에 대한 변환을 수행하는 QFT의 circuit은 다음과 같다.
+\begin{figure}[h]
+  \[
+  \begin{array}{c}
+  \Qcircuit @C=0.6em @R=0.6em {
+      \lstick{\ket{j_1}} & \gate{H} & \gate{R_2}  &\qw & \cdots &  & \gate{R_{n-1}}&\gate{R_n}& \qw      &\qw &\qw    &\qw           &\qw     &\qw       &\qw&\qw &\qw   &\qw      &\qw        &\qw   &\qw    &\rstick{\frac{1}{\sqrt 2}\ket 0 + e^{2\pi i \ 0.j_1 \cdots j_n} \ket 1}\\
+      \lstick{\ket{j_2}} & \qw      & \ctrl{-1}   &\qw & \cdots &  & \qw           &\qw       & \gate{H} &\qw & \cdots &  & \gate{R_{n-2}}&\gate{R_{n-1}}&\qw & \cdots &  &\qw      &\qw        &\qw   &\qw    &\rstick{\frac{1}{\sqrt 2}\ket 0 + e^{2\pi i \ 0.j_2 \cdots j_n} \ket 1}\\
+      \vdots             &          &             &    & & &           &               &         &          & & &       &              &               & &       &         &           &        & & &  &\vdots  \\
+      \lstick{\ket{j_{n-1}}} & \qw  & \qw         &\qw &\qw  &\qw   & \ctrl{-3}     &\qw       &\qw      &\qw &\qw    &\qw    &\ctrl{-2}     &\qw            &\qw& \cdots &  &\gate{H} &\gate{R_2} &\qw   &\qw    &\rstick{\frac{1}{\sqrt 2}\ket 0 + e^{2\pi i \ 0.j_{n-1} j_n} \ket 1}\\
+      \lstick{\ket{j_n}} & \qw      & \qw         &\qw &\qw &\qw   & \qw           &\ctrl{-4} &\qw       &\qw &\qw   &\qw       &\qw    &\ctrl{-3}      &\qw& \cdots &  &\qw      &\ctrl{-1}  &\gate{H} &\qw  &\rstick{\frac{1}{\sqrt 2}\ket 0 + e^{2\pi i \ 0.j_n} \ket 1}
+  }
+  \end{array}
+  \]
+  \caption{QFT circuit} \label{fig:QFT-circuit}
+\end{figure}
+
+QFT가 $n$-qubit system에 대해서 computational basis를 변환시킬 때, 우리는 computational basis를 나타내기 위하여 binary representation을 도입하고자한다.
+어떤 $\ket j \in \{\ket 0, \cdots, \ket{2^n-1}\}$에 대한 binary representation은 다음과 같다. ($N=2^n$)
+\begin{equation*}
+  j=j_1 j_2 \ldots j_n=j_1 2^{n-1}+\cdots+j_n 2^0=\sum_{k=1}^n j_k 2^{n-k} .
+  \end{equation*}
+또한, 소수도 다음과 같은 binary representation으로 표현할 수 있다.
+\begin{equation*}
+  0 . j_l j_{l+1} \cdots j_m=j_l / 2+j_{l+1} / 2^2 +\cdots+j_m / 2^{m-l+1}=\sum_{k=l}^m j_k / 2^{k-l+1}
+  \end{equation*}
+
+\newpage
+Binary representation을 이용하면 QFT의 연산을 다음과 같이 분석할 수 있다.
+\begin{itemize}
+  \item Eq.~\eqref{eq:QFT-1}: Definition~\ref{def:QFT}에 따라, $|j\rangle$에 대한 QFT는 다음과 같이 표현된다.
+  \item Eq.~\eqref{eq:QFT-2}: $k = \sum k_l 2^{n-l}$이므로 $k/2^n = \sum k_l 2^{-l}$이다.
+  \item Eq.~\eqref{eq:QFT-3}: $e^{a+b} = e^a e^b$, 그리고 $\ket k$가 $n$-qubit에 대해 tensor product로 표현됨을 이용한다.
+  \item Eq.~\eqref{eq:QFT-4}: 표현 단순화. ($\sum_{k_1, k_2, \cdots, k_n \in \{0, 1\}}$ 을 $\sum_{k_l \in \{0, 1\}}$로 표현)
+  \item Eq.~\eqref{eq:QFT-5}: (1) $k_l=0$, then $e^{2\pi ij k_l 2^{-l}} = e^0$. (2) $k_l=1$, then $e^{2\pi ij k_l 2^{-l}} = e^{2\pi i j 2^{-l}}$
+  \item Eq.~\eqref{eq:QFT-6}: 모든 tensor product들을 전개한뒤 fraction을 binary representation으로 표현한다.
+\end{itemize}
+\begin{align}
+  |j\rangle & \rightarrow \frac{1}{2^{n / 2}} \sum_{k=0}^{2^n-1} e^{2 \pi i j k / 2^n}|k\rangle \label{eq:QFT-1} \\
+  & =\frac{1}{2^{n / 2}} \sum_{k_1=0}^1 \cdots \sum_{k_n=0}^1 e^{2 \pi i j\left(\sum_{l=1}^n k_l 2^{-l}\right)}\left|k_1, \ldots, k_n\right\rangle \label{eq:QFT-2} \\
+  & =\frac{1}{2^{n / 2}} \sum_{k_1=0}^1 \cdots \sum_{k_n=0}^1 \bigotimes_{l=1}^n e^{2 \pi i j k_l 2^{-l}}\left|k_l\right\rangle  \label{eq:QFT-3} \\
+  & =\frac{1}{2^{n / 2}} \bigotimes_{l=1}^n \sum_{k_l=0}^1 e^{2 \pi i j k_l 2^{-l}}\left|k_l\right\rangle \label{eq:QFT-4} \\
+  & =\frac{1}{2^{n / 2}} \bigotimes_{l=1}^n\left[|0\rangle+e^{2 \pi i j 2^{-l}}|1\rangle\right]  \label{eq:QFT-5} \\
+  & =\frac{\left(|0\rangle+e^{2 \pi i 0 . j_n}|1\rangle\right)\left(|0\rangle+e^{2 \pi i 0 . j_{n-1} j_n}|1\rangle\right) \cdots\left(|0\rangle+e^{2 \pi i 0 . j_1 j_2 \ldots j_n}|1\rangle\right)}{2^{n / 2}} \label{eq:QFT-6}
+\end{align}
+즉, $\ket j$의 각 qubit $\ket{j_i}$에 대해 독립적으로 특정 gate $U$를 적용하여 $\ket 0 + e^{2\pi i 0.j_i \cdots j_n}$가 되도록 quantum circuit을 설계하면, 그 결과가 QFT에 해당한다는 사실을 알아냈다.
+\begin{equation*}
+  U \ket {j_i} \rightarrow \ket 0 + e^{2\pi i 0.j_i \cdots j_n} \ket 1
+\end{equation*}
+
+\vspace{1em}
+본격적으로 quantum circuit을 만들기 위해서 rotation operator $R_k$를 다음과 같이 정의하자. 이렇게 정의한 operator는 $\ket 0$에 대해서는 아무것도 수행하지 않지만, $\ket 1$에 대해서는 phase $e^{2\pi i / 2^k}$를 적용한다.
+\begin{equation*}
+  R_k \equiv\left(\begin{array}{cc}
+  1 & 0 \\
+  0 & e^{2 \pi i / 2^k}
+  \end{array}\right)
+\end{equation*}
+Fig.~\ref{fig:QFT-circuit}의 circuit의 연산을 단계별로 따라가보자.
+\begin{enumerate}
+  \item input state : 다음과 같은 input state로 시작한다. 이는 computational basis state중 하나이다.
+  \begin{equation*}
+    \ket \psi = \ket{j_1,\cdots, j_n}
+  \end{equation*}
+  \item apply Hadamard gate on the first qubit : 첫 번째 qubit; $\ket{j_1}$에 $H$를 적용하면, 다음을 얻는다.
+  \footnote{이때, $e^{i\pi} = {\color{gray}e^{2i\pi \frac{1}{2}}} = -1$ 그리고 $e^{0} = {\color{gray}e^{2i\pi \frac{0}{2}}} = 1$라는 사실을 이용한다.}
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt 2} (\ket{0} + (-1)^{j_1}\ket{1})\ket{j_2, \cdots, j_n} = \frac{1}{\sqrt 2} \left( \ket 0 + e^{2\pi i 0.j_1} \ket 1 \right) \ket{j_2, \cdots, j_n}
+  \end{equation*}
+  \item apply controlled-$R_2$ gate with the first qubit as the \textit{target} and the second qubit as \textit{control}.
+  \begin{align*}
+    \ket \psi &= \begin{cases} 
+        \frac{1}{\sqrt 2} \left( \ket 0 + e^{2\pi i 0.j_1} \ket 1 \right) \ket{j_2, \cdots, j_n} & \text{if } j_2 = 0, \\ 
+        \frac{1}{\sqrt 2} \left( \ket 0 + e^{2\pi i 0.01} e^{2\pi i 0.j_1} \ket 1 \right) \ket{j_2, \cdots, j_n} & \text{if } j_2 = 1 
+    \end{cases}\\ 
+              &= \frac{1}{\sqrt 2} \left( \ket 0 + e^{2\pi i 0.j_1j_2} \ket 1 \right) \ket{j_2, \cdots, j_n}.
+\end{align*}
+\newpage
+  \item apply controlled-$R_k$ gate consequently : 3번의 과정을 control qubit을 하나씩 증가시키면서 반복한다. 이때, control qubit의 순서가 $i$번째라면, $R_i$ gate를 적용해야한다.
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt 2} \left( \ket 0 + e^{2\pi i 0.j_1j_2 \cdots j_n} \ket 1 \right) \ket{j_2, \cdots, j_n} 
+  \end{equation*}
+  \item apply controlled-$R_k$ gate consequently with other \textit{target state}  : 3-4번 과정을 다른 control qubit에 대해서 반복한다. 
+  
+  예를 들어, second qubit을 target qubit으로서 가정하면, 다음과 같은 state를 얻게된다.
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt 2^2} \left( \ket 0 + e^{2\pi i 0.j_1j_2 \cdots j_n} \ket 1 \right) \left( \ket 0 + e^{2\pi i 0.j_2j_3 \cdots j_n} \ket 1 \right) \ket{j_3, \cdots, j_n} 
+  \end{equation*}
+  일반화하면, $j$번째 qubit에 대해, $k(j < k)$번쨰 qubit을 control qubit으로 controlled-$R_{k-j}$ gate를 차례대로 적용하는 과정을 반복한다. 
+  \item $n$번쨰 qubit까지 이 과정을 수행하면 최종적으로 다음 state를 얻게된다.
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt 2^n} \left( \ket 0 + e^{2\pi i 0.j_1j_2 \cdots j_n} \ket 1 \right) \left( \ket 0 + e^{2\pi i 0.j_2j_3 \cdots j_n} \ket 1 \right) \cdot \left( \ket 0 + e^{2\pi i 0.j_n} \ket 1 \right) 
+  \end{equation*}
+  \item 따라서 SWAP gate를 적용하여 qubit의 순서를 반대로 뒤집으면, 우리가 구하고자하는 QFT의 결과 (see Eq.~\eqref{eq:QFT-6})를 얻을 수 있다. $\Box$
+\end{enumerate}
+
+따라서 우리는 1번의 QFT circuit을 수행하는 것으로 $n$개의 data에 대한 QFT결과를 동시에 얻을 수 있다. (단, 관측하면 확률에 따라 하나의 결과만 얻게 된다.)
+
+\subsection{Performance}
+그렇다면, QFT가 가지는 gate complexity가 얼마인지 분석해보자.
+알고리즘에 따라 첫 번쨰 qubit에 대해서 1개의 $H$-gate, 그리고 $(n-1)$개의 controlled rotation gate를 필요로한다. 두 번쨰 qubit에 대해서는 1개의 $H$-gate, 그리고 $(n-2)$개의 controlled rotation gate를 필요로한다. 
+따라서 $n$개의 qubit에 대해 모두 필요한 gate의 개수는 다음과 같다.\footnote{qubit의 순서를 바꾸기 위해 필요한 SWAP gate에 대한 gate complexity는 $O(n)$이므로 무시할 수 있다.}
+\begin{equation*}
+  n + n-1 + \cdots + 1 = \frac{n(n+1)}{2} = \Theta(n^2)
+\end{equation*}
+\textbf{Some Remarks}
+\begin{itemize}
+  \item QFT는 exponential speed-up을 달성하는 것처럼 보이지만, 실제로는 값을 관측하게 되면 하나의 데이터에 대한 결과만 얻을 수 있다.
+  \item 또한, input state $\ket j$를 준비하는 과정도 효과적이지 못하다.
+  \item 따라서 QFT을 활용하여 알고리즘을 설계하는 것은 쉽지 않다.
+\end{itemize}
 
 \section{Phase estimation}
 \subsection{Phase estimation}
-
+QFT를 활용하는 중요한 알고리즘 중 하나가 바로 \textit{Phase estimation}이다. 
 \lecture{12}{28 Oct. 10:30}{}
 \subsection{Performance}
 
@@ -60,7 +505,7 @@ Quantum computer라는 개념이 등장하고 나서부터 지금까지 많은 �
 \subsection{Example: Classical circuit-SAT problem}
 \subsection{Amplitude amplification}
 
-\section{Amplitude estimation algorithm (=Quantum counting)}
+\section{Amplitude estimation algorithm (Quantum counting)}
 
 \section{HHL (Harrow–Hassidim–Lloyd) algorithm}
 

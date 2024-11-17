@@ -17,6 +17,116 @@
 \endgroup
 
 \datalist[entry]{anyt/global//global/global/global}
+  \entry{berry2015hamiltonian}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=BDW}{%
+         family={Berry},
+         familyi={B\bibinitperiod},
+         given={Dominic\bibnamedelima W},
+         giveni={D\bibinitperiod\bibinitdelim W\bibinitperiod},
+      }}%
+      {{hash=CAM}{%
+         family={Childs},
+         familyi={C\bibinitperiod},
+         given={Andrew\bibnamedelima M},
+         giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=KR}{%
+         family={Kothari},
+         familyi={K\bibinitperiod},
+         given={Robin},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BDW+1}
+    \strng{fullhash}{BDWCAMKR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{BCK15}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{title}{Hamiltonian simulation with nearly optimal dependence on all parameters}
+    \field{journaltitle}{arXiv preprint arXiv:1501.01715}
+    \field{year}{2015}
+  \endentry
+
+  \entry{childs2021theory}{article}{}{}
+    \name{author}{5}{}{%
+      {{hash=CAM}{%
+         family={Childs},
+         familyi={C\bibinitperiod},
+         given={Andrew\bibnamedelima M},
+         giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=SY}{%
+         family={Su},
+         familyi={S\bibinitperiod},
+         given={Yuan},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=TMC}{%
+         family={Tran},
+         familyi={T\bibinitperiod},
+         given={Minh\bibnamedelima C},
+         giveni={M\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+      {{hash=WN}{%
+         family={Wiebe},
+         familyi={W\bibinitperiod},
+         given={Nathan},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=ZS}{%
+         family={Zhu},
+         familyi={Z\bibinitperiod},
+         given={Shuchen},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {APS}%
+    }
+    \strng{namehash}{CAM+1}
+    \strng{fullhash}{CAMSYTMCWNZS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Chi+21}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{number}{1}
+    \field{pages}{011020}
+    \field{title}{Theory of trotter error with commutator scaling}
+    \field{volume}{11}
+    \field{journaltitle}{Physical Review X}
+    \field{year}{2021}
+  \endentry
+
+  \entry{haah2019product}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=HJ}{%
+         family={Haah},
+         familyi={H\bibinitperiod},
+         given={Jeongwan},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Verein zur F{\"o}rderung des Open Access Publizierens in den Quantenwissenschaften}%
+    }
+    \strng{namehash}{HJ1}
+    \strng{fullhash}{HJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Haa19}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{pages}{190}
+    \field{title}{Product decomposition of periodic functions in quantum signal processing}
+    \field{volume}{3}
+    \field{journaltitle}{Quantum}
+    \field{year}{2019}
+  \endentry
+
   \entry{nielsen2001quantum}{book}{}{}
     \name{author}{2}{}{%
       {{hash=NMA}{%

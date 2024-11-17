@@ -1,0 +1,526 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{2. Postulates on quantum mechanics}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    %#################################### 
+    \begin{frame}{Introduction}
+        \begin{itemize}
+            \item 양자역학은 미시세계의 물리학을 다루는 학문이다. 
+            \item 양자역학을 다루기 위해서는 물리학적 개념을 우리에게 익숙한 언어인 "\alert{수학}"으로 표기할 필요가 있다.
+            \item 양자역학의 공준(postulate)은 다음 4가지 개념을 수학적으로 어떻게 정의할 것인지를 언급한다.
+            \begin{itemize}
+                \item state
+                \item dynamics
+                \item measurement
+                \item composite system
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+    
+    %#################################### 
+    \begin{section}{State}
+        \begin{frame}{State: state vector}
+            \begin{block}{Postulate 1}
+                Associated to any closed physical system is a complex vector space with inner product (i.e., \textit{Hilbert space}) known as the state space of the system. The system is completely described by its state vector, which is a unit vector in the system’s state space.
+                $$ \ket \psi \in \mathcal H$$
+            \end{block}
+            \begin{itemize}
+                \item 계의 상태를 기술하기 위하여 state vector를 사용한다. (unit vector)
+                \item 가능한 모든 상태들의 집합; 상태공간은 Hilbert space이다.
+                \item 상태 벡터를 사용하면 계를 \textbf{완전히} 기술할 수 있다.
+                \item (qubit) $\mathcal H_2$의 basis가 $\{\ket 0, \ket 1\}$일 때, state vector는 다음과 같이 표현할 수 있다.
+                $$\ket \psi = a \ket 0 + b \ket 1$$
+                where $|a|^2 + |b|^2 = 1$.
+            \end{itemize}
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Dynamics}
+        \begin{frame}{Dynamics: unitary operator}
+            \begin{block}{Postulate 2}
+                The evolution of a closed quantum system is described by a \textbf{unitary transformation}. That is, the state $\ket \psi$ of the system at time $t$ is related to the state $\ket{\psi '}$ of the system at time $t_0$ by a unitary operator $U$ which depends \textit{only} on the times $t_0$ and $t$,
+                $$ \ket {\psi'}  = U \ket \psi.$$
+            \end{block}
+            \begin{block}{Postulate 2'}
+                The time evolution of the state of a closed quantum system is described by the \textit{Schrödinger equation}, $(\ast)$
+                $$ i \hbar \frac{d \ket {\psi(t)}}{ dt} = \mathbf{H} \ket{\psi (t)}.$$
+                where $\mathbf H$ is Hamiltonian operator.
+            \end{block}
+            \begin{itemize}
+                \item Unitary operator는 특정한 discrete time $t_0, t$에 대한 dynamics를 나타내지만, Schrödinger equation은 continuous time에 대한 변화를 표현한다.
+                \item Hamiltonian은 계의 "에너지"에 대한 operator이다. 즉, quantum state의 에너지를 Hamiltonian operator로 변환하여 state의 evolution을 이끌어낼 수 있다.
+            \end{itemize}
+        \end{frame}
+            
+        \begin{frame}{Dynamics in qubit system}
+            \begin{itemize}
+                \item Pauli operator:
+                \\Pauli operator를 spectral decomposition해서 표현하면 다음과 같다.
+                \begin{itemize}
+                    \item (bit flip) $X = \ket + \bra + - \ket - \bra - (=\ket 0 \bra 1 + \ket 1 \bra 0 )$
+                    \item (phase flip) $Z = \ket 0 \bra 0 - \ket 1 \bra 1$
+                    \item $Y = \ket i \bra i - \ket {-i} \bra {-i}$
+                \end{itemize}
+                \vspace{0.5cm}
+                 \item Hadamard gate:
+                \\ basis state $\ket 0, \ket 1$와 superposition state $\ket +, \ket -$를 서로 변환한다.
+                $$ H = \frac{1}{\sqrt 2} \begin{pmatrix} 1 & 1 \\ 1 & -1\end{pmatrix}$$
+            \end{itemize}
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Measurement}
+        \begin{frame}{Measurement: linear operator}
+            \begin{block}{Postulate 3}
+                Quantum measurement is described by set of measurement operators $\{M_m\}$ where $\sum_m M_m^\dagger M_m = I$ (completeness relation). 
+                \\ The \textit{probability} of getting outcome $m$ is given by
+                $$p(m) = \braket{\psi | M_m^\dagger M_m | \psi}, $$
+                and the \textit{post-measurement state} is given by
+                $$\frac{M_m\ket\psi}{ \sqrt{\braket{\psi | M_m^\dagger M_m | \psi}}} = \frac{M_m\ket\psi}{ \sqrt{p(m)}}.$$
+            \end{block}
+            \begin{itemize}
+                \item 계에서 어떤 일이 일어났는지를 확인하기 위해서는 "관측"을 해야하며, 관측을 하게되는 순간 외부와 상호작용을 하게되므로 그 계는 더 이상 닫힌계가 아니다.
+                \item measurement operator가 \textit{completeness equation}을 만족시키기 때문에 각 outcome들의 확률의 합은 1이다. $(\ast)$
+                \item Example: $\ket \psi = a \ket 0 + b \ket 1$ 일 때, $p(0), p(1)$은?
+                \vspace{1cm}
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Projective measurements}
+            \begin{definition}[projective measurement]
+                Projective measurement is described by set of projector $\{P_m\}$. We first define \textit{observable} $M$, a Hermitian operator on the state space of the system being observed.
+                $M$ has a spectral decomposition
+                $$ M = \sum_m m P_m = \sum_m m \ket m \bra m, $$
+                where $P_m$ is the projector onto the eigenspace of $M$ with eigenvalue $m$.
+            \end{definition}
+            \begin{itemize}
+                \item 일반적인 관측에서는 operator $M_m$이 completeness relation을 만족하기만 하면되지만, projective measurement에서는 $M_m$이 Hermitian이고 $M_m M_{m'} = \delta_{m,m'} M_m$라는 조건을 만족해야하는 특수한 경우를 다룬다.
+                \item The \textit{probability} of getting outcome $m$ is given by $(ast)$
+                $$p(m) = \braket{\psi | P_m | \psi}, $$
+                \item and the \textit{post-measurement state} is given by
+                $$\frac{P_m\ket\psi}{ \sqrt{\braket{\psi | P_m | \psi}}} = \frac{P_m\ket\psi}{ \sqrt{p(m)}}.$$
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{POVM measurements}
+            \begin{definition}[POVM measurement]
+                Suppose a measurement described by measurement operators $M_m$ is performed upon a quantum system in the state $\ket \psi$. Then the probability of outcome $m$ is given by $p(m) = \braket{\psi | M_m^\dagger M_m | \psi}$. Suppose we define
+                $$E_m \triangleq M_m^\dagger M_m$$ 
+                as positive operator.
+                then probability can be simply described by $p(m) = \braket{\psi | E_m | \psi}.$
+                The operators $E_m$ are known as the \textbf{POVM elements} associated with the measurement. The complete set $\{E_m\}$ is known as a \textbf{POVM}.
+            \end{definition}
+            \begin{itemize}
+                \item POVM formalism을 사용하면, 계를 측정할 때의 확률을 분석하기 적합하다.
+                \item POVM은 completeness relation을 만족한다.
+                $$\sum_m E_m = I$$
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Examples}
+            \begin{itemize}
+                \item Example 1: 다음의 measurement operator $\{M_i\}$를 사용하여 $\ket 0$을 측정할 때, 각 outcome의 확률을 계산하라.
+                $$M_1 = \frac{\ket 0 \bra 0}{\sqrt 2}, \quad M_2 = \frac{\ket 1 \bra 1}{\sqrt 2}, \quad M_3 = \frac{\ket + \bra +}{\sqrt 2}, \quad M_4 = \frac{\ket - \bra -}{\sqrt 2}$$
+                \vspace{1cm}
+                
+                \item Example 2: $\{\ket 0 \bra 0, \ket 1 \bra 1\}$을 사용하여 $\ket +$을 측정할 때, 확률을 계산하라.
+                
+                \vspace{1.3cm}
+
+                \item Example 3: $\{\ket + \bra +, \ket - \bra -\}$을 사용하여 $\ket +$을 측정할 때, 확률을 계산하라.
+            
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Distinguishing qunatum states: orthogonal states}
+            \begin{theorem}
+                If the states $\ket{\psi_i}$ are orthonormal then we can prove that there always exists a quantum measurement capable of distinguishing the states.
+            \end{theorem}
+            $\ast$ \underline{Proof}:
+            \begin{itemize}
+                \item 서로 수직인 두 상태를 가정하자. $\braket{\psi | \psi^{\perp}} = 0$
+                \item 두 상태를 구분하기 위해서 다음과 같이 POVM을 가정하자.
+                $$E_1 = \ket{\psi} \bra{\psi}, \quad E_2 = \ket{\psi^{\perp}} \bra{\psi^{\perp}}, \quad E_3 = I-(E_1 + E_2)$$
+                \item 그럼 각 상태에 대해, 가능한 모든 outcome $m$의 확률은 다음과 같다. 
+                \\ $\Rightarrow$
+                \vspace{3cm}
+            \end{itemize}
+            따라서 서로 수직인 두 상태는 측정을 통해 두 상태를 완벽하게 구분할 수 있다.$\Box$
+        \end{frame}
+
+        \begin{frame}{Distinguishing qunatum states: non-orthogonal states}
+            \begin{theorem}
+                If the states $\ket{\psi_i}$ are not orthonormal then we can prove that there is no quantum measurement capable of distinguishing the states.
+            \end{theorem}
+            $\ast$ \underline{Proof}:
+            \begin{itemize}
+                \item 서로 수직이 아닌 두 상태를 가정하자. $\braket{\psi | \psi'} \ne 0$
+                \item 하나의 상태를 다음과 같이 linear combination으로 나타낼 수 있다. ($a \ne 0, b \ne 1$)
+                \begin{equation} \ket {\psi'} = a \ket \psi + b \ket{\psi^\perp} \end{equation}
+                \item (귀류법) 두 상태를 완벽하게 구분할 수 있는 POVM이 존재한다고 가정하자.
+                $$E_1 = M_1^\dagger M_1, \quad E_2 = M_2^\dagger M_2, \quad I = E_1 + E_2$$
+                \item 두 상태를 완벽하게 구분할 수 있으려면 각 상태가 서로 다른 outcome에 대해 deterministic하게 동작해야한다. 
+                \begin{equation}\braket{\psi|E_1|\psi} = 1,\quad \braket{\psi'|E_2|\psi'} = 1 \end{equation}
+                \item Eq 1, 2를 이용하여 식을 전개해나가면 모순을 찾을 수 있다.
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Distinguishing qunatum states: non-orthogonal states}
+            $\ast$ \underline{Proof} (contd.):
+            
+            $$\braket{\psi|I|\psi} = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad\qquad \qquad \qquad $$
+            \vspace{0.5cm}
+            $$\sqrt{E_2} \ket{\psi'} = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad\qquad \qquad \qquad $$
+            \vspace{0.5cm}
+            $$\braket{\psi^\perp|I|\psi^\perp} = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad\qquad \qquad  \qquad $$
+            \vspace{0.5cm}
+            $$\braket{\psi'|E_2|\psi'} =\qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad\qquad \qquad \qquad  $$
+            \vspace{0.3cm}
+            $$1 \le |b|^2 < 1$$
+            
+            \vspace{0.1cm}
+
+            따라서 서로 수직이 아닌 두 상태를 측정을 통해 완벽하게 구분할 수는 없다.$\Box$ (단, partially distinguishing은 가능하다.)
+        \end{frame}
+
+        \begin{frame}{Phase}
+            Global phase:
+            \begin{itemize}
+                \item $\ket{\psi}, e^{i\theta}\ket{\psi}$라는 두 상태에 대해서는 어떤 measurement $M_i$에 대해서도 확률이 동일하다.
+                \\ $\ast$ Proof:
+                \begin{itemize}
+                    \item $p(i)_{\ket{\psi}} = \braket{\psi|M_i^\dagger M_i|\psi}$
+                    \item $p(i)_{\ket{e^{i\theta}\psi}} = \braket{\psi|e^{i\theta}M_i^\dagger M_ie^{-i\theta}|\psi} = \braket{\psi|M_i^\dagger M_i|\psi}$
+                \end{itemize}
+                \item 즉, global phase가 곱해지더라도 두 상태는 physically 동일하다.
+            \end{itemize}
+            
+            \vspace{1cm}
+            Relative phase:
+            \begin{itemize}
+                \item 반면 linear combination의 일부항에만 phase가 곱해지는 relative phase는 구분된다.
+                \item example:
+                \begin{itemize}
+                    \item $\ket{\psi_1} = \frac{1}{\sqrt 2} (\ket0 + \ket 1) = \ket{+}$
+                    \item $\ket{\psi_2} = \frac{1}{\sqrt 2} (\ket 0 - \ket 1) = \frac{1}{\sqrt 2} (\ket 0 + (e^{i\pi}) \ket 1) =\ket{-}$
+                \end{itemize}
+            \end{itemize}
+
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Composite system}
+        \begin{frame}{Composite system: tensor product}
+            \begin{block}{Postulate 4}
+                The state space of a composite physical system is the tensor product of the state spaces of the component physical systems. Moreover, if we have systems numbered $1$ through $n$, and system number $i$ is prepared in the state $\ket{\psi_i}$, then the joint state of the total system is $$\ket{\psi_1} \otimes \ket{\psi_2} \otimes \cdots \otimes \ket{\psi_n}.$$
+            \end{block}
+            \begin{itemize}
+                \item 2개 이상의 더 많은 계를 한번에 표기할 때는, 복합계를 이루는 각각의 component system에 대한 tensor product를 사용한다.
+                \item 각 component system의 state들의 tensor product로 나타낼 수 있는 상태를 product state라고 하며, product state로 표현할 수 없는 composite system만이 가지는 상태를 \alert{entangled state}라고 한다. 
+                $$ \frac{1}{ \sqrt 2} (\ket{00} + \ket{11})$$
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Dynamics in Composite system}
+            \begin{itemize}
+                \item $Q\otimes M$ 복합계에 작용하는 unitary $U$를 다음과 같이 가정하자.
+                $$ \quad U\ket{\psi}\ket{0} = \sum_m M_m\ket{\psi} \ket{m} $$
+                $\{M_h\}$, $\{M_m\}$은 각 component system의 measurement operator이다. 
+                \item $U$는 다음과 같이 임의의 state $\ket \psi\ket 0, \ket \varphi \ket 0$에 대한 내적을 보존한다.
+                \begin{align*} 
+                    (\bra \varphi \bra 0 U^\dagger)(U \ket{\psi \ket 0}) &= \sum_{mm'} \bra{\varphi } \bra {m}  M_{m}^\dagger M_{m'}\ket{\psi} \ket {m'}  \\ &= \sum_{ mm'} \braket{\varphi|M^\dagger_{m}M_{m'}|\psi} \underbrace{ \braket{m|m'}}_{\delta_{mm'}} \\
+                    &= \braket{\varphi|\Sigma_m M_m^\dagger M_m|\psi} \\ &= {\braket
+                    {\varphi|\psi}} = \bra \varphi \underbrace{\braket{0|0}}_1 \ket \psi
+                \end{align*}
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Measurement in Composite system}
+            \begin{itemize}
+                \item 다음과 같은 projective measurement를 사용하면,
+                $$P_{m} = I_a \otimes \ket m \bra m (= I_a \otimes P_{b,m})$$
+                \item $U\ket \psi \ket 0$ 상태에 대해 outcome $m$의 확률은 다음과 같고
+                \begin{align*} 
+                    p(m) &= \bra{\psi}\braket{0|U^\dagger P_m U| \psi} \ket 0 \\ &= \sum_{m'm''} \braket{\psi|\bra{m'} M_{m'}^\dagger |(I_a \otimes \ket m \bra m) M_{m''} \ket{m''} \ket{\psi}} \\ &= \sum_{m'm''} \braket{\psi|I_a} \braket{m'|m} M_{m'}^\dagger M_{m''}\braket{m|m''} \braket{I_a|\psi} \\
+                    &= \braket{\psi|M_m^\dagger M_m | \psi}.
+                \end{align*}
+                \item 측정 후 상태는 다음과 같이 변한다.
+                $$ \frac{P_m U \ket{ \psi} \ket 0}{\sqrt{\bra \psi \braket{0|U^\dagger P_mU|\psi} \ket 0}} = \frac{M_m \ket{\psi} \ket m}{\sqrt{\braket{\psi|M_m^\dagger M_m |\psi}}}  = \frac{M_m \ket{\psi}}{ \sqrt{\braket{\psi|M^\dagger_m M_m | \psi}}}. $$
+            \end{itemize}
+            $\Rightarrow$ 즉, identity matrix $I$와 component system에만 작용하는 measurement operator $\ket m \bra m$의 tensor product로 정의되는 operator는 composite system에 작용하지만, component system에 작용하는 측정과 동일하다.  
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Density matrix}
+        \begin{frame}{Density matrix}
+            \begin{definition}[density matrix]
+                The density operator for the system is defined by the equation
+                $$\rho \triangleq \sum_{i} p_i \ket{\psi_i} \bra{\psi_i}.$$
+            \end{definition}
+            \begin{theorem}
+                An operator is the density matrix of $\{p_i, \ket{\psi_i}\}$iff,
+                %확률을 의미하니까 합은 1이되야한다.
+                $\text{tr}[\rho]=1$ and   $\rho \ge 0$.
+            \end{theorem}
+            \begin{itemize}
+                \item Density matrix는 system이 deterministic하게 알려지지 않았을 때, system을 표현하기에 좋은 방법을 제공한다.
+                \item Density matrix를 이루는 각 $\ket{\psi_i}$는 system이 가질 수 있는 state vector들을 의미하며 system이 실제로 그 state vector일 확률이 계수 $p_i$로 주어진다.
+                \item If $\text{tr}[\rho^2]=1$, \textit{pure state}.
+                \item If $\text{tr}[\rho^2]<1$, \textit{mixed state}, and $\{p_i, \ket{\psi_i}\}$ called as ensemble of pure states.
+            \end{itemize}
+
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{block}{Postulate 1}
+                Associated to any closed physical system is a \textit{Hilbert space} known as the state space of the system. The system is completely described by \textbf{density matrix.}
+                $$ \rho = \sum_i p_i \ket{p_i} \bra{p_i}, \quad \ket \psi \in \mathcal H$$
+            \end{block}
+
+            \begin{block}{Postulate 2}
+                The evolution of a closed quantum system is described by a \textbf{unitary transformation}
+                $$ \rho' = U \rho U^\dagger$$
+            \end{block}
+            \begin{itemize}
+                \item Density matrix의 evolution은 density matrix를 이루고 있는 각각의 state vector를 unitary operator로 evolution한 결과로 정의할 수 있다.
+            \end{itemize}
+            $$ \rho  \quad \longrightarrow\quad \sum_i p_i U \ket{\psi_i} \bra{\psi_i} U^\dagger = U(\Sigma_i \rho_i\ket{\psi_i} \bra{\psi_i}) U^\dagger= \boxed{U\rho 
+            U^\dagger}  $$
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{itemize}
+                \item mixed state를 이루는 여러 pure state중에서 만약 그 system이 $\ket{\psi_i}$ 상태라면, measurement outcome이 $m$일 \alert{조건부} 확률은 다음과 같다.
+                $$p(m|i) = \braket{\psi_i | M_m^\dagger M_m | \psi_i} = \text{tr}[M_m^\dagger M_m \ket{\psi_i} \bra{\psi_i}]$$
+                \item 따라서 marginalization을 이용하면, outcome이 $m$일 확률은 다음과 같다.
+                \begin{align*} p(m) &= \sum_i p(m|i) \cdot  p_i\\ &=\sum_i\text{tr}[M_m^\dagger M_m \ket{\psi_i} \bra{\psi_i}] \cdot p_i \\ &= \boxed{\text{tr}[M_m^\dagger M_m \cdot  \rho]}\end{align*} 
+            \end{itemize}
+            $\Rightarrow$
+            \vspace{1.8cm}
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{itemize}
+                \item outcome이 $m$일 때, 계의 측정 전 상태가 mixed state를 이루는 state 중에서 $\ket{\psi_i}$였을 확률은 Bayes theorem에 의해 다음과 같다. 
+                $$p(i|m) = \frac{p(m|i) \cdot p_i}{p(m)} $$
+                \item 따라서 측정 후, 변화한 pure state들에 대한 density matrix는 다음과 같다. 
+                \begin{align*}
+                    % $$\frac{M_m\ket\psi}{ \sqrt{\braket{\psi | M_m^\dagger M_m | \psi}}} = .$$
+                    \rho' &=  \sum_i p(i|m) \ket{\psi_i'} \bra{\psi_i'} \\ &= \sum_i \frac{p(m|i) \cdot p_i}{p(m|i)} \left(\frac{M_m\ket{\psi_i}}{ \sqrt{p(m|i)}} \right) \left( \frac{M_m\ket{\psi_i}}{ \sqrt{p(m)}}\right)^\dagger
+                    \\ &= \sum_i \frac{p(m|i) \cdot p_i}{p(m)} \frac{M_m\ket{\psi_i} \bra{\psi_i} M_m^\dagger}{{p(m|i)}} 
+                    \\ &= \sum_i \frac{ p_i (M_m\ket{\psi_i} \bra{\psi_i} M_m^\dagger)}{\text{tr}[M_m^\dagger M_m \cdot  \rho]} 
+                    \\ &= \boxed{\frac{M_m\rho M_m^\dagger}{ {\text{tr}[M^\dagger_m M_m \cdot \rho] }}}
+                \end{align*}
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Rewrite postulates via density matrix}
+            \begin{block}{Postulate 3}
+                Quantum measurement is described by set of measurement operators $\{M_m\}$ where $\sum_m M_m^\dagger M_m = I$ (completeness relation). 
+                \\ The \textit{probability} of getting outcome $m$ is given by
+                $$p(m) = \text{tr}[M^\dagger_m M_m \cdot \rho] $$
+                and the \textit{post-measurement state} is given by
+                $$\frac{M_m\rho M_m^\dagger}{ {\text{tr}[M^\dagger_m M_m \cdot \rho] }}.$$
+            \end{block}
+            \begin{block}{Postulate 4}
+                The state space of a composite physical system is the tensor product of the state spaces of the component physical systems. The \textbf{joint density matrix} is $${\rho_1} \otimes {\rho_2} \otimes \cdots \otimes {\rho_n}.$$
+            \end{block}
+        \end{frame}
+
+        \begin{frame}{Property of density matrix}
+            \begin{theorem}[Unitary freedom in the ensemble for density matrices]
+                The sets $\ket{\tilde{\psi_i}}, \ket{\tilde{\varphi_j}}$ generate the \textbf{same} density matrix if and only if
+                $$\ket{\tilde{\psi_i}} = \sum_j u_{ij} \ket{\tilde{\varphi_j}}$$
+                where $u_{ij}$ is a unitary matrix of complex numbers, with indices $i$ and $j$, 
+            \end{theorem}
+            \checkmark \underline{meaning}:
+            \begin{itemize}
+                \item 다음과 같은 density matrix가 있을 때, 
+                $$\rho = \frac{3}{4} \ket 0 \bra 0 + \frac{1}{4} \ket 1 \bra 1$$
+                \item ensemble of pure states $\{\ket a, \ket b\}$로도 동일한 density matrix를 만들 수 있다.
+                $$ \rho = \frac{1}{2}\ket{a} \bra a + \frac{1}{2} \ket b \bra b $$
+                whrere
+                \begin{itemize}
+                    \item $\ket a = \sqrt{3/4} \ket 0 + \sqrt{1/4} \ket 1$
+                    \item $\ket b = \sqrt{3/4} \ket 0 + \sqrt{1/4} \ket 1$
+                \end{itemize}
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Reduced density matrix}
+            \begin{definition}[reduced density matrix]
+                Suppose, we have physical systems $A$ and $B$, whose state is described by a density operator $\rho^{AB}$. The reduced density operator for system $A$ is defined by 
+                $$\rho^A \triangleq \text{tr}_B[\rho^{AB}]$$
+            \end{definition}
+            \begin{itemize}
+                \item $\text{tr}_B$는 partial trace를 의미한다. 아랫첨자 system에 대해서만 trace를 계산한다.
+                \begin{align*}
+                    & \text{tr}_B\left(\left|a_1\right\rangle\left\langle a_2|\otimes| b_1\right\rangle \langle b_2 |\right) \\
+                    &= \left|a_1\right\rangle\left\langle a_2| \operatorname{tr}_B[| b_1\right\rangle \langle b_2 |] = \left|a_1\right\rangle \langle a_2|\braket{b_2|b_1}
+                \end{align*}
+                \item Example: Bell state에 대해 partial density operator $\rho^A$를 계산하라.
+                $$\ket{\psi^{AB}} = {\frac{1}{\sqrt 2}} \ket{00} + \frac{1}{\sqrt 2} \ket{11}$$
+                $\Rightarrow$
+                \vspace{2.5cm}
+            \end{itemize}
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{section}{Schmidt decomposition}
+        \begin{frame}{Schmidt decomposition}
+            \begin{theorem}[Schmidt decomposition]
+                Suppose $\ket{\psi}$ is a pure state of a composite system, $AB$. Then there exist orthonormal states $\ket{i_A}$ for system $A$, and orthonormal states $\ket{i_B}$ of system $B$ such that 
+                $$\ket{\psi} = \sum_i \lambda_i \ket{i_A} \ket{i_B},$$
+                where $\lambda_i$ are non-negative real numbers satisfying $\sum_i \lambda_i^2 = 1$.
+            \end{theorem}
+            \begin{itemize}
+                \item Schmidt decomposition을 이용하면 reduced density matrix를 다르게 쓸 수 있다.($\ast$)
+                $$ \rho^A = \sum_i \lambda_i^2 \ket{i_A} \bra{i_A},\qquad \rho^B = \sum_i \lambda_i^2 \ket{i_B} \bra{i_B} $$
+                \vspace{-0.3cm}
+                \item 이를 이용하면 $\ket{\psi^{AB}}$가 product state인지, entangled state인지에 따라서 reduced density matrix가 mixed state인지 pure state인지를 결정할 수 있다.
+                \begin{itemize}
+                    \item If composite system is product state, then each component system is \alert{pure state}.
+                    \item If composite system is entangled state, then each component system is \alert{mixed state}.
+                \end{itemize}
+                \item Example:
+                \vspace{1.1cm}
+
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}{Purification}
+            \begin{theorem}[purification]
+                Suppose we are given a state $\rho^A$ of a quantum system $A$. It is possible to introduce another system, which we denote $R$, and define a pure state $|AR〉$ for the joint system $A \otimes R$ such that 
+                $$\rho^A = \text{tr}_R(|AR〉〈AR|).$$
+                That is, the pure state $|AR〉$ reduces to $\rho^A$ when we look at system $A$ alone
+            \end{theorem}
+            \checkmark \underline{meaning}: Mixed state $\rho^{A}$를 pure state인 $\ket{AR}$으로 나타내는 방법을 소개한다. 
+            \\
+            $\ast$ \underline{Proof}:
+            \begin{itemize}
+                \item Pure state $\ket{AR}$을 다음과 같이 정의하자.
+                $$ \ket{AR} = \sum_i \sqrt{p_i} \ket{i_A} \ket{i_R}$$
+                \item 이를 대입하여 전개한 결과가 $\rho^A$와 동일함을 보이면 된다.
+                $$  \text{tr}_R(|AR〉〈AR|) = \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad $$
+                \vspace{2cm}
+            \end{itemize}
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{frame}{References}
+        
+        \begin{itemize}
+            \item M. A. Nielson and I. L. Chuang, Quantum Computation and Quantum Information
+            \item Lecture notes for QU511: Quantum Computing (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+        % \begin{alertblock}{test block}
+        % \end{alertblock}
+    \end{frame}
+\end{document}
+
