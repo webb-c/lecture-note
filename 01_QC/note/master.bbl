@@ -101,6 +101,30 @@
     \field{year}{2021}
   \endentry
 
+  \entry{unknown}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=DS}{%
+         family={Dhara},
+         familyi={D\bibinitperiod},
+         given={Sayandip},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DS1}
+    \strng{fullhash}{DS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Dha15}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \verb{doi}
+    \verb 10.13140/RG.2.1.4954.9925
+    \endverb
+    \field{title}{Quantum Order Finding and Factorization}
+    \field{month}{07}
+    \field{year}{2015}
+  \endentry
+
   \entry{haah2019product}{article}{}{}
     \name{author}{1}{}{%
       {{hash=HJ}{%

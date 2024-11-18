@@ -229,7 +229,7 @@ Hamiltonian이 k-local Hamiltonian이라고 가정할 때, 이를 이용하여 �
 이때, norm은 다음과 같이 정의된다.
 
 \begin{definition}
-  $$  \|A\| \equiv \max _{|\psi\rangle} \| A|\psi\rangle \|_2=\max _{|v\rangle \ne 0} \frac{\| A|v \rangle \|_2}{\||v\rangle \|_2} $$
+  $$  \|A\| \triangleq \max _{|\psi\rangle} \| A|\psi\rangle \|_2=\max _{|v\rangle \ne 0} \frac{\| A|v \rangle \|_2}{\||v\rangle \|_2} $$
 \end{definition}
 
 이제 이 norm이 적절한 error rate $\epsilon$에 의하여 bound됨을 보임으로써, 이 Hamiltonian simulation을 실제로 활용할 수 있을지 분석할 수 있다. 
@@ -336,7 +336,7 @@ QFT에 대해서 소개하기에 앞서, 먼저 classical Fourier transform에 �
 
 \begin{definition}[Discrete Fourier transform]
   Discrete Fourier transform은 vector $\mathbf x \in \mathbb C^N$을 입력으로 받아서, 다음과 같이 정의되는 연산을 수행하여 output vector $\mathbf y \in \mathbb C^N$으로 변환하는 과정이다.\footnote{$\mathbf x = x_0\cdots x_{N-1}$, $\mathbf y = y_0\cdots y_{N-1}$ }
-  $$ y_k \equiv \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_j e^{2 \pi i j k / N} $$
+  $$ y_k \triangleq \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_j e^{2 \pi i j k / N} $$
 \end{definition}
 
 \begin{definition}[Quantum Fourier transform]\label{def:QFT}
@@ -411,7 +411,7 @@ Binary representation을 이용하면 QFT의 연산을 다음과 같이 분석�
 \vspace{1em}
 본격적으로 quantum circuit을 만들기 위해서 rotation operator $R_k$를 다음과 같이 정의하자. 이렇게 정의한 operator는 $\ket 0$에 대해서는 아무것도 수행하지 않지만, $\ket 1$에 대해서는 phase $e^{2\pi i / 2^k}$를 적용한다.
 \begin{equation*}
-  R_k \equiv\left(\begin{array}{cc}
+  R_k \triangleq \left(\begin{array}{cc}
   1 & 0 \\
   0 & e^{2 \pi i / 2^k}
   \end{array}\right)
@@ -573,7 +573,7 @@ Eq.~\eqref{eq:QPE-1}에 \hyperref[def:IQFT]{IQFT}를 적용한 결과는 다음�
 \vspace{1em}
 다른 항이 관측될 확률을 분석하기 위해서, $\alpha_l$을 $\ket{(b+l) \mod 2^t}$ state에 대한 amplitude라고 하자. 등비급수 공식을 사용하여 나타내면 다음과 같다. ($\delta = \varphi - b/2^t$) (See Eq.~\eqref{eq:b})
 \begin{equation*}
-  \alpha_l \equiv \frac{1}{2^t} \sum_{k=0}^{2^t-1}\left(e^{2 \pi i\left(\varphi-(b+l) / 2^t\right)}\right)^k=\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \varphi-(b+l)\right)}}{1-e^{2 \pi i\left(\varphi-(b+l) / 2^t\right)}}\right)=\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \delta-l\right)}}{1-e^{2 \pi i\left(\delta-l / 2^t\right)}}\right)
+  \alpha_l \triangleq \frac{1}{2^t} \sum_{k=0}^{2^t-1}\left(e^{2 \pi i\left(\varphi-(b+l) / 2^t\right)}\right)^k=\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \varphi-(b+l)\right)}}{1-e^{2 \pi i\left(\varphi-(b+l) / 2^t\right)}}\right)=\frac{1}{2^t}\left(\frac{1-e^{2 \pi i\left(2^t \delta-l\right)}}{1-e^{2 \pi i\left(\delta-l / 2^t\right)}}\right)
 \end{equation*}
 이때, $a_l$은 $b+l \mod 2$ 연산에 의해 결정되기 때문에, 서로 다른 $l$에 대해서 동일한 $\alpha_l$을 정의할 수 없도록 $l$은 $-2^{t-1} < l \le 2^{t-1}$ 범위로 제한된다.
 
@@ -641,34 +641,407 @@ $0\le 2^t \delta \le 1$을 이용하여 간략히 표현하면, 다음을 얻는
   \item (time complexity) 
   \begin{itemize}
     \item (step 1) QPE를 실행하기 위해서는 controlled unitary를 $2^t$번 가해야하므로, gate complexity를 qubit의 개수 $t$에 대해서 표현하면 $O(1/(\delta \epsilon))$이 된다.
-    \item (step 2) 이후, $t$개의 qubit에 대해 IQFT를 가하기 때문에 IQFT의 complexity는 $\Theta(t^2) = \Theta((\log \frac{1}{\delta \epsilon})^2)$이 된다.
+    \item (step 2) $t$개의 qubit에 대해 IQFT를 가하기 때문에 IQFT의 complexity는 $\Theta(t^2)$이 된다.
   \end{itemize}
   따라서 QPE의 total time complexity는 다음과 같다.
   \begin{equation*}
-    O\left(\frac{1}{\delta \epsilon} \right) + \Theta\left(\left(\log \frac{1}{\delta \epsilon}\right)^2\right)
+    O\bigg(\frac{1}{\delta \epsilon} \bigg) + \Theta\bigg(\bigg(\log \frac{1}{\delta \epsilon}\bigg)^2\bigg)
   \end{equation*}
 \end{itemize}
 
 \lecture{13}{30 Oct. 10:30}{}
 \section{Applications of phase estimation}
 \subsection{Ground state energy estimation}
+앞에서 phase estimation의 대표적인 예시로 사용했던 ground state energy estimation에 대해 조금 더 자세히 살펴보자.
+$H$가 다음의 eigendecomposition을 가지는 Hamiltonian operator라고 하자.\footnote{다음 가정은 non-degenerate case; 중복된 고윳값이 없는 상태를 다룬다는 것을 의미한다.}
+\begin{equation*}
+  H\left|\psi_j\right\rangle=\lambda_j\left|\psi_j\right\rangle, \qquad (\text{suppose } 0 < \lambda_0   < \lambda_1 \leq \cdots \leq \lambda_{N-1} < \frac{1}{2}) 
+\end{equation*}
+우리가 ground state $\ket{\psi_0}$의 정확한 state를 알고있다면, QPE를 적용해서 높은 확률로 ground state energy를 추정할 수 있다.
+반면, 다음과 같은 eigenstate의 approximation state를 이용한다고 하자. 
+\begin{equation*}
+  |\psi\rangle=\sum_{k \in \{0, \cdots, N-1\}} c_k\left|\psi_k\right\rangle
+\end{equation*}
+이 state를 관측했을 때, ground state를 얻을 확률은 $p_0 = |\langle{\psi|\psi_0}\rangle|^2$ 이고, $p_0$이 충분히 크다면 QPE를 여러번 반복하여 ground state energy를 추정할 수 있다. (Poly)
+
+\vspace{1em}
+
+Ground state energy estimation은 $\epsilon$의 정확도로 ground state energy $\lambda_0$를 추정하고자한다. ($\epsilon < \lambda_0$)
+이 문제는 quantum many-body physics, quantum chemistry, optimization 등 많은 분야에서 중요한 문제이다.
+일반적으로, QPE를 활용하기 위해서 Hamiltonian에 대한 unitary operation을 이용할 수 있다고 가정한다.
+\begin{equation*}
+  U=e^{2 \pi i H}
+\end{equation*}
+이 unitary에 대해 ground state energy는 phase에 위치하게 되며, 따라서 QPE를 적용할 수 있다.
+\begin{equation*}
+  U\left|\psi_0\right\rangle=e^{2 \pi i \lambda_0}\left|\psi_0\right\rangle .
+\end{equation*}
+
 \subsection{Order-finding algorithm}
-\subsubsection{Order-finding}
-\subsubsection{Uncomputation}
+\subsubsection{Prerequisite: Uncomputation}\label{sec:uncomputation}
+먼저, order-finding algorithm을 설명하기 전에 uncomputation technique에 대해 먼저 이야기해보자. Classical circuit $f$에 대응되는 quantum circuit $O_f$를 구성하는 과정을 \textit{uncomputation}이라고 한다.\footnote{Deutsch’s algorithm에서 사용했던 oracle과 동일한 개념이다.}
+\begin{equation*}
+  O_f|x, b\rangle=|x, b \oplus f(x)\rangle
+\end{equation*}
+
+구체적으로 uncomputation 과정을 어떻게 수행하는지 단계별로 살펴보자.
+\begin{enumerate}
+  \item classical circuit을 \textit{reversible}하도록 $n$개의 ancilla qubit을 추가한다. ($g(x)$는 임의의 garbage 값)
+  \begin{equation*}
+    \tilde O_f|x\rangle\left|0^n\right\rangle \ket b \rightarrow |g(x)\rangle|f(x)\rangle \ket b
+  \end{equation*}
+  \item $\ket b$와 ancilla qubit에 대해 controlled-X gate를 적용한다.
+  \begin{equation*}
+    |g(x)\rangle C(X) |f(x)\rangle|b\rangle \rightarrow |g(x)\rangle|f(x)\rangle|b \oplus f(x)\rangle
+  \end{equation*}
+  \item $O_f^{^\dagger}$를 적용하고 ancilla qubit을 무시하면, $O_f = \tilde O^\dagger_f C(X) \tilde O_f$는 우리가 원하는 연산을 수행한다.
+  \begin{equation*}
+    \tilde  O_f^{-\dagger}|g(x)\rangle|f(x)\rangle|b \oplus f(x)\rangle \rightarrow|x\rangle \underbrace{\left|0^n\right\rangle}_{ancilla} |b \oplus f(x)\rangle
+  \end{equation*}
+  
+\end{enumerate}
+
+\subsubsection{Order-finding}\label{sec:order-finding}
+이제 order-finding problem이 무엇인지 소개하려고 한다. order-finding problem은 다음과 같이 표현된다.ㅍ
+\begin{itemize}
+  \item \texttt{input}: integer $(x, N)$, $(x < N, \ \gcd(x, N) = 1)$
+  \item \texttt{output}: the \hyperref[def:order]{order} of $x \mod N$, $r$.
+\end{itemize}
+
+\begin{definition}[Order]\label{def:order}
+  다음을 만족하는 가장 작은 양의 정수 $r$을 \textit{order of x modulo N}이라고 한다.
+  $$x^r \equiv 1 \mod N$$ 
+\end{definition}
+
+Classical algorithm으로 이 문제를 input의 크기 $L$에 대하여 polynomial time에 해결할 수 있는 방법은 현재까지 없다고 알려져있다. 이때 $L$은 $N$과 $N$보다 작은 수 $x$를 표현하는데 필요한 bit의 개수를 의미하기 때문에 $L \triangleq \lceil \log N \rceil$ 이다.
+
+\vspace{1em}
+
+Quantum algorithm으로 이 문제를 해결하기 위해서 우리는 \textit{phase estimation}을 활용한다. Phase estimation을 적용하기 위해서는 unitary operator $U$와 그에 대응되는 eigenvector $\ket u$, eigenvalue $\varphi$의 형태로 문제를 정의해야한다. 
+따라서 이를 위해 computational basis $\ket y \in \{\ket 0, \cdots \ket{2^L-1}\}$에 대하여 다음과 같이 동작하는 unitary를 정의하자. 
+\begin{equation*}
+  U|y\rangle \triangleq \begin{cases}|x y \mod N\rangle & 0 \leq y<N, \\ |y\rangle & N \leq y<2^L\end{cases}
+\end{equation*}
+
+이 unitary는 $N$보다 큰 basis들의 subspace에 대해서는 identity matrix처럼 행동하지만, 그보다 작은 subspace에 대해서는 주어진 input $x$에 대해 $xy \mod N$ 연산 결과가 되도록 만든다.
+이렇게 정의한 unitary가 정말로 valid한지를 확인하기 위해 subspace에 대해 작용하는 unitary $\tilde{\ket{U}}$가 valid한지를 확인해보자.
+\begin{align*}
+  \langle y| \tilde U^\dagger \tilde U |y'\rangle = \langle xy \mod N| xy' \mod N\rangle = \langle y|y'\rangle 
+\end{align*}
+연산 전후 norm을 보존하기 때문에 우리가 정의한 unitary는 valid하다.\footnote{또는 $\gcd(x, N) = 1$이라면, modulo $N$에서 $x$의 역원은 \textbf{항상} 존재한다는 성질을 활용해서 증명할 수도 있다.} $\Box$
+% \begin{definition}[Inverse modulo]\label{def:inverse-modulo}
+%   다음을 만족하는 $x^{-1}$을 modulo $N$에서 $x$의 역원이라고 한다.
+%   $$x x^{-1} \equiv 1 \mod N$$  
+% \end{definition}
+
+이제 다음과 같이 정의한 state가 $U$의 eigenvector임을 보인다면, phase estimation을 통해 어떤 임의의 eigenvector에 대해서도 항상 eigenvalue $r$을 얻을 수 있다는 사실을 입증할 수 있다.
+\begin{equation*}
+  \left|u_s\right\rangle \triangleq \frac{1}{\sqrt{r}} \sum_{k=0}^{r-1} \exp \left(-\frac{2 \pi i s k}{r}\right)\left|x^k \mod N\right\rangle
+  \end{equation*}
+어떤 정수 $0\le s \le r-1$에 대해서도 $\ket{u_s}$가 eigenvector임을 보이기 위해 definition을 이용하자. 
+\begin{itemize}
+  \item Eq.~\eqref{eq:order-1} : $x^{k} \mod N$은 modulo 연산 때문에 항상 그 결과가 $\{0, \cdots, N-1\}$ 범위에 존재하여 unitary operation이 $\ket{x^{k+1} \mod N}$으로 state를 변화시킨다.
+  \item Eq.~\eqref{eq:order-2} : $k = k+1$로 재정의하면, sigma의 적용 범위가 $[0, r-1]$에서 $[1, r]$로 변화하지만, modulo $N$ 연산 때문에 연산 범위를 동일하게 생각할 수 있다.
+  \item Eq.~\eqref{eq:order-4} : 따라서 $U$를 $\ket{u_s}$에 적용한 결과는 단순히 $\ket{u_s}$에 phase $e^{2\pi is / r}$을 가한 결과와 동일하므로 $\ket{u_s}$는 $U$의 eigenvector이다. $\Box$
+\end{itemize}
+\begin{align}
+  U\left|u_s\right\rangle &= \frac{1}{\sqrt{r}} \sum^{r-1}_{k=0} \exp \left(- \frac{2\pi isk}{r}\right) \ket{x^{k+1} \mod N} \label{eq:order-1}\\
+  &= \frac{1}{\sqrt{r}} \sum^{r-1}_{k=0} \exp \left(- \frac{2\pi is(k-1)}{r}\right) \ket{x^{k} \mod N} \label{eq:order-2}\\
+  &= \frac{1}{\sqrt{r}}exp \left(\frac{2\pi is}{r}\right) \sum^{r-1}_{k=0} \exp \left(- \frac{2\pi isk}{r}\right) \ket{x^{k} \mod N} \label{eq:order-3}\\
+  &=\exp \left(\frac{2 \pi i s}{r}\right)\left|u_s\right\rangle \label{eq:order-4}.
+\end{align}
+따라서, 어떤 $s$에 대해서도 phase estimation을 적용하면 $s/r$을 얻을 수 있다.
+\newpage
+단, phase estimation을 수행하기 위해서는 아직 2가지의 요소가 더 필요하다.
+\begin{itemize}
+  \item 다음 연산을 구현하는 방법 ($t$개의 qubit를 이용할 때)
+  \begin{equation*}
+    |z\rangle U^{z_t 2^{t-1}} \cdots U^{z_1 2^0}|y\rangle=|z\rangle\left|x^z y \mod N\right\rangle .
+  \end{equation*}
+  \item $U$의 eigenvector $\ket{u_s}$를 $r$\footnote{eigenvector의 정의에 이미 우리가 얻고자하는 값인 $r$이 들어있다}없이 준비하는 방법.
+\end{itemize}
+
+(1) 의 구현은 앞에서 설명한 \textit{uncomputation} 기법을 활용하여 생각할 수 있다.
+다음 gate는 $f(z) = x^z \mod N$을 수행하는 classical function을 quantum circuit으로 구현한 것이다.\footnote{$0 \oplus f(z)$}
+\begin{equation}
+  |z\rangle|y\rangle|0\rangle \xrightarrow{\tilde O_f} |z\rangle|y\rangle\left|x^z \mod N\right\rangle \label{eq:order-base-circuit}
+\end{equation}
+만약 $f(z) = x^z \mod N$을 계산하는 classical circuit이 있다면, uncomputation을 사용하여 Eq.~\eqref{eq:order-base-circuit}과 같은 연산을 quantum computer에서도 수행할 수 있다.
+\textit{modular exponentiation}\footnote{$ab \mod N = (a \mod N) (b \mod N)$}에 의하여, $f(z) = x^z \mod N$은 다음과 같이 계산할 수 있다. ($z = z_tz_{t-1} \cdots z_1$)
+\begin{equation*}
+  x^z \mod N  =  (x^{z_t 2^{t-1}} \mod N)(x^{z_{t-1} 2^{t-2}} \mod N) \cdots (x^{z_1 2^{0}}\mod N)
+\end{equation*}
+따라서 이 아이디어를 이용하여 uncomputation 과정을 적용하면 다음의 circuit을 만들 수 있다.
+\begin{enumerate}
+  \item \textit{modular exponentiation}을 사용하면, Eq.~\eqref{eq:order-base-circuit}을 다음과 같이 계산할 수 있다.
+  \begin{equation*}
+    |z\rangle|y\rangle|0\rangle \xrightarrow{\tilde O_f} |z\rangle|y\rangle|(x^{z_t 2^{t-1}} \mod N)(x^{z_{t-1} 2^{t-2}} \mod N) \cdots (x^{z_1 2^{0}}\mod N)\rangle
+    \end{equation*}
+  \item $\ket{q_3}$과 ancilla qubit $\ket{q_2}$을 곱한다. ($\ket{q_1q_2q_3}$)
+  \begin{equation*}
+    |z\rangle|y\rangle\left|x^z \mod N\right\rangle \rightarrow |z\rangle\left| x^z y \mod N\right\rangle \left| x^z \mod N\right\rangle
+  \end{equation*}
+  \item inverse operation $\tilde O_f^\dagger$를 취한다.
+  \begin{equation*}
+    |z\rangle\left| x^z y \mod N\right\rangle \left| x^z \mod N\right\rangle \xrightarrow{\tilde O_f^\dagger} |z\rangle|x^zy \mod N\rangle|0\rangle
+  \end{equation*}
+\end{enumerate}
+$\ket {q_3}$을 무시하면, $O_f = \tilde O_f^\dagger U \tilde O_f$는 우리가 원하는 연산을 수행한다. 
+만약 $\ket{x^zy \mod N}$을 나타내기 위해서 사용하는 qubit의 개수가 $L$개라면, 이 연산의 time complexity는 $O(L^3)$이다.
+\begin{itemize}
+  \item \*QPE에 사용하는 qubit의 개수 $t$는 다음과 같이 설정된다.\footnote{우리가 조절할 수 있는 parameter인 $L$에 의해, QPE의 accuracy가 조절된다. }
+  \begin{equation*}
+    t=2 L+1+\lceil\log (2+1 /(2 \delta))\rceil=O(L)
+  \end{equation*}
+  \item $0\le j < t$ 범위의 모든 $j$에 대해 이를 계산해야하므로, $O(t)$번 연산을 수행한다.
+  \item 매 단계마다, $x^{z}y \bmod y$ 값을 갱신하기 위해서 이전 단계까지의 누적 계산 결과 $x^{z_12^0} \cdots x^{x_i 2^{i-1}}$에 이번 단계에 얻은 결과인 $x^{x_{i+1} 2^{i}}$를 곱한 뒤 $\bmod N$을 취한다.
+  \begin{itemize}
+    \item $L$ bit 수의 곱셈 연산의 complexity: $O(L^2)$
+    \item $\bmod N$ 연산의 complexity: $O(L^2)$
+  \end{itemize}
+\end{itemize}
+
+\vspace{1em}
+
+반면, (2) 를 구현하는 것은 조금 더 까다롭다. 이 문제를 해결하기 위해서 $\ket{u_s}$들의 superposition state를 대신 입력으로 제공하는 방법을 사용할 수 있다. 만약 $r$개의 qubit를 이용하여 $\ket{u_s}$를 준비한다고 가정하면, superposition state는 다음과 같이 정리할 수 있다.\footnote{complex exponential의 orthogonality에 의하여, $\sum_{s=0}^{r-1} e^{(2 \pi i s / r )(k-0)}=\left\{\begin{array}{lll}
+  0, & \text { for } k \neq 0 \\
+  r, & \text { for } k=0
+  \end{array}\right.$}
+\begin{equation*}
+  \frac{1}{\sqrt{r}} \sum_{s=0}^{r-1}\left|u_s\right\rangle=\frac{1}{r} \sum_{s, k=0}^{r-1} \exp \left[-\frac{2 \pi i s k}{r}\right]\left|x^k \bmod N\right\rangle=\sum_{k=0}^{r-1} \delta_{k 0}\left|x^k \bmod N\right\rangle=|1\rangle .
+\end{equation*}
+
+따라서 $\ket 1$을 입력으로 사용하면, 확률에 따라서 임의의 $s$에 대해 $\varphi \approx s/r$를 적어도 $(1-\delta)/r$확률로 $2L+1$ bit 정확도를 달성할 수 있다. 
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/order-finding-circuit.png}
+  \caption{Order-finding algorithm \cite{unknown}}
+\end{figure}
+
 \subsubsection{The continued fraction expansion}
+우리가 앞의 알고리즘을 통해서 얻은 결과는 $s/r$이다. 따라서 이 결과로부터 $r$의 값을 얻어내는 추가적인 후처리가 필요하다. 우리가 얻은 $\varphi \approx s/r$은 임의의 $2L+1$ bit 소수이므로 임의의 실수이지만, 실제로 우리가 얻고자 하는 값은 $s/r$은 분명히 \textit{유리수}이다. 
+이 특징을 활용하기 위해 continued fraction이라는 개념을 도입한다. continued fraction은 주어진 실수를 연분수 형태로 표현한 것이다.\footnote{이때 $[a_0, \cdots, a_M]$을 $M$th convergent라고 한다.}
+\begin{equation*}
+\left[a_0, \ldots, a_M\right] \triangleq a_0+\frac{1}{a_1+\dfrac{1}{a_2+\dfrac{1}{a_3+\ldots}}}
+\end{equation*}
+주어진 convergent를 연분수 형태로 변환하는 알고리즘을 \textit{continued fraction algorithm}이라고 한다.
+\begin{theorem}
+  $s/r$이 유리수이고, $\varphi$가 QPE로 얻은 근사값일 때 두 값의 차이가 다음과 같은 upper bound를 만족한다면, continued fraction algorithm을 적용하여 얻은 결과가 바로 $s/r$이다.
+  $$ \left|\frac{s}{r}-\varphi\right| \leq \frac{1}{2 r^2} $$
+\end{theorem}
+
+Order-finding problem에서는 $(1-\delta)/r$의 높은확률로 $2L+1$ bit 정확도를 달성하기에, 다음을 만족한다.
+\begin{equation*}
+  \left|\frac{s}{r}-\varphi\right| \leq \frac{1}{2^{2 L+1}} \leq \frac{1}{2 r^2}
+\end{equation*}
+따라서 continued fraction algorithm을 적용할 수 있으므로, $O(L^3)$의 time complexity로 $s/r$을 구할 수 있고 $\gcd(s, r) =1$\footnote{만약 두 수 사이에 공약수가 존재하면, continued fraction algorithm이 반환하는 값이 통분한 값이 된다}이라면 $r$을 구할 수 있다. 
 \subsubsection{Performance}
+Order-finding algorithm의 정확도를 분석하기 위해서, 이 알고리즘이 실패하는 경우를 분석해보자.
+\begin{itemize}
+  \item QPE가 실패하는 경우 : 아주 작은 확률 $\epsilon$로 실패할 수 있다. 이 경우 qubit의 개수를 늘려서 QPE의 정확도를 높히거나 QPE를 여러번 반복하여 각 outcome의 확률을 비교하여 해결할 수 있다.
+  \item $\gcd(s,r) \ne 1$인 $s$를 얻는 경우 : $0 \le s <r-1$ 범위에서 두 수가 서로소일 확률은 매우 높기 떄문에, 알고리즘을 $2 \log N$번 반복하면 이 문제를 해결할 수 있다.
+\end{itemize}
+\vspace{1em}
+마지막으로 Order-finding algorithm의 circuit이 필요로하는 자원을 분석해보자.
+\begin{itemize}
+  \item $O(L)$ : Register 1에 $H$ 변환을 가하는데 필요한 circuit의 개수
+  \item $O(L^2)$ : IQFT를 적용하는데 필요한 circuit의 개수
+  \item $O(L^3)$ : Controlled unitary; modular exponentiation에 필요한 circuit의 개수
+  \item $O(L^3)$ : continued fraction algorithm이 사용하는 time complexity
+  \item $O(\log N)$ : 오류가 발생했을 때, 다시 알고리즘을 실행하는 횟수
+\end{itemize}
+
 
 \subsection{Shor’s algorithm: factoring}
+이제 마지막으로 그 유명한 Shor's algorithm에 소개하고자 한다. Classical computer에서 polynomial time에 해결하는 효과적인 알고리즘이 아직 존재하지 않는 \textit{factoring}을 quantum computer를 사용하여 효율적으로 수행할 수 있다는 사실을 보여주는 중요한 알고리즘이다.
 
+\vspace{1em}
+
+Prime factorization problem은 다음과 같이 정의된다.
+\begin{itemize}
+  \item \texttt{input}: natural number $N$
+  \item \texttt{output}: list of prime numbers $\{p_1, p_2, \dots, p_k\}$ such that $N = p_1^{e_1} \cdot p_2^{e_2} \cdot \dots \cdot p_k^{e_k}$
+\end{itemize}
+
+이를 해결하는 Shor's algorithm은 다음과 같다.
+\begin{enumerate}
+  \item \textbf{if} $N$이 짝수라면, \textit{return} $2$
+  \item \textbf{if} $N$이 prime $p$에 대해서 $N = p^k$라면, \textit{return} $p$\footnote{이를 판단하는 효과적인 classical algorithm이 존재}
+  \item $1\le x \le N-1$ 범위에서 랜덤하게 $x$를 선택한다.
+  \begin{enumerate}
+    \item \textbf{if} $\gcd(N, x) > 1$\footnote{using Euclidean algorithm}, \textit{return}  $\gcd(N, x)$
+    \item \textbf{else}, \hyperref[sec:order-finding]{order-finding algorithm}을 사용하여 order $r$을 찾는다.
+  \end{enumerate}
+  \item \textbf{if} $r$이 홀수라면, \textit{goto} step 3.
+  \item \textbf{else},
+  \begin{enumerate}
+    \item 다음을 계산한다.
+    \begin{equation*}
+      x^r - 1 \equiv (x^{r/2} - 1)(x^{r/2} + 1) \equiv 0 \mod N
+    \end{equation*}
+    \item 계산 결과로부터 얻은 2개의 항에 대해, 다음의 조건들을 확인한다.
+      \begin{enumerate}
+        \item \textbf{if} $N|x^{r/2}-1$, \textit{error}\footnote{order $r$이 이를 만족하는 가장 작은 수이기 때문에 이런 경우는 일어나지 않는다.}
+        \item \textbf{elif} $N|x^{r/2}+1$, \textit{goto} step 3.
+        \item \textbf{neither}, $N$이 $(x^{r/2}-1)(x^{r/2}+1)$을 동시에 나눌 수 없으므로 각각의 항이 $N$의 인수를 포함하고 있다는 의미이다.
+        
+        \textit{return} $\boxed{\gcd(N, x^{r/2}+1),\ \gcd(N, x^{r/2}+1)}$
+      \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+\vspace{0.1em}
+
+Shor's algorithm이 성공하기 위해서는 order-finding algorithm으로 얻은 $r$이 짝수여야하며, \textbf{neither} case에 포함되어야한다. 정수론의 개념들을 도입하면, 성공확률은 $1/2$이상임을 증명할 수 있으며, 여기에서는 증명을 생략한다.
 
 \lecture{14}{4 Nov. 10:30}{}
 \section{Applications of the QFT}
+이번 section에서는 QFT를 활용하는 문제들에 대해서 소개하고자 한다. QFT를 활용하여 효과적으로 해결할 수 있는 문제들은 모두 \textit{Hidden subgroup problem}으로 일반화할 수 있다.
 \subsection{Period-finding}
+Hidden subgroup problem을 소개하기 전에, 먼저 hidden subgroup problem의 특수한 경우들에 대해 이야기하고자 한다. 첫 번째로 소개하는 문제는 \textit{period-finding problem}이다.
+
+\begin{itemize}
+  \item \texttt{input}: period function $f$ such that $f(x) = f(x+r)$ for some \textit{unknown} integer $r,\ (0 < r < 2^L)$
+  \item \texttt{output}: least integer $r>0$ such that $f(x) = f(x+r)$
+\end{itemize}
+주어진 period function은 \hyperref[sec:uncomputation]{uncomputation}을 사용하여 다음과 같은 unitary operator로 표현할 수 있다.
+\begin{equation*}
+  U_f|x\rangle|y\rangle \rightarrow|x\rangle|y \oplus f(x)\rangle
+\end{equation*}
+
+\newpage
+이 $U_f$가 주어지면, 다음의 과정을 따라서 period $r$을 찾을 수 있다.
+\begin{enumerate}
+  \item input state : $\ket 0 \ket 0$으로 state를 초기화한다.\footnote{(1st register)함숫값을 저장하기 위해 $t = O(L + \log(1/\epsilon))$개의 qubit, (2nd register)ancilla qubit}
+  \begin{equation*}
+    \ket \psi = \ket 0 \ket 0
+  \end{equation*}
+  \item apply $H$ gate on 1st register
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt{2^t}} \sum_{x=0}^{2^t-1}\ket x \ket 0
+  \end{equation*}
+  \item apply $U_f$ : $\ket y = \ket 0$이므로 2nd register에 $f(x)$가 저장된다. 
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt{2^t}} \sum_{x=0}^{2^t-1}|x\rangle|f(x)\rangle 
+  \end{equation*}
+  \item apply QFT on \textbf{2nd} register
+  
+  QFT를 사용하여 함수 $f(x)$를 표현하면, 다음과 같다. (See Definition.~\ref{def:QFT})
+  \begin{equation*}
+    f(x) \rightarrow  \frac{1}{\sqrt{r}} \sum_{l=0}^{r-1} e^{2 \pi i l x / r}|\hat f(l)\rangle,\qquad  |\hat{f}(l)\rangle \triangleq \frac{1}{\sqrt{r}} \sum_{x=0}^{r-1} e^{-2 \pi i l x / r}|f(x)\rangle
+  \end{equation*}
+  따라서 이를 이용하면, state를 다음과 같이 표현할 수 있다. 
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt{r 2^t}} \sum_{l=0}^{r-1} \sum_{x=0}^{2^t-1} e^{2 \pi i l x / r}|x\rangle|\hat{f}(l)\rangle
+  \end{equation*}
+  \item apply IQFT on \textbf{1st} register\footnote{2nd register가 $x, l$간의 QFT를 이용했다면, 1st register는 $l$이 아닌 다른 변수 $y$에 대해 IQFT를 수행하게 된다.}
+  \begin{equation}
+      \ket \psi = \frac{1}{\sqrt{r} 2^t} \sum_{l=0}^{r-1} \sum_{x, y=0}^{2^t-1} e^{2 \pi i l x / r} e^{-2 \pi i x y / 2^t}|y\rangle|\hat{f}(l)\rangle =\frac{1}{\sqrt{r} 2^t} \sum_{l=0}^{r-1} \sum_{x, y=0}^{2^t-1} e^{(2 \pi i x)(l/r - y/2^t)}|y\rangle|\hat{f}(l)\rangle \label{eq:period-final}
+  \end{equation}
+\end{enumerate}
+
+final state의 coefficient를 분석하기 위해 $r$이 $2^t$를 나누는가에 대한 cases를 분석할 수 있다.
+\begin{itemize}
+  \item $r\nmid 2^t$ : 일반적으로는 $r$이 $2^t$를 나누지 않는 경우가 더 많다.\footnote{$2^t$의 약수; 2의 거듭제곱이 아닌 이상 나눌 수 없음} 그러나 이 경우에도 최종 outcome이 높은 확률로 $nl$이 된다. 
+  \item $r\mid 2^t$ : $nr  = 2^t$가 되게 만드는 positive integer가 존재한다. 따라서 이를 이용하면 state가 다음과 같이 단순화 된다. (Eq.~\eqref{eq:period-final}에 $r=2^t/n$ 대입)\footnote{$nl - y$에 대해, complex exponential의 orthogonality를 사용하여 정리한다.}
+  \begin{equation*}
+    \frac{1}{2^t} \sum_{x, y=0}^{2^t-1} e^{(2 \pi i x / 2^t)(nl-y)}|y\rangle=\sum_{y=0}^{2^t-1} \delta_{y, n l}|y\rangle=|n l\rangle = \frac{1}{\sqrt{r}} \sum_{l=0}^{r-1}|n l\rangle|\hat{f}(l)\rangle
+  \end{equation*}
+  따라서 1st register를 측정한 결과를 $2^t$로 나누면 $nl/2^t = l/r$이므로 $r$을 구할 수 있다. $\Box$
+\end{itemize}
+
 \subsection{Discrete logarithm}
+이번에 소개하려는 문제는 \textit{Discrete logarithm problem}; 이산 로그 문제이다. 이 문제는 다과 같이 정의된다.
+\begin{itemize}
+  \item \texttt{input}: $x \in G$, 이때 $G = \langle g \rangle$는 $g$로부터 만들어지는 cyclic group\footnote{See \url{https://en.wikipedia.org/wiki/Cyclic_group}}\footnote{대표적인 cyclic group으로 modular multiplication이 있다.}이다.
+  \item \texttt{output}: minimum $\alpha$ such that $g^\alpha = x$ (or equivalently, $\alpha = \log_g x$)
+\end{itemize}
+\vspace{1em}
+다음은 다양한 cyclic group들의 discrete log에 대한 예시이다.
+\begin{itemize}
+  \item (Property of logarithm) For any $G=\langle g\rangle, \log _g 1=0$,
+  \item For $G=\mathbb{Z}_7^{\times}, \log _3 2=2$,
+  \item For $G=\mathbb{Z}_{541}^{\times}, \log _{126} 282=101$.
+\end{itemize}
+
+이 문제를 해결하기 위해, Discrete logarithm problem을 \textit{period finding} problem의 형태로 변환할 수 있다.
+먼저 다음 integer function $f$를 가정하자. 여기서 $\gcd(a, N) = 1$이며, modulo $N$에서 $a$ order가 $r$이라고 하자. 
+\begin{equation*}
+  f\left(x_1, x_2\right)=a^{s x_1+x_2} \bmod N
+\end{equation*}
+이렇게 정의한 함수는 어떤 $l$에 대해 $(l, -ls)$라는 period를 가진다.
+\begin{equation*}
+  f(x_1+l, x_2-ls)=a^{sx_1 + sl + x_2 - ls} \mod N \equiv a^{sx_1 + x_2} \mod N = f(x_1, x_2)
+\end{equation*}
+Uncomputation을 사용하면 이 $f$에 대응되는 unitary를 구성할 수 있다.
+\begin{equation*}
+  U\left|x_1\right\rangle\left|x_2\right\rangle|y\rangle=\left|x_1\right\rangle\left|x_2\right\rangle|y \oplus f(x)\rangle
+  \end{equation*}
+우리는 discrete logarithm problem을 다시 다음과 같이 표현할 수 있다.\footnote{$a$가 $g$, $s$가 $\alpha$에 대응된다.}
+\begin{itemize}
+  \item \texttt{input}: $b \in \mathbb Z_N^\times$ such that $b \equiv a^s \mod N$, $a \in \mathbb Z$
+  \item \texttt{output}: integer $s$
+\end{itemize}
+
+따라서 period function $f$를 이용하면 문제를 해결할 수 있다. 
+\begin{enumerate}
+  \item input state : 3개의 register를 사용한다.
+  \begin{equation*}
+    \ket \psi = \ket 0 \ket 0 \ket 0
+  \end{equation*}
+  \item apply $H$-gate on 1st and 2nd register
+  \begin{equation*}
+    \ket \psi = \frac{1}{2^t} \sum_{x_1, x_2=0}^{2^t-1}\left|x_1\right\rangle\left|x_2\right\rangle|0\rangle
+  \end{equation*}
+  \item apply $U_f$ : $f(x_1, x_2)$를 3rd register에 저장한다.
+  \begin{equation*}
+    \ket \psi = \frac{1}{2^t} \sum_{x_1, x_2=0}^{2^t-1}\left|x_1\right\rangle\left|x_2\right\rangle\left|f\left(x_1, x_2\right)\right\rangle
+  \end{equation*}
+  \item apply QFT on 3rd register 
+  
+  QFT를 사용하여 함수 $f(x_1, x_2)$를 표현하면 다음과 같다. (See Definition.~\ref{def:QFT})
+  \begin{equation*}
+    \left|f\left(x_1, x_2\right)\right\rangle \rightarrow \frac{1}{r} \sum_{l_1, l_2=0}^{r-1} e^{2 \pi i\left(l_1 x_1+l_2 x_2\right) / r}|\hat{f}\left(l_1, l_2\right)\rangle 
+  \end{equation*}
+  \begin{equation*}
+    |\hat{f}\left(l_1, l_2\right)\rangle \triangleq \frac{1}{r} \sum_{x_1, x_2=0}^{r-1} e^{-2 \pi i\left(l_1 x_1+l_2 x_2\right) / r}\left|f\left(x_1, x_2\right)\right\rangle=\frac{1}{\sqrt{r}} \sum_{j=0}^{r-1} e^{-2 \pi i l_2 j / r}|f(0, j)\rangle
+  \end{equation*}
+  따라서 이를 이용하면, state를 다음과 같이 표현할 수 있다.\footnote{put $l_1 = l_2, l_2 = sl_2$}
+  \begin{align*}
+    \ket \psi &= \frac{1}{2^t \sqrt{r}} \sum_{l_2=0}^{r-1} \sum_{x_1, x_2=0}^{2^t-1} e^{2 \pi i\left(s l_2 x_1+l_2 x_2\right) / r}\left|x_1\right\rangle\left|x_2\right\rangle|\hat{f}\left(s l_2, l_2\right)\rangle  \\ 
+    &=\frac{1}{2^t \sqrt{r}} \sum_{l_2=0}^{r-1}\left[\sum_{x_1=0}^{2^t-1} e^{2 \pi i\left(s l_2 x_1\right) / r}\left|x_1\right\rangle\right]\left[\sum_{x_2=0}^{2^t-1} e^{2 \pi i\left(l_2 x_2\right) / r}\left|x_2\right\rangle\right]|\hat{f}\left(s l_2, l_2\right)\rangle
+  \end{align*}
+  \item apply IQFT on 1st and 2nd register
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt{r}} \sum_{l_2=0}^{r-1}\left|s l_2 / r\right\rangle\left|l_2 / r\right\rangle|\hat{f}\left(s l_2, l_2\right)\rangle
+  \end{equation*}
+\end{enumerate}
+
+따라서 1st, 2nd register를 측정하면 각각 $sl/r$, 그리고 $l/r$이라는 값을 얻게 되는데, $sl/r \times r/l = s$이므로 $s$를 구할 수 있다. $\Box$  
+
 \subsection{Hidden subgroup problem}
+이제 Hidden subgroup problem에 대해 이야기할 시간이 찾아왔다.\footnote{See \url{https://en.wikipedia.org/wiki/Hidden_subgroup_problem}}
+\begin{definition}[Hidden subgroup problem]
+  Let $f$ be a function from finitely generated group $G$ to some finite set $X$. s.t. $f$ is constant on the cosets of a subgroup $K$, and distinct on each coset.\footnote{$K$가 주어졌을 때, coset은 $G$의 원소에 대해서 $gK = \{gk : k \in K\}$로 정의된다.}\footnote{같은 coset이라면 $f$의 값은 매우 동일하지만, 서로 다른 coset에 속한다면 $f$의 값은 서로 다르다.}
+  \begin{equation*}
+    f: G \rightarrow X \quad  \longrightarrow \quad U_f\ket g \ket h = \ket g \ket{h \oplus f(g)} \quad (\text{for } g \in G, h \in X)
+  \end{equation*}
+  \textit{Find a generating set for} $K$.
+\end{definition}
 
+앞에서 우리가 다루었던 order-finding problem, period-finding, discrete logarithm과 같은 문제들이 Hidden subgroup problem의 특수한 예시이다. 예를 들어, order-finding problem이 왜 Hidden subgroup problem으로 표현될 수 있는지 알아보자.
+Hidden subgroup problem에서 각각을 다음과 같이 정의하자.
+\begin{itemize}
+  \item $G = \mathbb Z$
+  \item $K = r\mathbb Z$
+  \item (coset) $K_g = \{rg\}$ for $g \in \mathbb Z$ (e.g., $K_1 = \{\cdots, -2, -1, 0 \cdots, 1, 2\}, K_3 = \{\cdots, -6, -3, 0 \cdots, 3, 6\}$ )
+  \item $f(k)  = a^k \mod N$
+\end{itemize}
+이때, (1) $f(k) = f(k+r)$의 주기를 가지고 (2) $0 \leq k \leq r-1$ 범위에서 각각의 $f(k)$의 값은 모두 구분된다. 
+이 두 가지 성질은 $f$가 동일한 coset에 속하는 원소들에 대해서 constant하고, 서로 다른 coset에 속한 원소들에 대해서는 distinct한 값을 가지는 것을 의미한다. 따라서 order-finding problem은 Hidden subgroup problem의 특수한 경우로 생각할 수 있다.
 
-
+$G$가 finite abelian group\footnote{교환법칙이 성립하는 군}이라면, QFT를 적용하여 Hidden subgroup problem을 해결할 수 있다. 그러나, non-abelian group에 대해서는 아직 이 문제를 효과적으로 푸는 방법이 알려지지 않았다. (non-abelian group에 대한 대표적인 문제가 바로 \textit{Graph isomorphism})
 
 \section{Quantum search algorithms}
 \subsection{Grover operator}
