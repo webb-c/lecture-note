@@ -470,7 +470,7 @@ Fig.~\ref{fig:QFT-circuit}의 연산을 단계별로 따라가보자.
   \item 따라서 QFT을 활용하여 알고리즘을 설계하는 것은 쉽지 않다.
 \end{itemize}
 
-\section{Phase estimation}
+\section{Phase estimation}\label{sec:QPE}
 \subsection{Phase estimation}
 QFT를 활용하는 중요한 알고리즘 중 하나가 바로 \textit{phase estimation}이다. phase estimation이 해결하고자하는 문제에 대해서 먼저 소개한다.
 다음의 관계를 만족하는 unitary operator $U$에 대해, 우리가 알고 있는 것은 오직 eigenvector인 $\ket u$이고 eigenvalue는 알지 못한다고 하자.
@@ -1044,17 +1044,531 @@ Hidden subgroup problem에서 각각을 다음과 같이 정의하자.
 $G$가 finite abelian group\footnote{교환법칙이 성립하는 군}이라면, QFT를 적용하여 Hidden subgroup problem을 해결할 수 있다. 그러나, non-abelian group에 대해서는 아직 이 문제를 효과적으로 푸는 방법이 알려지지 않았다. (non-abelian group에 대한 대표적인 문제가 바로 \textit{Graph isomorphism})
 
 \section{Quantum search algorithms}
+Quantum search algorithm에 대해서 알아보자. 정렬되어있거나 특정한 규칙이 있는 데이터에 대한 search algorithm은 classical computer에서도 이미 충분히 효과적으로 수행할 수 있다. 그러나, 여기에서 다룰 search problem은 \textit{unstructured}한 데이터를 다룬다.
+이를 위해 먼저 하나의 oracle을 가정하자. 
+
+$N$개의 항목이 있는 unstructured 데이터에 대해서, $f(x)$는 $x$번째 항목이 우리가 찾고자 하는 항목인지를 판단하는 oracle이다. 따라서 $f(x) = 1$이면, $x$가 solution이 되고 $f(x) =0$이면, $x$가 solution이 아니다.
+편의를 위해서 $N=2^n$이며, 찾고자 하는 항목의 개수가 $M$ ($1 \le M \le N$)이라고 가정하자. 
+
+\begin{equation*}
+  f : \{0, 1\}^n \rightarrow \{0, 1\}
+\end{equation*}
+
+이 문제를 어떻게 해결할 수 있을까? 단순하게 생각하면 랜덤한 $x$를 선택하여 $f(x)$의 값을 확인한 뒤 $x$가 solution인지 아닌지를 판단할 수 있으며, 선택한 $x$가 solution일 확률은 $M/N$이다. 만약 $N$이 $M$에 비해 exponential하게 크다면, success probability는 exponential하게 줄어들기에 이는 효율적이지 않다. 
+
+Quantum computer에서 $f$에 대한 unitary는 다음과 같이 정의된다.
+\begin{equation*}
+  |x\rangle|q\rangle \xrightarrow{O}|x\rangle|q \oplus f(x)\rangle
+\end{equation*}
+$x$는 $N$개의 항목에 대한 인덱스를 나타내기 위해 $n$개의 qubit으로 이루어지며, query qubit은 1개의 qubit으로 이루어진다. 즉, 만약 $f(x) = 1$; $x$가 solution이라면 query qubit의 값이 bit-flip된다.
+
+만약 $\ket q = \ket -$으로 설정하면, 다음과 같은 일이 벌어진다.
+\begin{equation*}
+  |x\rangle\left(\frac{|0\rangle-|1\rangle}{2}\right) \xrightarrow{O} \frac{|x\rangle|f(x)\rangle-|x\rangle|1 \oplus f(x)\rangle}{2}=(-1)^{f(x)}|x\rangle\left(\frac{|0\rangle-|1\rangle}{2}\right)
+\end{equation*}
+$x$가 solution이라면 bit-flip이 일어나서 phase가 바뀌게 되고, solution이 아닌 경우에는 phase가 바뀌지 않는다. 따라서 이 oracle $O$를 다음과 같이 단순하게 쓸 수 있다.
+\begin{equation*}
+  |x\rangle \xrightarrow{O}(-1)^{f(x)}|x\rangle .
+\end{equation*}
+
+따라서 이 oracle을 활용하면, classical computer와 동일한 randomized algorithm을 적용하여도 $O(\sqrt{N/M})$의 complexity를 가진다.
+
+
 \subsection{Grover operator}
+Unstructured search problem을 $\Theta(\sqrt N)$ 복잡도로 해결할 수 있는 Grover search algorithm을 설명하기 위해 먼저 \textit{Grover operator} $G$를 정의한다.\footnote{$G = (H^{\otimes n}(2|0\rangle\langle 0|^{\otimes n}-I) H^{\otimes n})O$}
+\begin{equation*}
+  G \triangleq (2|\Psi\rangle\langle\Psi|-I) O
+\end{equation*}
+이때 $\ket{\Psi}$는 다음과 같이 정의되며\footnote{$N$까지의 모든 가능한 입력들의 superposition}, $O$는 oracle이다.
+\begin{equation*}
+  |\Psi\rangle=\frac{1}{\sqrt{N}} \sum_{x=0}^{N-1}|x\rangle,
+\end{equation*}
+
+우리는 이제 $G$가\textit{superposition of solutions} state $\ket \beta$, \textit{superposition of non-solutions} $ket alpha$가 span하는 two-dimensional space에서 회전 연산을 수행한다는 것을 보일 것이다.
+\begin{equation}
+  |\alpha\rangle \triangleq \frac{1}{\sqrt{N-M}} \sum_{x: f(x) = 0}|x\rangle, \quad|\beta\rangle \triangleq \frac{1}{\sqrt{M}} \sum_{x: f(x) = 1}|x\rangle . \label{def:solution-state}
+\end{equation}
+$\ket \Psi$를 다음과 같이 $\ket \alpha, \ket \beta$의 linear combination으로 표현할 수 있기때문에, $\ket{\Psi}$는 $\text{span}\{\ket \alpha, \ket \beta \}$ vector space에 속한다. 
+\begin{equation*}
+  |\Psi\rangle=\sqrt{\frac{N-M}{N}}|\alpha\rangle+\sqrt{\frac{M}{N}}|\beta\rangle
+\end{equation*}
+
+$G$가 수행하는 연산을 이해하기 위해서, 각 단계마다 gate가 수행하는 역할을 분석해보자.
+\begin{enumerate}
+  \item Oracle $O$가 $\text{span}\{\ket \alpha, \ket \beta \}$에 속하는 임의의 vector에 대해 다음과 같이 동작한다.
+  \begin{equation*}
+    O(a|\alpha\rangle+b|\beta\rangle)=a|\alpha\rangle-b|\beta\rangle
+  \end{equation*}
+  $\Rightarrow$ $\ket \alpha$ 축에 대한 \textit{reflection}
+  \item ($2 \ket \Psi \bra \Psi - I$) 연산은 eigenvalue $\pm 1$에 대해 spectral decomposition을 할 수 있다.
+  \begin{equation*}
+    2 \ket \Psi \bra \Psi - I = \ket \Psi \bra \Psi  - (I - \ket \Psi \bra \Psi)
+  \end{equation*}
+  $\ket \Psi \bra \Psi$는 $\ket \Psi$에 대한 projector이고 반대로 $I - \ket{\Psi} \bra{\Psi}$는 $\ket \Psi$의 \textit{orthogonal subspace}에 대한 projector이다.
+  따라서 이 연산은 $\{\ket \Psi, \ket \Psi^\perp\}$ vector space에서 $\ket \Psi$ 축에 대한 reflection을 수행하게 된다. 
+  
+  $\Rightarrow$ $\ket \Psi$ 축에 대한 \textit{reflection}
+\end{enumerate}
+
+따라서 2개의 reflection operator들의 곱으로 정의되는 Grover operator는 \textbf{rotation} operator가 된다.
+이는 $G^k\ket{\Psi}$를 수행하면 $\text{span}\{\ket \alpha, \ket \beta \}$ vector space에 속하는 모든 vector를 만들어 낼 수 있다는 의미이다!
+
+\vspace{1em}
+
+좀 더 자세한 설명을 위해 $\ket{\Psi}$를 $\theta$를 사용하여 표현하자.\footnote{$(\sqrt{(N-M)/N})^2 + (\sqrt{M/nN})^2 = 1$을 이용하면 $\cos, \sin$ function을 이용할 수 있다.}
+\begin{equation*}
+  |\Psi\rangle=\cos \frac{\theta}{2}|\alpha\rangle+\sin \frac{\theta}{2}|\beta\rangle
+\end{equation*}
+그럼, $G$가 $\ket{\Psi}$에 대해 가해지면, state는 다음과 같이 변한다.
+
+$\Rightarrow$ 즉, $G$는 $\ket \Psi$를 $\theta$만큼 rotation 시킨다.
+\begin{equation}
+  G|\Psi\rangle=\cos \frac{3 \theta}{2}|\alpha\rangle+\sin \frac{3 \theta}{2}|\beta\rangle
+\end{equation}
+
+따라서 $G$ gate는 $\{\ket \alpha, \ket \beta\}$ basis에 대해 다음과 같은 matrix notation으로 표현할 수 있다.
+\begin{equation*}
+  G=\left(\begin{array}{cc}
+    \cos \theta & -\sin \theta \\
+    \sin \theta & \cos \theta
+    \end{array}\right)
+\end{equation*}
+$G$를 $k$번 적용하면, 다음 상태를 얻게된다.
+\begin{equation*}
+  G^k|\Psi\rangle=\cos \left(\frac{2 k+1}{2} \theta\right)|\alpha\rangle+\sin \left(\frac{2 k+1}{2} \theta\right)|\beta\rangle
+\end{equation*}
+만약 $(2^k+1 / 2)\theta$가 $\pi/2$에 충분히 가깝다면, $\cos((2k+1/2) \theta)$가 0에 가까워지기 떄문에 $G^k|\Psi\rangle$를 측정하면, $\ket \beta$를 얻을 확률이 높아진다.
+이 아이디어를 기반으로 Grover search algorithm이 제안되었다.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.35\linewidth]{figures/grover.png}
+  \caption{Grover operator}
+  \label{fig:grover-operator}
+\end{figure}
+
+\vspace{1em}
+
 \subsection{Grover search algorithm}
+Grover search algorithm은 앞에서 도입한 Grover operator를 사용하여 unstructured search problem을 해결하는 알고리즘으로, 다음과 같은 과정을 따른다.
+\begin{enumerate}
+  \item input state 
+  \begin{equation*}
+    \ket \psi = \ket 0^{\otimes n}
+  \end{equation*}
+  \item apply Hadamard gate : $\ket \Psi$를 만들기 위해 Hadamard gate를 적용한다.
+  \begin{equation*}
+    \ket \psi = \frac{1}{\sqrt N} \sum_{x=0}^{N-1}\ket x
+  \end{equation*}
+  \item (Grover iteration; $G = (H^{\otimes n}(2|0\rangle\langle 0|^{\otimes n}-I) H^{\otimes n})O$) 다음을 $k$번 반복한다.
+  \begin{enumerate}
+    \item apply the oracle $O$
+    \item apply the Hadamard gate $H^{\otimes n}$
+    \item perform a conditional phase shift ($0$이 아닌 모든 basis는 phase shift가 된다.)
+    \begin{equation*}
+      |x\rangle \rightarrow-(-1)^{\delta_{x 0}}|x\rangle 
+    \end{equation*}
+    \item apply the Hadamard gate $H^{\otimes n}$
+  \end{enumerate}
+  \item measure the state : 우리가 찾고자하는 $M$개의 항목중에서 하나의 idex를 확률에 따라 얻을 수 있다. (See Eq.~\eqref{def:solution-state})
+  \begin{equation*}
+    \ket \psi = \cos \left(\frac{2 k+1}{2} \theta\right)|\alpha\rangle+\sin \left(\frac{2 k+1}{2} \theta\right)|\beta\rangle \longrightarrow \ket{\beta}
+  \end{equation*}
+\end{enumerate}
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/Grover_operator.png}
+  \caption{Grover operator circuit}
+  \label{fig:grover-operator-circuit}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.65\linewidth]{figures/Grover_circuit.png}
+  \caption{Grover search algorithm circuit}
+  \label{fig:grover-search-circuit}
+\end{figure}
+
 \subsection{Performance}
+그렇다면, Grover algorithm을 사용하여 solution state $\ket \beta$에 다가가기 위해서는 총 몇 번의 iteration이 필요할까?
+Iteration을 $k$번 했을 때, state는 다음과 같다.
+\begin{equation*}
+  G^k|\Psi\rangle=\cos \left(\frac{2 k+1}{2} \theta\right)|\alpha\rangle+\sin \left(\frac{2 k+1}{2} \theta\right)|\beta\rangle
+\end{equation*}
+$k$를 다음과 같이 설정하면 $\ket \alpha$의 amplitude가 0이 되므로, state가 $\ket \beta$가 된다.
+\begin{equation*}
+  \frac{2 k+1}{2} \theta=\frac{\pi}{2}
+\end{equation*}
+위 조건에 가장 가까운 $k$를 선택했을 때, 얻을 수 있는 최종 state $\ket \psi$의 각도는 $\theta / 2 \leq \pi / 4$로 bound 된다. 따라서 최종 state가 $\beta$가 될 확률은 적어도 절반이 넘는다.\footnote{$\sin(\pi/4) = \cos(\pi/4) = 1/\sqrt{2}$}
+
+좀 더 구체적으로 나타내면 다음과 같다.\footnote{$\arccos \sqrt{1-x} \approx \sqrt{x}+O\left(x^{3 / 2}\right)$ 임을 이용한다.}
+\begin{equation*}
+  k=\frac{\pi}{2 \theta}-\frac{1}{2}=\frac{\pi}{4 \arccos \sqrt{(N-M) / N}}-\frac{1}{2}=\frac{\pi}{4} \sqrt{\frac{N}{M}}-\frac{1}{2}-O\left(\sqrt{\frac{M}{N}}\right)
+\end{equation*}
+
+따라서 Grover search algorithm의 complexity; $k$는 $O(\sqrt{N/M})$이다. 이는 랜덤하게 $M$을 선택하여 문제를 해결하는 방법보다 훨씬 효율적이다. ($O(N/M)$\footnote{성공확률이 $M/N$이므로, complexity는 그 역수})
+
+한 가지 남아있는 문제점은, $k$를 선택하기 위해서는 $M$의 값을 알아야한다는 것이다. 
+만약 문제에서 우리가 찾으려는 항목이 있는 곳의 개수 $M$을 제공하지 않는다면, $k$를 결정할 수 없다. 이를 해결하는 2가지 방법이 존재한다.
+\begin{itemize}
+  \item $k$를 랜덤하게 선택하여 탐색한다. (이 경우에도 비슷한 수준의 성능을 낼 수 있음이 알려져있다.)
+  \item $M$을 추정하는 알고리즘을 사용한다. (by \hyperref[sec:amplitude-estimation]{amplitude estimation algorithm})
+\end{itemize} 
 
 \lecture{15}{6 Nov. 10:30}{}
 \subsection{Example: Classical circuit-SAT problem}
-\subsection{Amplitude amplification}
+이번에는 Grover search algorithm을 이용하여 classical circuit-SAT problem을 해결하는 예시를 살펴보자. 
 
-\section{Amplitude estimation algorithm (Quantum counting)}
+\textbf{Problem} Boolean function $f: \{0, 1\}^n \rightarrow \{0, 1\}$을 계산하는 Poly($n$) 크기의 classical circuit이 존재한다고 가정하자. 
+이떄, $f(x) = 1$이 되도록 만드는 $x$가 존재하는가? 존재한다면 $x$는 몇 개인가?
+
+\vspace{1em}
+랜덤하게 $x$를 결정하여 $f(x)$의 값을 확인하는 방식은 $O(2^n)$이라는 complexity를 가진다.
+그러나 Grover search algorithm을 사용하면, $O(2^{2/n})$이라는 complexity만으로도 이 문제를 해결할 수 있다. 
+
+\vspace{1em}
+먼저 uncomputation을 사용하여 주어진 $f$에 대한 $O_f$를 설계하자.
+\begin{equation*}
+  O_f|x, b\rangle=|x, b \oplus f(x)\rangle
+\end{equation*}
+이 oracle은 $N$개의 항목중에서 $M$개의 항목을 찾기 위해 각 항목의 위치가 우리가 찾기를 바라던 값인지를 확인하는 search algorithm의 oracle과 동일하다.
+따라서 Graver search algorithm을 동일한 방식으로 적용하면 주어진 문제를 쉽게 해결할 수 있다.
+
+\subsection{Example: Amplitude amplification}\label{sec:amplitude-amplification}
+Grover search algorithm은 \textit{amplitude amplification}을 수행하기 위해 사용할 수 있다. Amplitude amplification은 bad state $\ket \alpha$에 대한 amplitude는 감소시키고, good state $\ket \beta$에 대한 amplitude는 증가시키는 것을 목적으로 한다.
+먼저 다음과 같은 unitary를 가정하자.\footnote{amplitude amplification은 사실 unstructured search problem에 대한 일반화된 형태이다.}
+\begin{equation*}
+  \left|\psi_0\right\rangle \triangleq U\left|0^n\right\rangle =\sqrt{p_0}|\beta\rangle+\sqrt{1-p_0}|\alpha\rangle =\sin \frac{\theta}{2}|\beta\rangle+\cos \frac{\theta}{2}|\alpha\rangle, \qquad s.t. \  \langle\alpha |  \beta\rangle=0, p_0 \ll 1
+\end{equation*}
+이 문제에서는 unstructured search problem에서 요구하는 $\ket \alpha, \ket \beta$가 각각 특정 computational basis의 superposition state여야한다는 조건이 없기 때문에, $\ket \alpha$에 대한 reflector를 설계해야한다.
+
+\vspace{1em}
+
+$U, U^\dagger$ 그리고 bad state $\ket \alpha$의 orthogonal subspace에 대한 projector $I - \ket \alpha \bra \alpha$가 주어졌을 때, 다음과 같이 initial state $\ket{\psi_0}$의 orthogonal subspace에 대한 projector $I - \ket {\psi_0} \bra {\psi_0}$를 만들어낼 수 있다.
+\begin{equation*}
+2\left|\psi_0\right\rangle\left\langle\psi_0\right|-I=U\left(2\left|0^n\right\rangle\left\langle 0^n\right|-I\right) U^{\dagger} .
+\end{equation*}
+따라서 다음 연산을 수행하면, $G$ operator와 유사하게, $\ket \alpha$에 대한 reflection, $\ket{\psi_0}$에 대한 reflection이 일어나서 $\ket beta$에 가깝게 회전하게 된다.
+\begin{equation*}
+  G \triangleq (2\ket{\psi_0}\bra{\psi_0} - I)(2 \ket{\alpha}\bra{\alpha} - I) = U\left(2\left|0^n\right\rangle\left\langle 0^n\right|-I\right) U^{\dagger}(2|\alpha\rangle\langle\alpha|-I)
+\end{equation*}
+
+\section{Amplitude estimation algorithm (Quantum counting)}\label{sec:amplitude-estimation}
+Amplitude estimation algorithm; Quantum counting algorithm은 Grover search problem에서 solution의 개수 $M$을 추정하는 알고리즘이다.
+이 알고리즘을 먼저 사용하게 되면, $M$이 얼마인지 추정할 수 있을뿐더러 만약 주어진 데이터셋에 solution이 존재하지 않는 경우, $M=0$임을 확인해줄 수 있다.
+
+이를 이용하면, search problem의 해가 있는지 없는지를 판단하는 문제의 형태로 변환할 수 있는 NP-complete 문제를 푸는데 도움이 될 수 있다.
+
+\vspace{1em}
+
+Grover operator $G$를 $\{\ket \beta, \ket \alpha\}$에 대해서 matrix 표현으로 나타내면, 다음과 같다.
+\begin{equation*}
+  \left(\begin{array}{cc}
+    \cos \theta & \sin \theta \\
+    -\sin \theta & \cos \theta
+    \end{array}\right)
+\end{equation*}
+$G$를 spectral decomposition하면 다음과 같이 나타낼 수 있고
+\begin{equation*}
+  G=\cos \theta|\beta\rangle\langle\beta|+\cos \theta|\alpha\rangle\langle\alpha|+\sin \theta|\beta\rangle\langle\alpha|-\sin \theta|\alpha\rangle\langle\beta| .
+\end{equation*}
+따라서 $G$의 eigenvalue, eigenvector는 각각 다음과 같다.
+\begin{itemize}
+  \item eigenvalue : $e^{\pm i {\color{red} \theta}}$
+  \item eigenvector : $\ket{\psi_{\pm}} = \frac{1}{\sqrt{2}}(|\beta\rangle \pm i|\alpha\rangle)$
+\end{itemize}
+
+만약 우리가 $e^{\pm i \theta}$에서 $\theta$의 값을 알아낸다면 $\sin(\theta/2) = \sqrt{M/N}$이므로 $M$이 얼마인지 추정할 수 있다. $\theta$의 값을 알아내기 위해 \hyperref[sec:QPE]{phase estimation}을 도입할 수 있다. 그런데 $G$의 eigenvector를 준비하려면, $\ket \alpha, \ket \beta$의 상태를 알아야한다는 문제가 존재한다.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{figures/quantum_counting.png}
+  \caption{Quantum counting circuit}
+  \label{fig:amplitude-estimation}
+\end{figure}
+
+
+이를 해결하기 위해 initial state와 $G$의 eigenvector가 다음의 관계를 가짐을 이용하자.
+\begin{equation*}
+  \left|\left\langle\psi_0 | \psi_{+}\right\rangle\right|^2=\frac{1}{2}\left|\sin \frac{\theta}{2}+i \cos \frac{\theta}{2}\right|^2=\frac{1}{2}=\left|\left\langle\psi_0 | \psi_{-}\right\rangle\right|^2 .
+\end{equation*}
+즉, eigenvector 대신에 initial state를 이용하면, 각각 $1/2$의 확률로 eigenstate 둘 중 하나가 되기 때문에 이를 이용하여 $\theta$를 추정할 수 있다. Fig.~\ref{fig:amplitude-estimation}에서 Register 2를 $\ket{\psi_0}$으로 초기화하기 위해 $H$-gate를 사용하고 있는 것을 확인할 수 있다.
+
+\vspace{1em}
+
+Phase estimation의 성능은 측정에 사용하는 register 1의 qubit 개수 $t$에 의존한다.
+$t = m+\lceil\log (2+1 / 2 \delta)\rceil$으로 선택하면, 적어도 $1-\delta$의 확률로 $2^{-m}$ accuracy를 달성할 수 있다. 
+\begin{equation*}
+  |\Delta \theta| = |\theta - \tilde \theta| \le 2^{-m}
+\end{equation*}
+
+\vspace{1em}
+그렇다면, $\tilde \theta \approx \theta$로부터 추정한 $\tilde M$의 error $|\Delta M| = |\tilde M - M|$의 upper bound는 얼마인가?\\
+다음의 inequality\footnote{$\sin A-\sin B=2 \cos \left(\frac{A+B}{2}\right) \sin \left(\frac{A-B}{2}\right)$}을 Eq.~\eqref{eq:M-bound-2}에 적용하면, 
+\begin{equation*}
+   \left|\sin \left(\dfrac{\theta+\Delta \theta}{2}\right)-\sin \left(\dfrac{\theta}{2}\right)\right| \leq \frac{|\Delta \theta|}{2}, \qquad \left|\sin \left(\frac{\theta+\Delta \theta}{2}\right)\right| \leq \sin \left(\frac{\theta}{2}\right)+ \frac{|\Delta \theta|}{2}
+\end{equation*}
+$|\Delta M|/N$에 대해서 다음과 같이 정리할 수 있으며
+\begin{align}
+\frac{|\Delta M|}{N}&= \left|\sin ^2\left(\frac{\theta+\Delta \theta}{2}\right)-\sin ^2\left(\frac{\theta}{2}\right)\right| \label{eq:M-bound-1} \\ 
+                    &=\left(\sin \left(\frac{\theta+\Delta \theta}{2}\right)+\sin \left(\frac{\theta}{2}\right)\right)\left|\sin \left(\frac{\theta+\Delta \theta}{2}\right)-\sin \left(\frac{\theta}{2}\right)\right| \label{eq:M-bound-2}\\
+                    & \leq\left(2 \sin \left(\frac{\theta}{2}\right)+\frac{|\Delta \theta|}{2}\right) \frac{|\Delta \theta|}{2} \label{eq:M-bound-3}
+\end{align}
+따라서 Eq.~\eqref{eq:M-bound-3}를 $|\Delta M|$에 대해 정리하면, 다음의 upper bound를 얻을 수 있다.
+\begin{equation*}
+  |\Delta M| \leq \Bigg(2 N \underbrace{\sin \left(\frac{\theta}{2}\right)}_{\sqrt{M/N}}+\frac{N |\Delta \theta|}{2}\Bigg) \frac{|\Delta \theta|}{2}  = \left(2 \sqrt{M N}+\frac{N}{2^{m+1}}\right) \frac{1}{2^{m+1}}
+\end{equation*}
+즉, $N \approx 2^{2m}$을 만족하도록 $m$을 선택하면, $|\Delta M|$의 upper bound는 $O(\sqrt M)$이 된다.
+
+\vspace{1em}
+마지막으로 Quantum counting의 complexity를 계산해보자. Quantum counting algorithm은 $t$개의 qubit에 모두 controlled-$G^{2^i}$ gate를 가하기 떄문에 $O(2^t)$의 complexity를 가진다.
+이때, $t = m + \lceil \log (2 + 1/2\delta) \rceil$로 선택했기 때문에, $O(2^m)$이 되며, 이는 $O(\sqrt N)$과 동일하다. 
 
 \section{HHL (Harrow–Hassidim–Lloyd) algorithm}
+\subsubsection{Problem Setup}
+마지막으로 다룰 알고리즘은 HHL algorithm\cite{harrow2009quantum} 이다. HHL algorithm은 다음 linear equation의 solution $x$를 구하는 quantum algorithm이다. 
+\begin{equation*}
+  A x=b
+\end{equation*}
+이때, $A$는 nonsingular matrix이고 $A \in \mathbb C^{N \times N}, b \in \mathbb C^N$이다.\footnote{without generality}
+
+Linear algebra에 따르면 다음 관계를 만족하기 때문에, $A$의 역행렬을 구해서 solution vector $x$를 구할 수 있다. 
+그러나 문제는, $A$의 역행렬을 계산하는데 exponential complexity가 요구된다는 것이다.
+\begin{equation*}
+  x = A^{-1}b
+\end{equation*}
+
+따라서 quantum computer를 사용하여 linear equation을 더 효과적으로 해결하기 위해 HHL algorithm이 고안되었다. 
+이를 위해서 먼저 $A$가 Hermitian; $A = A^\dagger$이라고 가정하자. 만약, 주어진 $A$가 Hermitian이 아니라면 다음과 같이 새로운 Hermitian 행렬 $\tilde A$로 재구성하여
+\begin{equation*}
+  \tilde{A}=\left(\begin{array}{cc}0 & A^{\dagger} \\ A & 0\end{array}\right)=|1\rangle\langle 0| \otimes A+|0\rangle\langle 1| \otimes A^{\dagger}
+\end{equation*}
+다음과 같이 변환한 문제를 풀어서 $b$를 구할 수 있기 때문에 이 가정은 일관성을 잃지 않는다. 
+\begin{equation*}
+  \tilde{A}|0, x\rangle=|1, b\rangle
+\end{equation*}
+
+다음으로 $b$를 quantum state vector로 표현할 수 있도록 $\|b\| = 1$이라고 가정하자. 더 엄밀하게 표현하자면, quantum state를 $b$로 초기화하는 unitary $U_f$가 존재한다고 하자.
+\begin{equation*}
+  |b\rangle=U_b\left|0^n\right\rangle
+\end{equation*}
+
+마지막으로, $x$를 quantum state vector로 \textbf{손실 없이} 표현할 수 있으려면 $\|x \| = 1$을 만족해야한다. 그러나, $b$가 unit vector라고 해서 $x = A^{-1}b$의 결과로 얻어지는 $x$ 또한 unit vector일 것이라는 보장은 존재하지 않는다.
+따라서 quantum version의 linear equation을 해결하는 알고리즘의 목표는, 
+$|\hat x\rangle$\footnote{정답 $x$를 normalize한 state}와 차이가 매우 작은 state $|\tilde x\rangle$를 얻는 것이다.
+\footnote{solution이 $\|x\| \ne 1$이라면, quantum state vector로 표현 불가능하기에 우리가 QC를 통해 얻고자하는 결과는 $\hat x$이다. 따라서 알고리즘의 연산 결과로 얻은 state가 normalize된 $x$와 최대한 가깝게 만들고자 한다.}
+
+\begin{equation*}
+  \||\hat{x}\rangle-|\tilde{x}\rangle \| \leq \epsilon, \qquad |\hat x\rangle= \frac{\hat x}{\|\hat x\|} = \frac{A^{-1} b}{\left\|A^{-1} b\right\|} .
+\end{equation*}
+알고리즘으로 얻은 output은 normalize된 solution이므로, 우리가 실제로 얻고싶은 solution $x$를 구하기 위해서는 $\|\tilde x\|$의 값까지 알고리즘이 output으로 반환해야한다. 
+
+\vspace{1em}
+
+지금까지 설명한 내용을 정리하면, HHL algorithm의 problem은 다음과 같이 정의된다. 
+\begin{itemize}
+  \item \texttt{input}: Hermitian matrix $A \in \mathbb C^{N\times N}$, $b \in \mathbb C^N$
+  \item \texttt{output}: $\tilde x \in \mathbb C^N$ s.t. $|\hat x - \tilde x| \le \epsilon$ where $Ax = b$ and norm of solution $\|\tilde x\|$
+\end{itemize}
+
+\subsubsection{Algorithm description}
+먼저 $A$가 다음과 같은 eigenvalue, eigenvector를 가진다고 하자. ($0 \le j < N$)
+\begin{equation*}
+  A\left|v_j\right\rangle=\lambda_j\left|v_j\right\rangle
+\end{equation*}
+이때, $A$의 eigenvalue들이 다음을 따르며, $d$-bit representation으로 표현할 수 있다고 하자. (즉, $A$는 positive matrix이다.)\footnote{eigenvalue가 negative value를 가지는 경우에도 HHL algorithm을 적용할 수 있지만, 추후 사용할 QPE결과를 그에 맞춰서 수정해야한다.}
+\begin{equation*}
+  0<\lambda_0 \leq \lambda_1 \leq \cdots \leq \lambda_{N-1}<1
+\end{equation*}
+$A$는 Hermitian이면서 동시에 positive matrix이므로 Hamiltonian simulation을 이용하면 다음과 같은 unitary를 만들 수 있다.\footnote{unitary로 설계되었기 때문에, 이제 quantum computer에서 사용할 수 있다!}
+\begin{equation*}
+  U=e^{i 2 \pi A}
+\end{equation*}
+
+\newpage
+이를 이용하면, HHL algorithm은 다음과 같이 동작한다. 
+\begin{enumerate}
+  \item input state : $H$에 대한 eigenvector들의 superposition state인 $\ket b$로 2nd register를 초기화 한다. 
+  \begin{equation*}
+    \ket{\psi} = \ket{0^d} \sum_{j} \beta_j \ket{v_j}  = \ket{0^d}\ket{b}
+  \end{equation*}
+  \item perform QPE : QPE를 수행하여, $U$의 eigenvalue $\lambda_j$들의 superposition state가 1st register에 저장되게 한다.
+  \begin{equation*}
+    \ket{\psi} = \sum_j \beta_j\left|\lambda_j\right\rangle\left|v_j\right\rangle
+  \end{equation*}
+  \begin{note}[Idea]
+    이때, solution $x$를 다음과 같이 표현할 수 있음을 이용하자.
+    $$ A^{-1}|b\rangle=\left(\sum_j \lambda_j^{-1}\left|v_j\right\rangle\left\langle v_j\right|\right)|b\rangle=\sum_j \frac{\beta_j}{\lambda_j}\left|v_j\right\rangle $$
+    따라서 앞으로 우리가 할 일은 1st register에 대한 controlled rotation을 수행하여 각 $\beta_j$에 $\lambda_j^{-1}$을 곱하여 solution $x$와 유사한 상태로 만드는 것이다.
+  \end{note} 
+  \item apply controlled rotation unitary : $U_{CR}$은 다음과 같이 정의된다. 즉, $\ket{\lambda_j}$의 값에 따라서 첫 번째 qubit이 $\ket 1$방향으로 회전하게 된다.
+  \begin{equation*}
+    U_{\mathrm{CR}}|0\rangle\left|\lambda_j\right\rangle=\left(\sqrt{1-\frac{C^2}{\bar{\lambda}_j^2}}|0\rangle+\frac{C}{\bar{\lambda}_j}|1\rangle\right)\left|\lambda_j\right\rangle
+  \end{equation*}
+  따라서 이렇게 정의된 gate를 $\ket{\psi}$에 가하면, 다음과 같은 상태가 된다. 
+  \begin{equation*}
+    \ket{\psi} = \ket{0} \sum_j \beta_j\left|\lambda_j\right\rangle\left|v_j\right\rangle \xrightarrow{U_{CR}} \sum_j\left(\sqrt{1-\frac{C^2}{\bar{\lambda}_j^2}}|0\rangle+\frac{C}{\bar{\lambda}_j}|1\rangle\right) \beta_j \ket{\lambda_j} \left|v_j\right\rangle 
+  \end{equation*}
+  \item perform QPE$^\dagger$ : QPE를 uncomputation하여 1st register\footnote{ancilla}를 초기상태 $\ket 0^d$로 되돌린다. 따라서, ancilla bits들의 표현을 생략하면 최종적으로 얻게되는 state는 다음과 같다. 
+  \begin{equation*}
+    \ket \psi =  \sum_j\left(\sqrt{1-\frac{C^2}{\bar{\lambda}_j^2}}|0\rangle+\frac{C}{\bar{\lambda}_j}|1\rangle\right) \beta_j \left|v_j\right\rangle .
+  \end{equation*}
+  \item \textit{measuring} the single qubit \\
+  첫 번째 qubit의 값을 측정했을 때, outcome이 1이라면 post-state는 다음과 같으며,
+  \begin{equation*}
+    \tilde{x}=\sum_j \frac{C \beta_j}{\tilde{\lambda}_j}\left|v_j\right\rangle
+  \end{equation*}
+  이를 normalize한 값; 즉 우리가 원하는 결과가 qubit에 저장되게 된다.
+  \begin{equation*}
+    |\tilde{x}\rangle=\frac{\tilde{x}}{\|\tilde{x}\|} \approx|x\rangle 
+  \end{equation*}
+  \item \textit{estimate} $p(1)$\footnote{$p(1)$을 emperical distribution으로부터 구할 수도 있고, 또는 amplitude estimation을 이용할 수도 있다. 만약 추정한 $p(1)$이 너무 낮다면 HHL을 사용하지 않는 결정을 내릴 수도 있다.} \\
+  unnormalize solution $x$를 얻기 위해서 필요한 값, $\|\tilde{x}\|$은 outcome이 1일 확률과 동일하다. 
+  \begin{equation*}
+    p(1)=\| \sum_j \frac{C \beta_j}{\tilde{\lambda}_j}\left|v_j\right\rangle\left\|^2=\right\| \tilde{x} \|^2 \approx C^2 \| A^{-1}|b\rangle \|^2
+  \end{equation*}
+\end{enumerate}
+
+\begin{figure}[h]
+  \[
+  \begin{array}{c}
+  \Qcircuit @C=0.8em @R=1.2em {
+      \lstick{\ket{0}}            & \gate{R_y (\pi)}  & \gate{R_y (\pi)}  &\qw & \cdots &&\gate{R_y (\pi)} &\qw \\
+      \lstick{\ket{\theta_{d_1}}} & \ctrl{-1}         & \qw               &\qw & \qw    &\qw&\qw              &\qw \\
+      \lstick{\ket{\theta_{d_2}}} & \qw               & \ctrl{-2}               &\qw & \qw    &\qw&\qw              &\qw \\
+      \vdots  &&&&&&&&&&                    \\
+      \lstick{\ket{\theta_{0}}}   & \qw               & \qw               &\qw & \qw    &\qw&\ctrl{-4}        &\qw \\
+  }
+  \end{array}
+  \]
+  \caption{$U_{\text{angle}}$ circuit} \label{fig:U-angle}
+\end{figure}
+
+\begin{figure}[h]
+  \[
+  \begin{array}{c}
+  \Qcircuit @C=0.8em @R=1.5em {
+      \lstick{\ket{0}}          &\qw                      &\multigate{2}{U_\theta}  &\qw                                  &\qw &\rstick{\cos\small(\pi \tilde{\theta_j}\small)\ket{0} + \sin\small(\pi \tilde{\theta_j}\small)\ket{1}}\\
+      \lstick{|{0^{d'-d}}\rangle}   &\multigate{1}{U_{\text{angle}}} &\ghost{U_\theta}         &\multigate{1}{U_{\text{angle}}^\dagger} &\qw &\rstick{|{0^{d'-d}}\rangle}\\
+      \lstick{|{\lambda_j}\rangle}   &\ghost{U_{\text{angle}}}        &\ghost{U_\theta}         &\ghost{U_{\text{angle}}^\dagger}       &\qw &\rstick{|{\lambda_j}\rangle}
+  }
+  \end{array}
+  \]
+  \caption{$U_{CR}$ circuit} \label{fig:U-CR}
+\end{figure}
+
+$p(1)$은 $C$가 커질수록 증가하기 때문에, $C$ 값의 upper bound인 $\lambda_0$이 가능한 커야 HHL algorithm이 효과적으로 동작할 수 있다. 
+또는 HHL을 적용하기 전에 \hyperref[sec:amplitude-amplification]{amplitude amplification}을 수행하여 최대한 $p(1)$이 커지도록 만들 수 있다. 
+
+\vspace{1em}
+
+마지막으로, 어떻게 $U_{CR}$을 설계할 수 있는지에 대해 이야기 해보자. $U_{CR}$은 d-bit representation으로 표현되는 $0 \le \lambda_j <1$ 값에 따라 computational basis에서 rotation을 수행한다.
+이를 $0 \le \theta < 1$, $\theta = 0.\theta_{d-1} \cdots \theta_0$에 대해 표현하면, 다음과 같이 나타낼 수 있다. 
+\begin{equation*}
+  U_\theta |0\rangle|\theta\rangle \rightarrow(\cos \pi \theta|0\rangle+\sin \pi \theta|1\rangle)|\theta\rangle 
+\end{equation*}
+
+이 연산은 $Y$축에 대한 rotation gate와 유사하게 동작한다.
+\begin{equation*}
+  e^{-i \tau \hat{Y}}=\left(\begin{array}{cc}
+    \cos \tau & -\sin \tau \\
+    \sin \tau & \cos \tau
+    \end{array}\right) \equiv R_y(2 \tau)
+\end{equation*}
+따라서 $\tau = \pi(0.j_{d-1}\cdots j_0)$으로 선택하여 $R_Y(2\tau)$를 이용하면, $U_{\theta}$를 구현할 수 있다. Fig.~\ref{fig:U-angle}를 보면 우리가 QPE에서 사용했던 controlled operation과 다르게, $\lambda_j$의 각 자릿수의 값에 따라 single qubit이 회전하는 구조로 이루어져 있음을 알 수 있다. 
+\begin{equation*}
+  U_\theta=\sum_{j \in\left[2^d\right]} \exp \left(-i \pi\left(0 \cdot j_{d-1} \ldots j_0\right) \hat{Y}\right) \otimes|j\rangle\langle j|
+\end{equation*}
+
+$\theta_j$를 다음과 같이 설정하면 $\ket{\lambda_i}$에 대한 controlled-rotation gate를 만들 수 있다.
+\begin{equation*}
+  \theta_j=\frac{1}{\pi} \sin ^{-1}\left(C / \lambda_j\right)
+\end{equation*}
+$\theta$ 상태로 준비시키는 연산은 classical computer가 쉽게 할 수 있으므로 quantum computer도 uncomputation과 같은 기법을 사용하면, initial state를 $\ket{\theta}$로 전환하는 다음의 unitary를 만들 수 있다.
+\begin{equation*}
+  U_{\text {angle }}|0^{d^{\prime}-d}\rangle\left|\lambda_j\right\rangle=\left|\theta_j\right\rangle
+\end{equation*}
+
 
 \lecture{16}{8 Nov. 17:00}{}
 \section{Optimality of the quantum search algorithm}
+이번 챕터에서는, quantum search algorithm의 optimality에 대해 다루어보고자한다. 
+Unstructured search problem이 single solution $x$를 가진다고 하자. 
+그럼 이 문제를 해결하기 위해서 initial state $\ket \psi$에 대해 oracle $O_x$를 $k$번 적용하여 solution state에 가까워지도록 만들 수 있다. 
+$O_x = I - 2\ket x \bra x$는 $\ket x$에 대해서 phase $-1$을 가하고 다른 state는 변화시키지 않는다.
+\newpage
+$k$번 oracle을 적용하는 동안, unitary operation $U_1 \cdots U_k$를 각 연산의 사이에 적용한다고 하면, 다음과 같이 state evolution을 표현할 수 있다. 
+\begin{align*}
+  \left|\psi_k^x\right\rangle & \triangleq U_k O_x U_{k-1} O_x \ldots U_1 O_x|\psi\rangle \\
+  \left|\psi_k\right\rangle & \triangleq U_k U_{k-1} \ldots U_1|\psi\rangle
+\end{align*}
+우리의 목표는 다음의 값에 대한 bound를 찾는 것이다.
+\begin{equation*}
+  D_k \triangleq \sum_x \|\left|\psi_k^x\right\rangle-\left|\psi_k\right\rangle \|^2
+\end{equation*}
+직관적으로, $D_k$는 oracle을 적용하지 않았을 때의 state evolution $\ket{\psi_k}$를 기준으로, $k$번 oracle을 적용했을 때 발생하는 편차를 나타낸다. 만약 $D_k$의 값이 작다면, 어떠한 $x$에 대해서도 그 state가 유사하다는 것이므로 높은 확률로 solution을 찾기 힘들 것이다.
+
+\vspace{1em}
+증명은, 다음 과정을 따라 진행된다. (1) $D_k$가 $O(k^2)$의 upper bound를 가진다는 것을 보인다. (2) $N$개의 item을 구분하기 위해서는 $D_k$는 $\Omega(N)$의 lower bound를 가져야 한다는 것을 보인다. \\
+먼저 $D_k \le 4k^2$를 보이자.\footnote{by mathematical induction} $k=0$일 때는 자명하게 성립한다. $k$일 때 $D_k \le 4k^2$가 성립한다고 가정하면, $k+1$일 때는 다음과 같이 쓸 수 있다.
+\begin{equation*}
+  D_{k+1} = \sum_x \| U_{k+1} O_x|\psi_k^x\rangle- U_{k+1}|\psi_k\rangle\|^2 = \sum_x \| O_x|\psi_k^x\rangle-|\psi_k\rangle\|^2 = \sum_x\| O_x(|\psi_k^x\rangle-|\psi_k\rangle)+(O_x-I)|\psi_k\rangle \|^2 .
+\end{equation*}
+Norm에 대한 성질 $\|b+c\|^2 \leq\|b\|^2+2\|b\|\|c\|+\|c\|^2$을 적용하면, 다음과 같은 upper bound를 얻는다.
+\begin{itemize}
+  \item Eq.~\eqref{eq:search-optimal-1} : Property of norm ($b \triangleq O_x\left(\left|\psi_k^x\right\rangle-\left|\psi_k\right\rangle\right)$ and $c \triangleq \left(O_x-I\right)\left|\psi_k\right\rangle=-2\left\langle x | \psi_k\right\rangle|x\rangle$)
+  \item Eq.~\eqref{eq:search-optimal-2} : Cauchy-Schwarz inequality
+  \item Eq.~\eqref{eq:search-optimal-4} : Inductive hypothesis $D_k \le 4k^2$
+\end{itemize}
+\begin{align}
+  D_{k+1} & \leq \sum_x \left(\|\left|\psi_k^x\right\rangle-\left|\psi_k\right\rangle\|^2+4\|\left|\psi_k^x\right\rangle-\left.\left|\psi_k\right\rangle\| \|\left\langle x | \psi_k\right\rangle|+4|\left\langle\psi_k | x\right\rangle\right|^ 2\right) \label{eq:search-optimal-1} \\
+  & \leq D_k+4\left(\sum_x \|\left|\psi_k^x\right\rangle-\left|\psi_k\right\rangle \|^2\right)^{1 / 2}\left(\sum_{x^{\prime}}\left|\left\langle\psi_k | x^{\prime}\right\rangle\right|^2\right)^{1 / 2}+4 \label{eq:search-optimal-2}\\
+  & =D_k+4 \sqrt{D_k}+4 \label{eq:search-optimal-3} \\
+  & \leq 4 k^2+8 k+4=4(k+1)^2. \label{eq:search-optimal-4}
+\end{align}
+
+\vspace{1em}
+이제, $N$개의 item을 구분하기 위해 $D_k = \Omega(N)$이 necessary condition임을 보이자. \\
+증명을 위해서 먼저, $|\langle x | \psi_k^x \rangle |^2 \ge 1/2$가 모든 $x$에 대해서 성립한다고 가정하자. 즉, 이는 어떤 solution $x$가 주어지더라도 1/2 이상의 확률로 solution을 구할 수 있다는 의미이다. (i.e., $N$개의 item을 구분할 수 있다) \\
+가정으로부터, 다음을 얻을 수 있다.
+\begin{equation*}
+  \|\left|\psi_k^x\right\rangle-|x\rangle \|^2=2-2\left|\left\langle x | \psi_k^x\right\rangle\right| \leq 2-\sqrt{2}
+\end{equation*}
+따라서 solution $\ket x$와 $k$번 oracle을 적용하여 얻은 state $\ket{\psi^x_k}$의 차이를 error $E_k$로 정의하면, 다음의 upper bound를 얻는다.\footnote{$N$개의 item이 있으므로 가능한 $x$의 가짓수는 $N$개이다.}
+\begin{equation}
+  E_k \triangleq \sum_x \|\left|\psi_k^x\right\rangle-|x\rangle \|^2 \leq(2-\sqrt{2}) N . \label{eq:search-optimal-ek}
+\end{equation}
+Solution $\ket x$와 oracle을 적용하지 않았을 때의 state evolution $\ket{\psi_k}$의 차이를 $F_k$로 정의하자.
+\begin{equation*}
+  F_k \triangleq \sum_x \||x\rangle-\left|\psi_k\right\rangle \|^2
+\end{equation*}
+그렇다면, $D_k$와 $F_k$에 대해서 다음과 같은 관계를 유도할 수 있다. 
+\begin{itemize}
+  \item Eq.~\eqref{eq:search-optimal-5} : By definition of $D_k$ 
+  \item Eq.~\eqref{eq:search-optimal-6} : Property of norm ($b \triangleq \ket{\psi^x_k} - \ket x$ and $c \triangleq \ket x - \ket{\psi_k}$)
+  \item Eq.~\eqref{eq:search-optimal-7} : By definition of $D_k$, $F_k$ 
+  \item Eq.~\eqref{eq:search-optimal-8} : Property of norm 
+\end{itemize}
+\begin{align}
+  D_k & =\sum_x \|\left|\psi_k^x\right\rangle-|x\rangle+|x\rangle-\left|\psi_k\right\rangle \|^2 \label{eq:search-optimal-5}\\ 
+  & \geq \sum_x \|\left|\psi_k^x\right\rangle-|x\rangle\|^2-2 \sum_x\|\left|\psi_k^x\right\rangle-|x\rangle\| \||x\rangle-\left|\psi_k\right\rangle\|+\sum_x\||x\rangle-\left|\psi_k\right\rangle \|^2\label{eq:search-optimal-6} \\
+  & =E_k+F_k-2 \sum_x \|\left|\psi_k^x\right\rangle-|x\rangle\| \||x\rangle-\left|\psi_k\right\rangle \| \label{eq:search-optimal-7} \\
+  & \geq E_k+F_k-2 \sqrt{E_k F_k} \label{eq:search-optimal-8} \\
+  & =\left(\sqrt{E_k}-\sqrt{F_k}\right)^2\label{eq:search-optimal-9}
+\end{align}
+Cauchy-Schwarz inequality를 이용하면, 다음이 성립함을 보일 수 있고
+\begin{equation}
+  F_k \geq 2 N-2 \sqrt{N} \label{eq:search-optimal-10}
+\end{equation}
+$E_k \le (2-\sqrt{2})N$임을 이용하면 (see Eq.~\eqref{eq:search-optimal-ek}), 충분히 큰 $N$에 대해서 $c$가 $(\sqrt 2 - \sqrt{2 - \sqrt{2}})^2 \approx 0.42$보다 작을 때 다음이 성립함을 보일 수 있다.
+\begin{equation*}
+  D_k \ge cN
+\end{equation*}
+앞에서 우리가 보인 증명에 의하면, $D_k \le 4k^2$이므로 다음을 얻는다.
+\begin{equation*}
+  k \ge \sqrt{cN/4}
+\end{equation*}
+
+따라서 정리하면, $N$개의 item을 구분할 때, success probability가 적어도 1/2 이상인 search algorithm의 optimal complexity는 $\Omega(\sqrt{N})$이다.$\Box$

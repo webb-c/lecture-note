@@ -151,6 +151,45 @@
     \field{year}{2019}
   \endentry
 
+  \entry{harrow2009quantum}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=HAW}{%
+         family={Harrow},
+         familyi={H\bibinitperiod},
+         given={Aram\bibnamedelima W},
+         giveni={A\bibinitperiod\bibinitdelim W\bibinitperiod},
+      }}%
+      {{hash=HA}{%
+         family={Hassidim},
+         familyi={H\bibinitperiod},
+         given={Avinatan},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=LS}{%
+         family={Lloyd},
+         familyi={L\bibinitperiod},
+         given={Seth},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {APS}%
+    }
+    \strng{namehash}{HAW+1}
+    \strng{fullhash}{HAWHALS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{HHL09}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{number}{15}
+    \field{pages}{150502}
+    \field{title}{Quantum algorithm for linear systems of equations}
+    \field{volume}{103}
+    \field{journaltitle}{Physical review letters}
+    \field{year}{2009}
+  \endentry
+
   \entry{nielsen2001quantum}{book}{}{}
     \name{author}{2}{}{%
       {{hash=NMA}{%
