@@ -219,5 +219,16 @@
     \field{volume}{2}
     \field{year}{2001}
   \endentry
+
+  \entry{NP-wiki}{misc}{}{}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Np }
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{title}{NP(complexity)}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/NP_(complexity)
+    \endverb
+  \endentry
 \enddatalist
 \endinput
