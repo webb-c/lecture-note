@@ -68,12 +68,14 @@ Quantum operation $\mathcal E$가 convex linear 라는 것은 \textit{ensemble}�
     and the Kraus operator satisfy the completeness relation and $d \le \text{dim}\left(\mathcal{H}_A\right) \times \text{dim}\left(\mathcal{H}_B\right)$.
     $$\sum_{l=0}^{d-1} V_l V_l^{\dagger}=I_A$$
 \end{theorem}
-\textit{Proof. See Appendix A.} $\Box$
+\begin{proof}
+    \textit{See Appendix A.}
+\end{proof}
 
 \begin{figure}[h]
     \centering
     \vspace{0.5em}
-    \includegraphics[width=0.75\textwidth]{figures/positive.pdf}
+    \includegraphics[width=0.65\textwidth]{figures/positive.pdf}
     \caption{(a) positive map, (b) completely positive map}
     \label{fig:positive}
 \end{figure}
@@ -143,7 +145,7 @@ $U$는 다음과 같이 composite system에 대해 norm을 보존한다. (by com
     \mathcal{F}(\rho)=\frac{1}{2}\left[(E_1+E_2) \rho(E_1^{\dagger}+E_2^{\dagger})+(E_1-E_2) \rho(E_1^{\dagger}-E_2^{\dagger})\right ]= E_1 \rho E_1^{\dagger}+E_2 \rho E_2^{\dagger}=\mathcal{E}(\rho) .
 \end{equation*}
 이처럼 동일한 두 channel을 표현하는 서로다른 Kraus operator가 존재하는 반례를 찾았으므로 Choi-Kraus decomposition은 unique하지 않다. Operator-sum representation은 다음 정리를 따른다.
-\begin{theorem}
+\begin{theorem}\label{thm:unique-of-Kraus-operator}
     $\left\{E_i\right\}_{i=1}^m$와 $\left\{F_i\right\}_{i=1}^n$를 각각 $\mathcal{E}$와 $\mathcal{F}$에 대한 operation elements라고 하자. 두 집합 중에서 더 크기가 작은 집합에 zero operator를 추가하여, 두 집합의 크기가 동일하도록 만들 수 있다. 이때 $E_i = \sum_j u_{i j} F_j$가 되도록하는 complex number $u_{ij}$가 존재하면, $\mathcal{E}=\mathcal{F}$이다.
 \end{theorem}
 
