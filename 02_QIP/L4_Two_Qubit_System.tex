@@ -1,0 +1,264 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+\usepackage{qcircuit}
+
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+\setbeamercolor{enumerate item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{4. Two-qubit system}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    %#################################### 
+    \begin{section}{Two-qubit system}
+        \begin{frame}
+            \frametitle{Two-qubit system}
+            \textbf{State vector}
+            \begin{itemize}
+                \item 2개의 single qubit system $A$, $B$에 대한 composite system의 Hilbert space는 각 system의 basis들의 tensor product를 basis로 가진다. 
+                \begin{equation*}
+                    \mathcal H_A \otimes \mathcal H_B = \text{span} \{ \ket{00}, \ket{01}, \ket{10}, \ket{11} \}
+                \end{equation*}
+                \item State vector를 composite system의 (computational) basis로 나타내면 다음과 같다.
+                \begin{equation*}
+                    \ket{\psi}_{AB} = \alpha \ket{00} + \beta \ket{01} + \gamma \ket{10} + \delta \ket{11}, \qquad \braket{\psi|\psi} = 1.
+                \end{equation*}
+            \end{itemize}
+            \vspace{0.5cm}
+            \textbf{Quantum gate}
+            \begin{itemize}
+                \item Quantum gate는 정의에 의하여 모두 \textit{unitary}이므로 여러 gate들의 조합으로 구성된 일련의 연산을 하나의 거대한 unitary gate로 생각할 수 있다.
+                \item Two-qubit system에서 2개의 qubit을 모두 사용하는 연산은 대부분 \textbf{Controlled} operation이며 single qubit gate는 $A$, $B$둘 중에 하나의 system에만 가해지기 때문에 \alert{Local Operation}이라고도 불린다.
+            \end{itemize}
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Two-qubit measurement set}
+            Two-qubit system에서 measurement는 다음의 2가지 경우를 고려할 수 있다.
+            \begin{itemize}
+                \item \alert{Individual measurement} : 각 qubit에 single qubit measurement를 수행하는 경우 (e.g., $\{\ket 0, \ket 1\}$, and $\{\ket +, \ket -\}$)
+                \item \alert{Joint measurement} : 전체 qubit을 대상으로 measurement를 수행하는 경우.
+                \begin{itemize}
+                    \item $\{\ket{00}\bra{00}, \ket{01}\bra{01}, \ket{10}\bra{10}, \ket{11}\bra{11}\}$
+                    \item $\{\ket{\Psi^+} \bra{\Psi^+},\ \ket{\Psi^-} \bra{\Psi^-},\ \ket{\Phi^+} \bra{\Phi^+},\ \ket{\Phi^-} \bra{\Phi^-}\}$
+                \end{itemize}
+            \end{itemize}
+            \vspace{0.3cm}
+            \underline{Example}: state $\rho$를 $M_{\Phi^+}$\footnote{$\Phi^+$state에 대한 projector (i.e., $\ket{\Phi^+} \bra{\Phi^+}$)}로 측정했을 때, 확률은 다음과 같다.
+            \begin{itemize}
+                \item Heisenberg picture: $M_0$ operator가 $C(X)(H\otimes I)$가 가해져서 변화한다. 
+                \item Schrödinger picture: $\rho$ state가 $C(X)(H\otimes I)$가 가해져서 변화한다. 
+            \end{itemize}
+            \vspace{-0.2cm}
+            \begin{align*} 
+                P(\Phi^+) = \text{tr} \left[ \rho \ M_{\Phi^+}\right]  &= \text{tr} \left[\rho_0 \cdot U(H\otimes I) \ket{00} \bra{00} (H \otimes I) U^\dagger \right]  & \text{(Heisenberg picture)}\\ &= \text{tr} \left[ (H \otimes I) U^\dagger \rho_0 U (H \otimes I) \ket{00} \bra{00} \right] & \text{(Schrödinger picture)} 
+            \end{align*}
+            $\Rightarrow$ 따라서 joint measurement는 individual measurement와 gate들로 구현할 수 있다.
+            \vspace{-0.5cm}
+            \begin{figure}
+                \[\begin{array}{c}
+                    \Qcircuit @C=0.8em @R=.6em { 
+                        & \ctrl{1} & \gate{H} & \qw & \measureD{M_{0}} \\ 
+                        & \targ & \qw & \qw & \measureD{M_{0}} 
+                    }
+                \end{array}\]
+            \end{figure}
+        \end{frame}
+    \end{section}
+
+    \begin{frame}
+        \frametitle{Two-qubit measurement set}
+        그렇다면 system $B$만 individual measurement $M_0$를 수행했을 때, 남은 system $A$의 state는 어떻게 표현할 수 있을까? 
+        \begin{itemize}
+            \item outcome이 0일 때, $A$의 state\footnote{전체 system의 post state에 partial trace를 가하여 얻을 수 있다.}
+            \begin{equation*}
+                \text{tr}_B \left[\rho_{AB} (I_A \otimes \ket{0}_B \bra{0}) \right] = p(0) \rho_{A|B=0}
+            \end{equation*}
+            \item outcome이 1일 때, $A$의 state
+            \begin{equation*}
+                \text{tr}_B \left[\rho_{AB} (I_A \otimes \ket{1}_B \bra{1}) \right] = p(1) \rho_{A|B=1}
+            \end{equation*}
+        \end{itemize}
+        반면 $\rho_{A|B}$는 다음과 같다.
+        \begin{equation*}
+            tr_B [\rho_{AB} (I_A \otimes (\ket{0}_B\bra{0} + \ket{1}_B \bra{1})) ]  = tr_B [\rho_{AB} (I_A \otimes I_B) ] = \text{tr}_B \rho_{AB} = \boxed{\rho_A}
+        \end{equation*}
+        $\Rightarrow$ Partial measurement를 수행한 뒤 전체 system의 state $\rho_{AB}$에 대해 \textbf{partial trace}를 가하여 subsystem의 state를 구할 수 있다. 이는 $B$의 \alert{outcome과 관계없다!}
+        \vspace{-0.4cm}
+        \begin{figure}
+        \[\begin{array}{c}
+            \Qcircuit @C=1em @R=.7em { 
+                &\lstick{A} & \multigate{1}{U} &\qw & \qw & \rho_{A|B=0}\\ 
+                &\lstick{B} & \ghost{U} &\qw & \measureD{M_{0}} & & 
+            }
+        \end{array}\]
+        \end{figure}
+        
+    \end{frame}
+    
+    \begin{section}{Two-qubit entanglement}
+        \begin{frame}
+            \frametitle{LOCC: Local Operation and Classical Communication}
+            LOCC는 \textbf{entanglement}와 밀접한 관련이 있는 개념이다. 
+            \begin{itemize}
+                \item System $A$, $B$에 대한 다음과 같은 2개의 product state가 주어졌다고 가정하자.
+                \begin{equation*}
+                    \ket{\psi}_{AB} = \ket{\psi}_A \otimes \ket{\psi}_B,\quad \ket{\phi}_{AB} = \ket{\phi}_A \otimes \ket{\phi}_B
+                \end{equation*}
+                \item 각 partial system의 state는 서로간의 \textit{unitary transformation}을 찾을 수 있다.
+                \begin{equation*}
+                    U_A\ket{\psi}_{A} = \ket{\phi}_{A}, \quad U_B\ket{\psi}_{B} = \ket{\phi}_{B}
+                \end{equation*}
+                \item 따라서 이를 이용하면 composite system의 unitary transformation이 LOCC의 tensor product로 표현된다.
+                \begin{equation*}
+                    \ket{\psi}_{AB} = (U_A \otimes U_B) \ket{\phi}_{AB}\ (\ = U_A \ket{\phi}_A \otimes U_B \ket{\phi}_B )
+                \end{equation*}
+            \end{itemize}
+            \begin{definition}[LOCC \& entanglement]
+                \alert{Product state}는 \textbf{LOCC}로 만들 수 있는 state를 의미한다.\footnote{init state $\ket{00}$에 LOCC를 가하면 product state를 만들 수 있다.} 반면, \alert{entangled state}는 LOCC로는 만들 수 없는 state이다. 
+            \end{definition}
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Schmidt decomposition}
+            \alert{Schmidt decomposition}은 주어진 state가 entangled state인지 아닌지를 구분하기 위해 사용하는 방법이다.
+            \begin{equation*}
+                \ket{\psi}_{AB} = \lambda_1 \ket{u_1} \ket{v_1}  + \lambda_2 \ket{u_1}\ket{v_2}
+            \end{equation*}
+            위와 같이 각 system의 basis에서 \textbf{동일한 순서}에 있는 basis\footnote{여기서 basis는 그냥 아무런 basis를 사용해도된다. 그렇기 때문에 만약 주어진 상태가 product state $\ket{\psi}_A \times \ket{\psi}_B$라면 basis를 $\{\ket{\psi}_A, \ket{\psi}_A^\perp\}, \{\ket{\psi}_B, \ket{\psi}_B^\perp\}$로 설정함으로서 Schmidt decomposition을 수행할 수 있다. }들의 product의 summation으로 상태를 표현했을 때, $\lambda \ne 0$인 coefficient가 2개 이상이면 entangled state이다.  
+            \begin{theorem}[Schmidt decomposition]
+                For given state $\ket \psi= = \sum_{i,j} c_{ij} \ket{i} \ket{j}$, Schmidt decomposition is 
+                \begin{equation*}
+                    \ket{\psi} = \sum_k \lambda_k \underbrace{\left(\sum_i u_{ik} \ket i\right)}_{\ket{u_k}} \otimes  \underbrace{\left(\sum_j v_{jk}^\dagger \ket{j}\right)}_{\ket{v_k}}  = \sum_k \lambda_k \ket{u_k} \ket{v_k}
+                \end{equation*}
+                where $c_{ij} = (UDV^\dagger) = \sum_k u_{ik} \lambda_{kk} v_{jk}^\dagger$.
+            \end{theorem}
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{frame}{Summary}
+        \begin{block}{Summary}
+            \begin{itemize}
+                \item Product state: LOCC만 사용하여 준비 가능한 상태
+                \item Non-product state: LOCC만 사용해서는 준비할 수 없는 상태 (= entangled state)
+                \item Schmidt decomposition: entangled state인지 아닌지 확안하기 위한 방법. Schmidt decomposition의 rank가 1보다 크다면 entangled state이다.
+                \item Multi-qubit system에서는 각각의 qubit을 측정하거나 여러개의 qubit을 동시에 측정할 수 있다.
+                \begin{itemize}
+                    \item joint measurement는 individual measurement와 gate로 구현가능
+                    \item partial measurement를 수행한 결과는 partial trace를 취해서 구할 수 있다. 
+                    \begin{equation*}
+                        \rho_A= \text{tr}_B[(I\otimes M) \rho]
+                    \end{equation*}
+                \end{itemize}
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+
+    %#################################### 
+    \begin{frame}{References}
+    
+        \begin{itemize}
+            \item Lecture notes for EE547: Introduction to Quantum Information Processing (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+    \end{frame}
+
+
+\end{document}
