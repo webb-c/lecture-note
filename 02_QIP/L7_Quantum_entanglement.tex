@@ -1,0 +1,257 @@
+\documentclass[9pt]{beamer}
+\usepackage{kotex}
+\usepackage{amsfonts,amssymb,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage{braket}
+\usepackage{qcircuit}
+
+%## color
+\definecolor{customBlack}{HTML}{3B4252}
+\definecolor{customBlackGrey}{HTML}{434C5e}
+\definecolor{cuatomGrey}{HTML}{4C566A} 
+\definecolor{customWhite}{HTML}{ECEFF4} 
+\definecolor{customBlue}{HTML}{6082B6}  
+\definecolor{customRed}{HTML}{BF616A}
+\definecolor{vividauburn}{rgb}{0.58, 0.15, 0.14}
+
+
+%## Theme & custom
+% \usetheme{metropolis}           % Use metropolis theme
+% \metroset{block=fill}
+\usetheme{moloch} % modern fork of the metropolis theme
+\molochset{block=fill}
+\setbeamersize{text margin left=5mm, text margin right=5mm}
+\setbeamercolor{palette primary}{bg=customBlack}
+\setbeamercolor{alerted text}{fg=customRed}
+\setbeamercolor{itemize item}{fg=customBlue}
+\setbeamercolor{enumerate item}{fg=customBlue}
+
+
+%## font
+\usefonttheme[onlymath]{serif}
+% \setbeamerfont{normal text}{size=\small}
+% \setbeamerfont{math text}{size=\tiny}
+
+
+%## Theorem title, numbering
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+\begin{\inserttheoremblockenv}
+{%
+\inserttheoremheadfont
+\inserttheoremname
+\ifx\inserttheoremaddition\@empty\else\ of\ \inserttheoremaddition\fi%
+\inserttheorempunctuation
+}%
+}
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+\makeatother
+\setbeamertemplate{theorems}[numbered]  
+
+
+%## Custom block
+\setbeamercolor{block title}{bg=customBlue, fg=white}
+\setbeamercolor{block body}{bg=customWhite, fg=customBlack}
+\setbeamercolor{block title alerted}{%
+    use={block title, alerted text},
+    bg=customRed,
+    fg=white
+}
+\setbeamercolor{block body alerted}{%
+    use={block title, alerted text},
+    bg=customWhite,
+    fg=customBlack
+}
+\AtBeginEnvironment{definition}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{theorem}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{corollary}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+\AtBeginEnvironment{lemma}{%
+    \setbeamercolor{block title}{fg=white,bg=customBlackGrey}
+    \setbeamercolor{block body}{fg=customBlack, bg=customWhite}
+}
+
+
+%! Useful command
+\renewcommand{\Pr}{\text{Pr}}
+% $\ast$ \underline{Proof}:
+%\checkmark \underline{meaning}:
+
+\title{7. Quantum entanglement}
+\date{\today}
+\author{Vaughan Sohn}
+% \institute{Centre for Modern Beamer Themes}
+
+
+\begin{document}
+    %#################################### 
+    \maketitle
+    
+    %#################################### 
+    \begin{frame}
+        \frametitle{Contents}
+        \tableofcontents
+    \end{frame}
+
+    %#################################### 
+    %pure state가 주어졌을 때 entangled state인지 아닌지 파악하는 방법
+    \begin{section}{Entanglement in pure state}
+        \begin{frame}
+            \frametitle{Pure state}
+            
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Schmidt decomposition}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{LU equivalent}
+            
+        \end{frame}
+
+
+        \begin{frame}
+            \frametitle{Reduced state and LU equivalent}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Example}
+            
+        \end{frame}
+    \end{section}
+    
+    %#################################### 
+    %mixed state가 주어졌을 때 entangled state인지 아닌지 파악하는 방법
+    \begin{section}{Entanglement in mixed state}
+        \begin{frame}
+            \frametitle{Separable state}
+            
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Non-separable state: entangled state}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Example}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{PPT Criteria}
+            
+        \end{frame}
+    \end{section}
+
+    \begin{frame}
+        \frametitle{Summary: condition of entanglement}
+        
+    \end{frame}
+
+    %#################################### 
+    %entanglement의 양을 나타내는 방법
+    \begin{section}{Quantity of the entanglement}
+        \begin{frame}
+            \frametitle{Entanglement measure}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Distillation of entanglement in pure state}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Distillation of entanglement in mixed state}
+            
+        \end{frame}
+    \end{section}
+
+
+    \begin{frame}
+        \frametitle{Summary: quantuntity of entanglement}
+        
+    \end{frame}
+
+    %#################################### 
+    %state가 어떤 state인지에 대한 정보가 없을 때 (arbitrary 안 알려진 상태) entanglement의 양을 나타내는 방법
+    \begin{section}{Entanglement witness}
+        \begin{frame}
+            \frametitle{Positive trace test}
+            
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Feasibleness}
+            
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Example}
+            
+        \end{frame}
+    \end{section}
+
+    \begin{frame}
+        \frametitle{Summary: entanglement witness of arbitrary quantum state}
+        
+    \end{frame}
+
+    %#################################### 
+    \begin{section}{General theory of  Entanglement witness}
+        \begin{frame}
+            \frametitle{Convexity on separable state set}
+            
+        \end{frame}
+        
+        \begin{frame}
+            \frametitle{Quantum channel}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Another definition of entanglement using Channel}
+            
+        \end{frame}
+
+        \begin{frame}
+            \frametitle{Choi-Jamiolkowski isomorphism}
+            
+        \end{frame}
+    \end{section}
+
+    %#################################### 
+    \begin{frame}{Summary}
+        \begin{block}{Summary}
+            \begin{itemize}
+                \item 
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+
+    %#################################### 
+    \begin{frame}{References}
+        \begin{itemize}
+            \item Lecture notes for EE547: Introduction to Quantum Information Processing (Fall 2024)
+        \end{itemize}
+        \vspace{6cm}
+    \end{frame}
+
+
+\end{document}
