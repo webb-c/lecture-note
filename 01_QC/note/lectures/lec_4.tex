@@ -777,17 +777,343 @@ Stabilizer formalism을 사용할 때, quantum computer의 연산 능력에 대�
 
 \lecture{23}{9 Dec. 10:30}{}
 \subsection{Stabilizer code constructions}
-이제 다시 우리의 원래 주제로 돌아와서... stabilizer formalism을 사용하여 어떻게 quantum code를 구축할 것인지 생각해보자. 기본 아이디어는 매우 간단하다. $[n, k]$ stabilizer code $C(S)$는 $G_n$의 subgroup $S$에 의해 stabilize되는 $V_S$ \textbf{vector space}로 정의된다.\footnote{$S$는 $-I \notin S$이고 $n-k$개의 independent, commute인 generator를 가진다고 가정.} (i.e., $C(S) \triangleq V_S$) Stabilizer code는 \textit{gate}를 다루기 때문에 마치 logical qubit으로 인코딩 했던 것처럼 logical gate를 이용한다. (e.g., $\bar Z$: $ZZZ$) 
+이제 다시 우리의 원래 주제로 돌아와서 stabilizer formalism을 사용하여 어떻게 QEC를 만들지 생각해보자.
 
-$n-k$개의 generator가 주어졌을 때, $C(S)$ $2^k$ dimensional vector space에서 $2^k$개의 orthonormal vector를 선택하여 \textit{logical basis state}로 사용할 수 있다.
-예를 들어, 먼저 $g_1, \cdots, g_{n-k}, \bar{Z}_1, \cdots, \bar Z_k$가 서로 independent, commute하도록 operator $\bar{Z_1}, \cdots, \bar{Z_k} \in G_n$를 선택하자. Logical gate $\bar Z_j$가 $j$번쨰 logical qubit에 대해 Pauli Z operator처럼 동작할 때, logical computational basis state $\ket{x_1, \cdots, x_k}_L$은 다음의 stabilizer를 가진다.
-\begin{equation*}
-    \left\langle g_1, \ldots, g_{n-k},(-1)^{x_1} \bar{Z}_1, \ldots,(-1)^{x_k} \bar{Z}_k\right\rangle .
-\end{equation*}
+$[n, k]$ stabilizer code $C(S)$는 $G_n$의 subgroup $S$에 의해 stabilize되는 \textbf{vector space} $V_S$로 정의된다.\footnote{$S$는 $-I \notin S$이고 $n-k$개의 independent, commute인 generator를 가진다고 가정.} (i.e., $C(S) \triangleq V_S$)
+이때, $S$는 앞에서 가정했던 것처럼 $(1)$ $-I \not \in S$이고 $(2)$ $n-k$개의 linearly independent and commute인 generator $S = \langle g_1, \cdots, g_{n-k} \rangle$를 가진다는 것이다. 
 
-그럼 stabilizer code에서 발생하는 error는 어떻게 표현할까? $E \in G_n$에 대해 3가지 종류의 에러가 발생할 수 있다. 
+그렇다면 stabilizer code는 어떤 \textit{logical basis state}를 사용할까? Vector space $V_S$의 $2^k$개의 orthonormal basis vector를 선택하여 사용할 수도 있지만, 실제로는 이보다 더 체계적인 방식을 사용한다.
+\begin{enumerate}
+    \item $\bar{Z_1}, \cdots, \bar{Z_k} \in G_n$\footnote{$\bar{Z_k}$는 logical gate로 $k$번쨰 logical qubit으로 인코딩된 physical qubit에 모두 $Z$ gate를 적용한다.}을 선택하여 $g_1, \cdots, g_{n-k}, \bar{Z_1}, \cdots, \bar{Z_k}$가 서로 linearly independent, commute한 원소를 갖는 집합을 생성하도록 한다.
+    \item 따라서 logical qubit $\ket{x_1, \cdots, x_k}_L$은 다음의 stabilizer를 갖는 state로 정의할 수 있다.
+    \begin{equation*}
+        \left\langle g_1, \cdots, g_{n-k},(-1)^{x_1} \bar{Z}_1, \cdots,(-1)^{x_k} \bar{Z}_k\right\rangle .
+    \end{equation*}
+\end{enumerate}
+
+그럼 stabilizer code에서 발생하는 error는 무엇일까? $E \in G_n$에 대해 3가지 종류의 에러가 존재한다.
 \begin{itemize}
-    \item $E$ anti-commute with an element in stabilizer : anti-commute이므로 error가 발생하면 codeword의 vector space와 orthogonal한 subspace로 mapping되기 때문에 error가 발생했음을 확인하기도 쉽고 쉽게 해결할 수 있다. 
+    \item $E$ anti-commute with an element in generator : anti-commute이므로 에러가 발생하면 codeword의 vector space와 orthogonal한 subspace로 mapping되기 때문에 error가 발생했음을 확인하기도 쉽고 쉽게 해결할 수 있다. (e.g., if $E$ is anti-commute with $g_1$, then $Eg_{1}E^\dagger = -g_{1}$\footnote{observable $g_1$을 측정한 결과가 $-1$이므로 오류가 발생했다는 것을 쉽게 알 수 있다.})
     \item $E \in S$ : stabilizer의 성질덕분에 $E \ket \psi = \ket \psi$이므로 오류가 발생하지 않는다.
-    \item $E$ commute with all element in stabilizer, but $E \notin S$ : error가 발생하면 codeword의 vector space 공간에 존재하는 \textbf{다른 codeword}로 mapping되기 때문에 가장 까다로운 오류이다.
+    \item $E$ commute with \textbf{all} element in generator, but $E \notin S$ : 에러가 발생하면 codeword의 vector space 공간에 존재하는 \textbf{다른 codeword}로 mapping되기 때문에 가장 까다로운 오류이다.
 \end{itemize}
+
+$S$의 모든 원소와 commute인 원소 $\E \in G_n$들의 집합을 \textit{centralizer}, $Z(S)$라고 한다. 이때, $Z(S) - S$로 표현되는 집합이 공집합이 아니기 때문에 3번째 type에 해당하는 에러가 발생할 수 있는 것이다. (이때 stabilizer에 대한 centralizer는 stabilizer의 normalizer, $N(S)$와 동일하다. Normalizer는 $S$의 모든 원소에 대해 $EgE^\dagger \in S$가 되도록 하는 원소 $E \in G_n$들의 집합이다.)
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.35\textwidth]{figures/C7_error_class.png}
+    \caption{Error classes}
+\end{figure}
+
+\pagebreak
+
+이러한 다양한 에러들의 종류에 대해, stabilizer code에서 QEC condition은 다음과 같이 정리된다.
+\begin{theorem}[Error correction conditions for stabilizer codes]
+    Let $S$ be the stabilizer for a stabilizer code $C(S)$. Suppose $\{E_j\}$ is a set of operators in $G_n$ such that $E^\dagger_jE_k \not \in N(S) - S$ for all $j$ and $k$.
+    Then $\{E_j\}$ is a correctable set of errors for the code $C(S)$. \\
+    $\rightarrow$ 즉, 집합 $N(S) - S$에 속하지 않는 원소는 stabilizer code를 사용하여 정정될 수 있다.
+\end{theorem}
+\begin{proof}
+    증명에 앞서, 먼저 original QEC condition이 다음과 같이 정의됨을 기억하자.
+    \begin{remark}
+        \begin{equation}
+            PE_j^\dagger E_k P = \alpha_{ij} P \label{eq:QEC}
+        \end{equation}
+        where $\alpha_{ij}$ is a Hermitian matrix and $P$ is a projector onto code space (e.g., $C(S)$)
+    \end{remark}
+    우리가 관찰한 stabilizer code 에러의 3가지 종류에 따르면, $E_j^\dagger E_k \in N(S) - S$에 속하는 에러는 $(1) E_j^\dagger E_k \in S$ 또는 $(2) E_j^\dagger D_k \in G_n - N(S)$이다.
+    \vspace{0.2cm}
+
+    먼저 첫 번째 에러에 대해 $P$는 code space에 대한 projector이므로 $S$의 원소에 의해 stabilize된다. 따라서 $E_j^\dagger, E_k$가 $S$의 원소이므로 $PE_j^\dagger E_kP = P$의 관계를 성립한다. $\alpha_{ij} = 1$일 때 Eq.~\eqref{eq:QEC}를 만족한다. 
+    반면, 두 번째 에러는 normalizer $N(S)$의 원소가 아니기 때문에 적어도 하나의 generator와는 anti-commute하다. 이 원소를 $g_1$이라고 하자. $\langle g_1, \cdots, g_{n-k}\rangle$이 $S$의 generator set이면, projector $P$를 다음과 같이 쓸 수 있다. 
+    \begin{equation*}
+        P=\frac{\prod_{l=1}^{n-k}\left(I+g_l\right)}{2^{n-k}}
+    \end{equation*}
+    $E^\dagger_j g_1 E_k = -g_1$임을 이용하면 $E^\dagger_j E_k$를 가한 상태는 다음과 같다. 
+    \begin{equation}
+        E_j^{\dagger} E_k P=\left(I-g_1\right) E_j^{\dagger} E_k \frac{\prod_{l=2}^{n-k}\left(I+g_l\right)}{2^{n-k}} \label{eq:proof-1}
+    \end{equation}
+    이때, Eq.~\eqref{eq:proof-1}는 $(I-g_1)$이 곱해져있고 반대로 $P$는 $(I+g_1)$이 곱해져있는데, $(I+g_1)(I-g_1) = I- g_1^2 = 0$\footnote{Pauli group은 $g_i^2 = I$이므로?}이므로 $PE_j^\dagger E_kP = 0$의 관계를 성립한다. $\alpha_{ij} = 0$일 때 Eq.~\eqref{eq:QEC}를 만족한다.
+    \vspace{0.2cm}
+
+    따라서 어떤 종류의 에러이든지 $E_j^\dagger E_k \in G_n - N(S)$라면 QEC condition을 만족하기 때문에 오류정정이 가능하다.
+\end{proof}
+
+그렇다면, (정정가능한) 에러가 발생했을때, stabilizer code는 이를 어떻게 감지하고 정정하는가?\\
+$\langle g_1, \ldots, g_{n-k} \rangle$가 $S$의 generator이고 $\{E_j\}$가 정정가능한 에러들의 집합이라고 하자. 오류감지를 위하여 generator; observable을 차례대로 측정한 결과로 error syndrome $\beta_1, \beta_2, \cdots, \beta{n-k}$를 얻을 수 있다. 
+에러 $E_j$가 발생했을 경우 error syndrome은 $+1, \cdots, \beta_j, \cdots, 1$로 표현된다. 이는 $E_j g_l E_j^\dagger = \beta_l g_l$를 만족한다.
+그럼 해당 error syndrome에 대한 복구연산자 $E_j^\dagger$를 적용하여 정정할 수 있다. 
+
+이때 동일한 error syndrome을 가지는 서로 다른 에러 $E_j, E_{j'}$가 존재할 수도 있다. 하지만 이는 에러를 발생시킨 연산자가 무엇이든 관계없이 $E_j^\dagger$나 $E_{j'}^{\dagger}$를 가하여 정정할 수 있다. (by $E_j^\dagger E_{j'} P E_{j'}^\dagger E_j = P $)
+
+\vspace{0.2cm}
+Stabilizer code에서도 classical code \textit{distance}를 정의하는 방법과 거의 유사한 방식으로 distance를 정의할 수 있다. 에러 $E \in G_n$ 의 가중치(weight)는 non-trivial한 Pauli matrix의 수로 정의된다.\footnote{자명한 Pauli matrix는 $I$를 이야기한다. $I$는 가해지더라도 오류정정을 할 필요가 없기 때문이다.} 예를 들어,  $X_1Z_4Y_8$ 의 가중치는 3이다.
+$C(S)$ 의 거리는  $N(S) - S$에 있는 에러에 대한 minimum distance로 정의된다. $C(S)$가 $[n, k, d]$ 코드이고  $d \geq 2t + 1$ 이라면, 최대 $t$ 큐비트에서 발생하는 오류를 정정할 수 있다.
+
+\subsection{Examples}
+\subsubsection{The three qubit bit flip code}
+앞에서 다루었던 repetition-three qubit code에 대한 예시를 살펴보자. 이 코드는 $\ket{000}, \ket{111}$을 basis state로 가지기 때문에 logical code space는 stabilizer $S = \langle Z_1Z_2, Z_2Z_3\rangle$을 가진다. 
+Bit-flip error 집합 $\{I, X_1, X_2, X_3\}$에 대해, three qubit bit flip code는 두 원소끼리 가능한 모든 product\footnote{e.g., $X_1X_2 \in \{E_j\}$, but $X_1X_2X_3 \notin \{E_j\}$}로 정의되는 집합의 에러를 모두 정정할 수 있다. 이는 $\{E_j\}$에 속한 모든 오류가 $S$의 generator인 $Z_1Z_2, Z_2Z_3$ 둘 중 하나와 반드시 anti-commute하기 때문이다.
+
+\subsubsection{The nine qubit Shor code}
+Shor code의 code space에 대한 8개의 generator는 Fig.~\ref{fig:shor_generator}에 나와있다. 이를 이용하면 발생할 수 있는 다양한 에러에 대해서, generator의 원소와 anti-commute인지 아닌지를 확인하는 것만으로 이 code가 해당 오류를 정정할 수 있는지를 분석할 수 있다. (e.g., $X_1Y_4$는 $Z_1Z_2$와 anti-commute이므로 정정가능한 오류)
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.25\textwidth]{figures/C7_stabilizer_shor_code.png}
+    \caption{generator for Shor code (and logical Z and X)}
+    \label{fig:shor_generator}
+\end{figure}
+
+\subsubsection{The five qubit code}
+에러 정정을 위해서 encoding을 사용할 때, single qubit error를 감지하고 정정할 수 있게하는 logical qubit의 가장 작은 크기는 \textbf{5 qubit}이다. Five qubit code에 대한 stabilizer 역시 Fig.~\ref{fig:five_generator}에 나와있으며, 모든 single qubit error가 five qubit code의 generator와 anti-commute한다는 사실을 쉽게 파악할 수 있다. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{figures/C7_stabilizer_five_qubit.png}
+    \caption{generator for five qubit code (and logical Z and X)}
+    \label{fig:five_generator}
+\end{figure}
+
+\subsubsection{CSS codes and the seven qubit code}
+앞에서 다루었듯이, CSS code는 $C_2 \subset C_1$인 classical linear code $C_1, C_2$를 이용한다. 이 code에 대해서 다음과 같은 check matrix를 정의할 수 있다.\footnote{각 행이 generator, 각 column이 qubit을 의미하며 왼쪽은 Z, 오른쪽은 X를 나타내기 위해 사용된다.}
+이 행렬이 stabilizer code를 정의한다는 것을 보이기 위해서는 $H(C_2^\perp)H(C_1)^T = 0$을 만족한다는 것을 확인해야하지만 $C_2 \subset C_1$ 관계 떄문에 $H(C_2^\perp)H(C_1)^T = [H(C_1)G(C_2)]^T 0$가 된다.
+\begin{equation*}
+    \left(\begin{array}{cc}
+        H\left(C_2^{\perp}\right) & 0 \\
+        0 & H\left(C_1\right)
+    \end{array}\right)
+\end{equation*}
+CSS code의 한 종류인 Steane code의 경우에는 다음과 같은 logical $Z, X$ gate를 사용한다. 
+
+\begin{equation*}
+    \bar{Z} \equiv Z_1 Z_2 \cdots Z_7 ; \quad \bar{X} \equiv X_1 X_2 \cdots X_7 .
+\end{equation*}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.22\textwidth]{figures/C7_CNOT.png}
+% \end{figure}
+
+\subsection{Quantum circuits for encoding, decoding, and correction}
+Stabilizer code의 특징 중 하나는 encoding, decoding, error correction 절차를 잘 구성할 수 있다는 점이다. $[n, k]$ stabilizer code $C(S)$가 generator $\langle g_1, \cdots, g_k\rangle$와 logical gate $\bar Z_1, \cdots, \bar Z_k$를 가질 때, 전체 과정을 나타내보자.
+\begin{enumerate}
+    \item (encode) logical $\ket{0}_L$ state를 준비 : physical initial state $\ket{0}^{\otimes n}$에 대해서 $n-k$개의 generator, 그리고 $k$개의 logical operator를 측정하면 측정결과에 따라, 적절한 Pauli operator를 가하여 logical init state를 만들 수 있다. 정정하기전의 state는 다음과 같은 stabilizer를 가진다.
+    \begin{equation*}
+        \left\langle \pm g_1, \ldots, \pm g_{n-k}, \pm Z_1, \ldots, \pm Z_k\right\rangle
+    \end{equation*}
+    \item (decode) QC에서는 logical state를 측정한 결과로부터 기존의 값(decode)을 알 수 있기 때문에, decoding 과정이 별도로 필요하지 않다. 
+    \item (measurement) generator나 logical Pauli gate; observable을 측정하기 위해서 Fig.~\ref{fig:measurement}와 같은 회로를 구성한다. 이는 $M$에 대한 \textbf{eigenvalue}를 측정한다는 의미로 해석할 수 있다. Pauli group $G_n$에 속한 원소들은 모두 $\pm 1$의 eigenvalue를 가진다.
+\end{enumerate}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{figures/C7_measurement.png}
+    \caption{Measurement observable}
+    \label{fig:measurement}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/C7_stean_code_measurement.png}
+    \caption{Stean code measurement}
+\end{figure}
+
+\lecture{24}{11 Dec. 10:30}{}
+\section{Fault-tolerant quantum computation}
+지금까지 우리는 QEC에서 진행되는 절차가 모두 \textit{noiseless}라는 이상적인 가정에서 QEC가 가능하다는 것을 주장했었다. 그러나, 실제 quantum computer는 여전히 noise가 존재하고 이로인하여 QEC 과정에서도 오류가 발생할 수 있다. 
+그렇다면 실제 device에서는 QEC가 불가능할까? 놀랍게도, 1개의 gate를 가할 때 오류가 발생할 확률인 $p$가 특정 \textit{threshold}보다 작은경우 arbitrary long quantum circuit도 작은 오류확률을 가지며 효율적으로 수행할 수 있다는 사실이 알려져있다. 
+
+\subsection{Fault-tolerance: the big picture}
+
+Fault-tolerance quantum computation은 각 연산을 적용할 때마다 에러가 발생할 가능성을 고려하면서도 안정적인 연산을 수행할 수 있도록 하는 방법이다. 
+이 섹션에서는 양자 컴퓨터에서 \textit{error propagation}, 그리고 \textit{error accumulate}가 왜 fault-tolerance에 문제가 되는지에 대해서 설명한 뒤, 
+fault-tolerant가 어떻게 구현되는지를 예시로 들고자한다. 마지막으로 \textbf{concatenation}을 통해 어떤 arbitrary long quantum circuit도 신뢰성있게 실행할 수 있다는 threshold theorem에 대해서 설명하려고 한다.
+
+\subsubsection{Fundamental issues}
+Fault-tolerance computation을 위해서 $(1)$ QEC code로 인코딩된 logical qubit을 이용하며, $(2)$ 각 quantum \textit{logical} gate가 적용될때마다 error correction을 실시하는 단순한 아이디어를 생각해볼 수 있다. (See Fig.~\ref{fig:FT-circui}) 그러나 이런 방법으로도 충분하지 않다. 다음의 2가지 문제점이 존재한다.
+\begin{itemize}
+    \item Logical (encoded) gate는 \textit{error propagation}을 야기시킬 수 있다. 예를 들어, CNOT gate라면 control qubit가 가지고 있던 오류가 target qubit에도 전달된다.
+    \item QEC에서 수행하는 error correction procedure 자체가 faulty 할 수 있다.
+\end{itemize}
+따라서 Fault-tolerant quantum computation을 위해서는, encoded gate를 잘 설계해야하낟. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/C7_FT_gate.png}
+    \caption{Fault-tolerance circuit}
+    \label{fig:FT-circui}
+\end{figure}
+
+\subsubsection{Fault-tolerant operations: definitions}
+Fault-tolerance computation을 구현하기에 앞서, Fault-tolerance의 기준이 무엇인지를 정의하고자한다.
+\begin{definition}[Fault-tolerance]
+    If only one component in the procedure fails then the failure cases \textit{at most} \textbf{one error in each encoded block} of qubits output from the procedure.
+\end{definition}
+즉, 어떤 procedure\footnote{e.g., encoded gate를 구현하는 procedure}가 fault-tolerance하다고 이야기하기 위해서는 그 procedure를 이루는 각 component(e.g., gate, measurement, state preparation, ...)에 오류가 발생하였더라도 procedure가 끝났을 때 output logical qubit안에는 최대 1개의 에러만이 발생해야한다. 이러한 single qubit error는 우리가 앞에서 소개했던 매커니즘을 이용하여 충분히 오류정정을 수행할 수 있다.
+
+특히 fault-tolerant measurement도 이러한 특성을 만족해야하는데, 만약 procedure를 이루는 각 component의 에러 확률중에서 가장 높은 값이 $p$일 때, 측정 결과는 $O(p^2)$의 오류확률을 가져야한다. 
+
+본 강의에서는 단순화를 위하여 Pauli-error $\{I, X, Y, Z\}$에 대해서만 고려한다. 예를 들어, $X_1$ 오류가 있는 상태에서 CNOT을 하면 $C(X)X_1I = C(X)X_1C(X)^\dagger C(X) = X_1X_2C(X)$가 된다. 즉, CNOT이 올바르게 적용되었지만 bit flip error가 다른 qubit으로 전파되었다.
+
+\subsubsection{Example: fault-tolerant CNOT}
+본격적으로 fault-tolerant CNOT을 구현하는 procedure에 대해서 분석해보자. Fig.~\ref{fig:cnot-detail}에서 표현한 것처럼 FT CNOT은 4가지의 component를 가진다. 각 component에 오류가 발생하더라도 encoded qubit안에서 2개 이상의 오류가 발생할 확률이 $O(p^2)$가 된다는 것을 보이려고 한다. 
+
+\begin{itemize}
+    \item 각 logical qubit에 단일 에러가 존재하는 경우 : CNOT을 통과하면서 첫 번째 logical qubit에 존재하던 에러가 두 번쨰 logical qubit으로 전파되면서 두 번쨰 logical에 두 개의 오류를 유발할 수 있다. 만약 이전 단계의 회로들이 모두 FT로 설계되었다면, 각 logical qubit에 단일 에러가 발생할 확률은 $c_0p$ 이하이다.\footnote{$c_0$은 오류가 발생할 수 있는 위치를 나타내는 상수} 두 logical qubit에 에러가 독립적으로 발생한다고 가정하면, CNOT 통과이후 단일 logical qubit에서 2개 이상의 에러를 가질 확률은 $c_0^2p^2$ 이하이다.
+    \item 하나의 logical qubit에 단일 에러가 존재하고 CNOT에서 추가로 단일 에러가 발생하는 경우 :\\ 이 에러 이벤트의 발생확률은 $c_1 p^2$이다.
+    \item CNOT에서 2개의 에러가 발생하는 경우
+    \item CNOT에서 단일 에러가 발생하고 syndrome measurement를 수행하면서 추가로 단일 에러가 발생하는 경우
+    \item etc ...
+\end{itemize}
+
+FT CNOT procedure에서 발생할 수 있는 모든 error event에 대해서 logical qubit에 두 개 이상의 에러가 발생할 확률은 모두 $cp^2$이하 이다. 따라서, FT CNOT을 구현하는 회로의 각 구성 요소가 $p$ 확률로 에러를 발생시킬 수 있어도 FT CNOT은 $1 - cp^2$ 확률로 성공한다.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figures/C7_FT_CNOT_high.png}
+    \caption{Fault-tolerant CNOT procedure}
+    \label{fig:cnot-detail}
+\end{figure}
+
+\subsubsection{Concatenated codes and the threshold theorem}
+앞에서 보인 FT CNOT은 기존의 성공확률에 비해서 더 높은 성공확률을 보이기는 하지만, 여전히 그렇게까지 강력해보이지는 않는다. 이를 위해서 한 가지 강력한 아이디어를 도입하고자한다.
+
+아이디어는 FT procedure를 \textbf{recursively} 반복하는 것이다. 예를 들어, Fig.~\ref{fig:concat}에서 사용하는 two-level concatenation을 분석해보자.
+회로를 이루는 component에 대해 physical error probability가 $p$일 때, 첫 번째 encoding을 통해서 logical error rate $cp^2$을 얻을 수 있다. 그 다음으로 logical qubit $\ket{0}_{L_1}$을 physical qubit으로 생각하고 두 번쨰 encoding을 도입할 수 있다. (e.g., $\ket{0}_{L_2} = \ket{0_{L_1}0_{L_1}0_{L_1}}$)
+따라서 error rate $p_1 \triangle cp^2$에 대하여, 두 번쨰 encoding을 통해서 얻을 수 있는 error rate는 $p_2 \triangleq c (cp^2)^2 = c^3p^4$이다. 
+이를 반복하면 $k$-level concatenation을 통해서 $(cp)^{2^k}/ c$ error rate를 얻을 수 있다. $k$-level concatenation을 위해 필요한 cost(size of simulating circuit)는 original circuit size의 $d^k$배 이다. 이때, $d$는 FT procedure를 위해 필요한 maximum number of operations을 의미한다. 
+
+Original circuit size가 problem size $n$에 대해 polynomial size (i.e., $p(n)$)를 가질 때, target accuracy $\epsilon$을 달성하기 위해서 필요한 반복횟수 $k$는 얼마일까? Target accuracy를 달성하기 위해서는, 회로를 이루는 각각의 gate에 대한 target accuracy가 $\epsilon/p(n)$이라는 것을 쉽게 알 수 있다. 따라서, $k$-concatenation FT gate에 대해서 다음을 만족해서 target accuracy를 달성할 수 있을 것이다.
+\begin{equation*}
+    \frac{(c p)^{2^k}}{c} \leq \frac{\epsilon}{p(n)} .
+\end{equation*}
+이떄, physical error $p < p_{\text{thresh}} \triangle 1/c$의 조건을 만족하면 $k\rightarrow \infty$에 따라서 우리가 원하는 임의의 정확도를 얻을 수 있다.\footnote{만약 $p = p_{\text{thresh}}$라면 $k$가 증가하더라도 $(cp)^{2^k}/c$가 constant가 되기 때문에 target error를 달성할 수 없다.}
+그렇다면, target accuracy를 달성하기 위해 필요한 circuit의 크기는 얼마일까? $d^k$에 위의 관계식으로부터 얻은 $k$를 대입하면 다음을 얻을 수 있고
+\begin{equation*}
+    d^k=O(\operatorname{poly}(\log p(n) / \epsilon)),
+\end{equation*}
+원본 회로의 크기가 $p(n)$이므로 FT simulate circuit의 size는 다음과 같다.
+\begin{equation*}
+    O(\operatorname{poly}(\log p(n) / \epsilon) p(n))
+\end{equation*}
+이를 \textit{threshold theorem}이라고 한다. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures/C7_FT_concatenation.png}
+    \caption{Concatenation}
+    \label{fig:concat}
+\end{figure}
+
+\subsection{Fault-tolerant quantum logic gate}
+우리는 $\{H, S, CNOT, T\}$ gate가 universal gate set이라는 사실을 이미 알고있다. 따라서 Fault-tolerant $H, S, CNOT$ 그리고 $T$ gate를 구현할 수 있으면\footnote{여기서 이야기하는 FT는 Fig.~\ref{fig:cnot-detail}와 같은 전체 과정이 아니라 이 과정의 구성요소인, FT CNOT을 의미한다.} Fault-tolerant gate procedure를 구축할 수 있고 이를 이용하여 Fault-tolerant computation을 수행할 수 있다.
+
+\subsubsection{Normalizer operations}
+$\{H, S, CNOT\}$ gate는 Clifford group에 속하는 게이트이기 때문에 쉽게 구현할 수 있다. Stean code에서 사용하는 logical gate는 다음과 같이 정의된다.
+\begin{equation*}
+    \bar{Z}=Z_1 Z_2 \cdots Z_7 ; \quad \bar{X}=X_1 X_2 \cdots X_7.
+\end{equation*}
+즉, logical gate를 구현하기 위해서는 단순히 logical qubit을 이루는 각각의 physical qubit에 \textit{single qubit gate}를 가하면 된다. 
+각 gate는 하나의 qubit에만 작용하기 때문에, error propagation이 일어나지 않는다. 따라서 logical gate를 구현하기 위해서 physical operation을 각 qubit에 서로 \textbf{individually} 적용하면 그 logical gate는 fault-tolerant 하다는 사실을 알 수 있다. (\textit{transversality property})
+\begin{theorem}[Easten-Knill theorem]
+    No quantum error correcting code can transversely implement a universal gate set.
+\end{theorem}
+
+마찬가지로 CNOT gate 역시 transversality property를 가지도록 구현할 수 있다. Control qubit으로 사용되는 logical qubit에 있는 \textbf{모든} physical qubit과 target qubit으로 사용되는 logical qubit에 있는 \textbf{모든} physical block을 CNOT gate로 연결한다.
+이 연산은 동일한 block안에서 서로 연결되지 않기 때문에 독립적으로 동작하기 때문에 fault-tolerance하다. 
+\begin{figure}[h]
+    \centering
+    \[
+        \begin{array}{c}
+        \Qcircuit @C=1.0em @R=0.8em {
+            & \qw & \ctrl{3} & \qw      & \qw & \qw \\
+            & \qw & \qw      & \ctrl{3} & \qw  & \qw \\
+            & \qw & \qw      & \qw      & \ctrl{3} & \qw \inputgroupv{1}{3}{.8em}{.8em}{\ket{\psi}_L}\\ 
+            & \qw & \targ    & \qw      & \qw & \qw \\
+            & \qw & \qw & \targ & \qw & \qw \\
+            & \qw & \qw & \qw & \targ & \qw \inputgroupv{4}{6}{.8em}{.8em}{\ket{\psi}_L}
+        }
+        \end{array}
+        \]
+    \caption{Logical CNOT gate} \label{fig:locial-CNOT-circuit}
+\end{figure}
+
+\subsubsection{Fault-tolerent $\pi/8$ gate}
+반면, $T$ gate의 구현은 앞선 방식들과는 다른 방법을 따른다. 이 과정은 (1) 특정한 magic state $\ket{\Theta}$로 state preparation을 수행한 뒤, 앞에서 이미 구현한 FT normalizer operation들을 이용하여 회로를 구성한다.
+\begin{enumerate}
+    \item initial state : $\ket{\theta}\ket{\psi}$. FT T gate는 첫 번쨰 qubit에 $T\ket{\psi}$를 저장하는 방식으로 동작한다. 
+    \begin{equation*}
+        |\Theta\rangle=\frac{|0\rangle+e^{i \pi / 4}|1\rangle}{\sqrt{2}} .
+    \end{equation*}    
+    \item apply FT CNOT : 다음을 얻는다.
+    \begin{equation*}
+        \frac{1}{\sqrt{2}}\left[|0\rangle(a|0\rangle+b|1\rangle)+e^{i \pi / 4}|1\rangle(a|1\rangle+b|0\rangle)\right]=\frac{1}{\sqrt{2}}\left[\left(a|0\rangle+b e^{i \pi / 4}|1\rangle\right)|0\rangle+\left(b|0\rangle+a e^{i \pi / 4}|1\rangle\right)|1\rangle\right]
+    \end{equation*}
+    \item measure second qubit : 두 번째 qubit의 측정 결과가 $0$일 때는 post-state가 우리가 원하는 $T \ket{\psi}$이므로 측정 결과가 $1$일 때만 추가적인 정정을 필요로한다.
+    \item if outcome is $1$, then apply $SX$
+    \begin{equation*}
+        S X=\left(\begin{array}{ll}
+            1 & 0 \\
+            0 & i
+            \end{array}\right)\left(\begin{array}{ll}
+            0 & 1 \\
+            1 & 0
+            \end{array}\right)
+    \end{equation*}
+    $SX$를 가하면 우리가 원하는 state를 얻을 수 있다. 
+    \begin{equation*}
+        a|0\rangle+b e^{i \pi / 4}|1\rangle .
+    \end{equation*}    
+\end{enumerate}
+그렇다면, initial state $\ket{\Theta}$는 어떻게 생성할 수 있을까? \textit{Measurement} outcome이 그 observable에 해당하는 eigenvalue를 반환하는 것이라는 걸 기억하자.
+$\ket{0}$가 $+1$을 eigenvalue로 가지는 $Z$의 eigenvector이고 $\ket{\Theta}$가 $+1$을 eigenvalue로 가지는 $e^{-i\pi/4}SX$의 eigenvector라는 사실을 이용하자.
+
+따라서 Clifford group의 특징을 이용하면, $Z \rightarrow HZH^\dagger \rightarrow THZH^\dagger T^\dagger = e^{-i\pi/4} SX$이므로 이를 이용하여 $\ket{0} \rightarrow H\ket 0 \rightarrow TH \ket 0 = \ket \Theta$임을 알 수 있다. 따라서 $H, T$ gate를 차례대로 가함으로서 $\Theta$ 상태를 만들 수 있다.
+단, 이 과정은 \textbf{faulty}를 허용하지 않는 방법이다.\footnote{fault-tolerance T gate를 모르는데 T gate를 사용함} 따라서 대신 $e^{-i \pi/4} SX$로 $\ket 0$을 \textbf{측정}함으로서 $\Theta$ state를 준비할 수 있다. 한 가지 주의해야할 점은 $HT$ gate를 적용한 뒤 측정결과가 $-1$이라면, $Z$ gate를 가하여 $\ket \Theta$로 변환해야한다.
+\begin{align*}
+    e^{-i \pi/4} SX \ket{\Theta'} = - \ket{\Theta'},\\
+    \Rightarrow e^{-i \pi/4} SX \left(Z\ket{\Theta'}\right) =  \left(Z\ket{\Theta'}\right) = \ket{\Theta}
+\end{align*}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.38\textwidth]{figures/C7_FT_T.png}
+    \caption{Fault-tolerance T gate}
+\end{figure}
+
+\subsubsection{Fault-tolerant measurement}
+그렇다면, 마지막으로 fault-tolerance measurement는 어떻게 구현할 수 있을까? Measurement는 QEC에서 syndrome measurement를 진행할 때나, state preparation을 위해서, 또는 실제 quantum circuit의 마지막 연산 단게에서 결과를 확인하기 위해 사용될 수도 있다.
+따라서 FT measurement를 구현하는 것은 quantum computing에서 매우 중요한 단계라고 말할 수 있다. 
+
+다음 그림은 일반적은 measurement gate를 나타낸다. 이처럼 measurement 단계에서 controlled operation을 사용하여 QEC에 필요한 정보를 수집하기 때문에 첫 번째 qubit $\ket 0$에서 발생한 에러가 다른 qubit에 모두 전파될 수 있다. 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figures/C7_QEC_measurement.png}
+    \caption{Measurement}
+\end{figure}
+
+Three qubit encoded code에서의 fault-tolerance measurement는 Fig.~\ref{fig:FT-measure}에 나와있다.
+\begin{enumerate}
+    \item prepare : 관측을 위해 사용되는 ancilla qubit을 \textit{cat-state} $\ket {00 \cdots 0} + \ket{11 \cdots 1}$로 준비시킨다. prepare step은 FT가 아니기 떄문에, 앞에서 수행한 회로가 제대로 된 연산을 수행했는지 검증하는 단계를 필요로한다.\footnote{왜 $H^n$으로 안하지...?}
+    \item verify : 주어진 ancilla qubit이 cat state인지 확인하기 위해서 모든 qubit들의 combination에 대해 두 qubit이 동일한 parity를 가지는지를 측정한다. ($Z_iZ_j$)
+    \item controlled-M : $M$의 eigenvalue를 측정하기 위해서 ancilla qubit와 data qubit 사이에 1-to-1 controlled $M$을 가한다.
+    \item decode : 측정을 위해 decode를 수행한다.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{figures/C7_FT_measurement.png}
+    \caption{Fault-tolerance measurement}
+    \label{fig:FT-measure}
+\end{figure}
+
+이 과정을 따르는 measurement가 왜 fault-tolerance한지 각 component에 에러가 발생했을 경우에 따라 분석해보자.
+\begin{enumerate}[(1)]
+    \item decode 이후에 오류가 발생 : 측정 과정을 3번 반복하여, 과반수를 얻은 결과를 택한다. 이 경우 측정이 잘못될 확률은 최대 $O(p^2)$이 된다.\footnote{encoded data로 연결되지 않기 때문에 데이터 손상은 없다.} (\textit{majority vote})
+    \item prepare 과정에서 오류가 발생 : verify 과정에서 오류가 발생했다는 사실을 확인할 수 있으므로 정정할 수 있다.
+    \item verify 과정에서 오류가 발생 : 오류가 있는 ancilla qubit을 이용하면 $Z$ error의 경우 encoded data를 변경시키지 않지만, $X, Y$는 encoded data에 오류를 일으킬 수 있다.\\
+    $\rightarrow$ $Z$ error는 majority vote로 해결할 수 있으며, $X, Y$와 같은 single qubit error는 QEC를 통해서 충분히 정정될 수 있다.
+    \item controlled-M을 수행할 때 오류가 발생 : (3)에서 이야기 한 것처럼 오류가 전파되어 encoded data를 손상시킬 수 있지만, 이는 single qubit error이고 QEC로 정정될 수 있다. 
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figures/C7_FT_stabilizer.png}
+    \caption{Stabilizer measurement}
+\end{figure}
