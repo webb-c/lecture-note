@@ -1,0 +1,162 @@
+% Load the kaohandt class (with the default options)
+\documentclass[
+	%fontsize=10pt, % Base font size
+	%twoside=false, % If true, use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
+	%secnumdepth=2, % How deep to number headings. Defaults to 2 (subsections)
+	%abstract=true, % Uncomment to print the title of the abstract
+]{kaohandt}
+
+% Choose the language
+\usepackage[english]{babel} % Load characters and hyphenation
+\usepackage[english=british]{csquotes}	% English quotes
+\usepackage{kotex}
+
+% Load packages for testing
+\usepackage{blindtext}
+\usepackage{qcircuit}
+%\usepackage{showframe} % Uncomment to show boxes around the text area, margin, header and footer
+%\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
+
+\graphicspath{{images/}{./}} % Paths where images are looked for
+
+% Load mathematical packages for theorems and related environments.
+\usepackage{kaotheorems}
+
+% Load the bibliography package
+\usepackage{kaobiblio}
+\addbibresource{report-template.bib} % Bibliography file
+
+% Load the package for hyperreferences
+\usepackage{kaorefs}
+\usepackage{braket}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	REPORT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title[Term paper]{Useful things: mathematics}
+\author[SV]{Vaughn Sohn}
+\date{\today}
+
+%----------------------------------------------------------------------------------------
+%	TITLE AND ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\maketitle
+
+\margintoc
+
+\begin{abstract}
+\noindent
+Quantum computing에서 자주 사용되는 수학적 개념이나 정리들
+\end{abstract}
+
+% {\noindent\textbf{Keywords:} \LaTeX, Kao, handout, article, report}
+
+\medskip
+
+%----------------------------------------------------------------------------------------
+%	MAIN BODY
+%----------------------------------------------------------------------------------------
+
+\section{Linear algebra}
+
+
+\section{Quantum mechanics}
+\subsection{Principle}
+\begin{definition}[Measurement on density matrix]
+    density matrix에 대해서 outcome $m$의 확률은
+    $$\operatorname{tr}\left[M_m^{\dagger} M_m \cdot \rho\right],$$
+    post-measurement state는 다음과 같다.
+    $$\frac{M_m \rho M_m^{\dagger}}{\operatorname{tr}\left[M_m^{\dagger} M_m \cdot \rho\right]}$$
+\end{definition}
+
+\subsection{Schrödinger equation}
+\begin{theorem}[Schrödinger time evolution equation]
+    $$\ket{\psi(t)} = e^{-iHt} \ket{\psi(0)} = U(t) \ket{\psi(0)}$$
+\end{theorem}
+
+\section{Complex exponential}
+\begin{remark}
+    Complex exponential function의 중요한 값
+    \begin{itemize}
+        \item $e^{i \pi} = e^{2i\pi \times (1/2)} = -1$
+        \item $e^{0} = e^{2i\pi \times (0/2)} = 1$
+    \end{itemize}
+\end{remark}
+
+\begin{remark}
+    Complex exponential function과 관련된 몇가지 bound
+    \begin{itemize}
+        \item $|1 - e^{i\theta} | \ge \frac{2 |\theta|}{\pi}$, for $-\pi \le \theta \le \pi$
+        \item $|1 - e^{i\theta} | \le 2$, for any $\theta \in \mathbb R$
+    \end{itemize}
+\end{remark}
+
+\begin{theorem}[Orthogonality of compex exponential]
+    $$\sum_{s=0}^{r-1} e^{(2\pi i s/r)(k-l)} = \begin{cases}
+        0, & \text{if } k \ne l\\
+        r, & \text{if } k = l
+    \end{cases}$$
+    special case ($l \leftarrow 0$) : 
+    $$\sum_{s=0}^{r-1} e^{(2\pi i s/r)(k)} = \begin{cases}
+        0, & \text{if } k \ne 0\\
+        r, & \text{if } k = 0
+    \end{cases}$$
+\end{theorem}
+
+\section{Group theory}
+
+\section{Etc...}
+\subsection{Series}
+\begin{theorem}[등비 급수]
+    일반항이 $a_i = a_1 \cdot r^{n-1}$인 등비급수의 $n$차항 까지의 합은 다음과 같다. 
+    $$S_n=a_1 \cdot \frac{r^n-1}{r-1}$$
+\end{theorem}
+
+\begin{theorem}[matrix exponential]
+    $$e^X=\sum_{k=0}^{\infty} \frac{1}{k!} X^k$$
+    where $X^0 = I$.
+\end{theorem}
+
+\subsection{Calculus}
+\begin{theorem}[Duhamel's principle]
+    듀하멜 원리는 비동차(Nonhomogeneous) 선형 미분 방정식의 해를 동차(Homogeneous) 방정식의 해와 적분 형태로 표현하는 방법이다.
+    $\tilde U(t), F(t)$가 시간에 의존하고 $H$는 시간에 독립적인 연산자일 때, 비동차 미분 방정식은 다음과 같다.
+    $$i \frac{d \tilde U(t)}{d t}=H \tilde U(t)+F(t)$$
+    이때 동차 미분 방정식은 다음을 풀어서 쉽게 얻을 수 있다.
+    $$i \frac{d \tilde U(t)}{d t}=H \tilde U(t)$$
+    Duhamel's principle에 따르면 비동차 미분 방정식의 해를 동차 미분방정식의 해를 사용하여 구할 수 있다. ($U(t)$는 해석적 연산자)\sidenote[][]{Hamiltonian simulation에서도 듀하멜 원리를 적용하기 위해서 주어진 미분방식의 형태를 변경시켰다. 이때 미분방정식의 해가 exponential인 이유는 동차 미분 방정식의 형태가 미분해서 자기자신이 나오는 형태이기 때문이다.}
+    $$\tilde U(t) = \tilde U_{\mathrm{sol}}(t)+ -i \int_0^t U(t-\tau) F(\tau) d \tau$$ 
+\end{theorem}
+
+\subsection{trigonometric function}
+\begin{remark}
+    삼각함수에서 자주 쓰이는 몇 가지 값들
+    \begin{itemize}
+        \item $\sin(\pi/4) = \cos(\pi/4) = \frac{1}{\sqrt 2}$
+    \end{itemize}
+\end{remark}
+
+\begin{remark}[삼각함수 합 공식]
+    \begin{align*}  \sin A + \sin B &= 2\sin\frac{A+B}{2}  \cos \frac{A-B}{2}\\  \sin A - \sin B &= 2\cos\frac{A+B}{2}  \sin \frac{A-B}{2}\\  \cos A + \cos B &= 2\cos\frac{A+B}{2}  \cos \frac{A-B}{2}\\ \cos A - \cos B &= - 2\sin\frac{A+B}{2}  \sin \frac{A-B}{2}\end{align*}
+\end{remark}
+
+\subsection{approximation}
+\begin{itemize}
+    \item $\arccos(\sqrt 1-x) \approx \sqrt x + O(x^{3/2})$
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+% The bibliography needs to be compiled with biber using your LaTeX editor, or on the command line with 'biber main' from the template directory
+
+\printbibliography[title=Bibliography] % Set the title of the bibliography and print the references
+
+\end{document}

@@ -109,7 +109,7 @@ Pure state의 entanglement는 reduced density matrix의 von Neumman entropy로 �
 \end{equation*}}
 \begin{equation}
     \begin{aligned}
-        W_F & =F \cdot\left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right|+\frac{1-F}{3}\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\
+        W_F & =F \left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right|+\frac{1-F}{3}\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\
         & +\frac{1-F}{3}\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right|+\frac{1-F}{3}\left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right|
     \end{aligned}
     \label{eq:WF}
@@ -161,10 +161,28 @@ Werner state는 동일한 amplitude를 갖는 3개의 triplet state, 그리고 a
     F^{\prime}=\frac{F^2+\frac{1}{9}(1-F)^2}{F^2+\frac{2}{3} F(1-F)+\frac{5}{9}(1-F)^2} .
 \end{equation}
 
-이를 위해서 다음의 프로토콜이 사용된다:\sidenote[][]{calculations:\\
+이를 위해서 다음의 프로토콜이 사용된다:\sidenote[][]{calculations: \textit{purification method}
 \begin{equation*}
 \begin{aligned}
-    \sigma_y W_F = 
+    &(A1)\ \sigma_yW_F \triangleq W_{(1)} = F\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right|+\frac{1-F}{3}\left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \\
+        &\qquad +\frac{1-F}{3}\left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right|+\frac{1-F}{3}\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right|\\
+    &(A2)\ BXOR (W_{(1)}) \triangleq W_{(2)} \\
+    &= F^2                          \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+    & +F \left(\frac{1-F}{3}\right) \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \\ 
+    & +F \left(\frac{1-F}{3}\right) \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \\ 
+    & +F \left(\frac{1-F}{3}\right) \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\ 
+    & +F \left(\frac{1-F}{3}\right) \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\ 
+    & +F \left(\frac{1-F}{3}\right) \left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+    & +F \left(\frac{1-F}{3}\right) \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \otimes\left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \otimes\left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \\ 
+    & +\left(\frac{1-F}{3}\right)^2 \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| 
 \end{aligned}
 \end{equation*}}
 
@@ -178,7 +196,27 @@ Werner state는 동일한 amplitude를 갖는 3개의 triplet state, 그리고 a
     \item Accept된 source pair에 다시 unilateral $\sigma_y$ gate를 가하여 impure $\Phi^-$ state로 다시 변환한다. 
 \end{enumerate}
 
-$F(F')$ 함수가 continuous이며, $\frac{1}{2} < F< 1$의 범위에서 $F < F'$이므로, 위 프로토콜을 적용하면 input mixed state $M$ ($F_{in} > \frac{1}{2}$)에 대해 더 높은 purity $F_{out} <1$을 갖는 ourput pair를 얻을 수 있다.
+$F(F')$ 함수가 continuous이며, $\frac{1}{2} < F< 1$의 범위에서 $F < F'$이므로, 위 프로토콜을 적용하면 input mixed state $M$ ($F_{in} > \frac{1}{2}$)에 대해 더 높은 purity $F_{out} <1$을 갖는 ourput pair를 얻을 수 있다.\sidenote[][]{calculations:(contd.)\\ 
+\begin{equation*}
+    \begin{aligned}
+        &(A3)\ W_{(3,accept)} \\
+        &= \left( F^2 + \left(\frac{1-F}{3}\right)^2\right) \ket{\Phi^+}\bra{\Phi^+}\\
+        &+ 2F\left(\frac{1-F}{3}\right) \ket{\Phi^-}\bra{\Phi^-}\\
+        &+  2\left(\frac{1-F}{3}\right)^2 \ket{\Psi^+}\bra{\Psi^+}
+        + 2\left(\frac{1-F}{3}\right)^2 \ket{\Psi^-}\bra{\Psi^-}\\
+        &\rightarrow_{normalization}  \\
+        &=\left(\frac{F^2 + \left(\frac{1-F}{3}\right)^2}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Phi^+} \bra{\Phi^+}\\
+        &+\left(\frac{2F\left(\frac{1-F}{3}\right)}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Phi^-} \bra{\Phi^-}\\
+        &+\left(\frac{2\left(\frac{1-F}{3}\right)^2}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Psi^+} \bra{\Psi^+}\\
+        &+\left(\frac{2\left(\frac{1-F}{3}\right)^2}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Psi^-} \bra{\Psi^-} \\
+        &(A4)\ \sigma_y W_{(3,accept)} \triangleq W_{F'} \\
+        &={\color{blue}\left(\frac{F^2 + \left(\frac{1-F}{3}\right)^2}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Psi^-} \bra{\Psi^-}}\\
+        &+\left(\frac{2F\left(\frac{1-F}{3}\right)}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Psi^+} \bra{\Psi^+}\\
+        &+\left(\frac{2\left(\frac{1-F}{3}\right)^2}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Phi^-} \bra{\Phi^-}\\
+        &+\left(\frac{2\left(\frac{1-F}{3}\right)^2}{F^2 + 2F\left(\frac{1-F}{3}\right) + 5\left(\frac{1-F}{3}\right)^2}\right) \ket{\Phi^+} \bra{\Phi^+} \\
+        &\qquad
+    \end{aligned}
+\end{equation*}}
 그러나 $F_{out} \rightarrow 1$에 따라서 수율\sidenote[][]{purified output pair / impure input pair}은 0에 가까워진다. 하지만, target pair를 측정하기 전에 BXOR을 $k(F) \approx 1/\sqrt{1-F}$개의 source pair에 대해서 수행하면, 수율을 증가시킬 수 있으며 $F_{out} \rightarrow 1$에도 0으로 수렴하지 않는다.
 
 \subsection{Breeding method}
@@ -202,7 +240,28 @@ Breeder reactor method의 전체 프로토콜은 다음과 같다.
     \item 이후, 다시 BXOR test를 충분히 많은 랜덤한 subset of the pairs에 대해서 수행하여 $\Psi^+$ state를 높은 확률로 찾아낼 수 있으며, 다시 unilateral $\sigma_x$ gate를 가하면 $\Psi^+$ state를 $\Phi^+$ state로 변환할 수 있다. $\rightarrow$ 이 단계까지 수행하면 pair들은 $\Psi^+$로만 이루어진다.
 \end{enumerate}
 
-이제 제안하는 방법의 비용을 분석해보자. 임의의 작은 실패확률에 대해, 모든 오류($\Phi^-, \Psi^\pm$)를 찾기위해 필요한 impure pair 하나당 필요한 BXOR test는 impure pair의 entropy, $S(W) = -\text{Tr}W \log_2W$와 관련있다. 이는 다음의 두 사실로부터 유도할 수 있다.
+이제 제안하는 방법의 비용을 분석해보자. 임의의 작은 실패확률에 대해, 모든 오류($\Phi^-, \Psi^\pm$)를 찾기위해 필요한 impure pair 하나당 필요한 BXOR test는 impure pair의 entropy, $S(W) = -\text{Tr}W \log_2W$와 관련있다. 이는 다음의 두 사실로부터 유도할 수 있다.\sidenote[][]{calculations: \textit{breeding method}
+\begin{equation*}
+    \begin{aligned}
+        &(B1)\ BXOR( \rho_s  \otimes \ket{\Phi^+}\bra{\Phi^+}_t) \triangleq \rho_{1}\\
+        &=  \alpha_{\Phi^+} \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + \alpha_{\Phi^-} \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + \alpha_{\Psi^+} \left|\Psi^{-}\right\rangle\left\langle\Psi^{-}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\ 
+        & + \alpha_{\Psi^-} \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\ 
+        &(B2)\ \sigma_x \rho_1 \triangleq (\rho_2 \otimes \ket{\Phi^+}\bra{\Phi^+})\\
+        &=  \alpha_{\Phi^+} \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + \alpha_{\Phi^-} \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + \alpha_{\Psi^+} \left|\Phi^{-}\right\rangle\left\langle\Phi^{-}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + \alpha_{\Psi^-} \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        &(B3)\ B_y \rho_2 \triangleq (\rho_3  \otimes \ket{\Phi^+}\bra{\Phi^+}) \\
+        & =  (\alpha_{\Phi^+} + \alpha_{\Psi^-}) \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + (\alpha_{\Phi^-} + \alpha_{\Psi^+}) \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\
+        &(B4)\ BXOR (\rho_3  \otimes \ket{\Phi^+}\bra{\Phi^+}) \triangleq \rho_4 \\
+        & =  (\alpha_{\Phi^+} + \alpha_{\Psi^-}) \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \\ 
+        & + (\alpha_{\Phi^-} + \alpha_{\Psi^+}) \left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \otimes\left|\Psi^{+}\right\rangle\left\langle\Psi^{+}\right| \\
+        &(B5)\ \sigma_x \rho_4 = \left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| \otimes\left|\Phi^{+}\right\rangle\left\langle\Phi^{+}\right| 
+    \end{aligned}
+\end{equation*}}
 \begin{itemize}
     \item 서로 다른 n-bit sequence에 대해, $r$개의 독립적인 랜덤한 subset에서 동일한 parity를 가질 확률은 $\leq 2^{-r}$이다.
 	\item n-bit sequence $x$에 대한 확률 분포 $P_X$는 \textit{typical set}에 속하는 문자열이 대부분의 weight를 차지한다. Typical set의 크기는 $N_1 = 2^{H(X) + O(\sqrt{n})}$이다. 유사하게, $n$-bit sequence $y$에 대한 조건부 확률분포 $P_{Y|X=x}$에 대해서도 typical set을 정의할 수 있으며 그 크기는 $N_2 = 2^{H(Y|X=x) + O(\sqrt n)}$이다.
@@ -252,6 +311,17 @@ $F > 1/2$일 때, mixed state $W_F = \sum_i p_i \ket{B_i}\bra{B_i}$는 다음과
 \begin{kaobox}
     \textit{Argue the practical usefulness of the results.}
 \end{kaobox}
+이 논문에서는 quantum error correction(QEC)을 사용하는 대신, quantum channel을 이용하여 pure Bell state를 생성하고 이를 복제하는 방법을 소개한다. 현재 QEC는 arbitrary single qubit error를 정정할 수 있는 logical qubit \textbf{1개}를 나타내기 위해서 \textbf{최소 5개}의 physical qubit이 필요하며, 따라서 qubit의 개수에 크게 의존적이다.
+그러나 본 논문에서 제안하는 방법을 도입하면 충분한 반복을 통해 qubit 개수에 제한 없이 purification을 수행할 수 있다.\sidenote[][]{breeding method 제외}
+
+\pagebreak
+이러한 기여를 바탕으로 본 논문에서 제안하는 protocol을 이용하면 다음과 같은 분야에서 활용할 수 있으리라고 기대한다.
+\begin{itemize}
+    \item \textbf{Quantum teleportation}: Quantum teleportation을 위해서 필요한 Bell state의 공유 과정에서 noisy channel 때문에 발생하는 noise를 제거할 수 있으므로 보다 정확한 quantum teleportation을 수행할 수 있다. 
+    \item \textbf{QKD}: Quantum Key Distribution에서 entanglement를 기반으로 하는 protocol에서는 secret key를 공유할 사람들이 Bell state를 공유해야한다. 따라서 본 논문에서 제안하는 protocol을 도입하여 QKD에서의 오류 완화에 사용될 수 있다.
+    \item \textbf{Fault-tolerant quantum communication}: QEC와 같은 기존의 noise 완화 방법과 결합하여 더 높은 수준의 오류 완화 및 정정 방법을 고안할 수 있다.
+    \item \textbf{Measure}: mixed state의 entanglement를 나타내기 위해 사용될 수 있는 두 가지 지표, $E(W_F), D(M)$을 제안함으로서 추후 quantum information theory의 연구에서 사용할 수 있도록 기여한다.
+\end{itemize}
 
 % \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 % \section{Appendix}
